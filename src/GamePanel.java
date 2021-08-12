@@ -28,6 +28,7 @@ public class GamePanel extends JPanel{
 	static int fpsTimerCounter = 0;
 	boolean collisionFlag ,electricFlag, gravityFlag ;
 	boolean removeFlag, circleFlag, squareFlag, diamondFlag ; //booleans are by deafault false
+	SampleController controller;
 	
 	static boolean testing ;
 	ShapeManager shape;
@@ -47,7 +48,7 @@ public class GamePanel extends JPanel{
 				}
 			}
 			double[] information = statistics();
-			//GameFrame.setLabels(particleList.size(), information);
+			// controller.setLabels(particleList.size(), information);
 			collisionsPerSecond = (fpsTimerCounter % 60 ==0 ) ? 0 : collisionsPerSecond ;
 			repaint();
 		}
@@ -69,12 +70,6 @@ public class GamePanel extends JPanel{
 					p1.y += p1.vy;
 				}	
 
-			double totX = 0, totY = 0 ;
-			for(Particle particle : particleList) {
-				totX += particle.getMass()*particle.getVelX();
-				totY += particle.getMass()*particle.getVelY();
-			}
-			double tot = totX + totY;
 		}
 	});
 
@@ -125,7 +120,7 @@ public class GamePanel extends JPanel{
 				totalPotential, collisionsPerSecond};
 		
 	}
-	public void initializeParticles(int numberOfParticles) {
+	public void initializeParticles(int numberOfParticles, int mass, int charge) {
 
 		for(int i = 0 ; i < numberOfParticles ; i++) {
 			int xPos;
@@ -133,7 +128,7 @@ public class GamePanel extends JPanel{
 			do {
 				xPos = rand.nextInt((int) this.getWidth()-100)+50;
 				yPos = rand.nextInt((int) this.getHeight() -100)+50;
-				Particle p = new Particle(xPos, yPos, 10,10, 0, 0,100, 5); //mass charge at end
+				Particle p = new Particle(xPos, yPos, 0, 0,mass, charge); //mass charge at end
 				particleList.add(p);
 			}while(!particleAlreadyExists(xPos, yPos));
 			
@@ -218,8 +213,8 @@ public class GamePanel extends JPanel{
 		}
 		return particlesToRemove;
 	}
-	public void b1Pressed() {
-		initializeParticles(1);
+	public void b1Pressed(int mass, int charge) {
+		initializeParticles(1, mass, charge);
 	}
 	public void b2Pressed() {
 		removeFlag = !removeFlag;
@@ -234,11 +229,13 @@ public class GamePanel extends JPanel{
 		gravityFlag = !gravityFlag;
 	}
 	public void shapeButtonPressed(String shape){
-		if(shape == "Circle") {
+		
+		if(shape.equals("Circle")) {
+			System.out.println("+++++++++++++++++");
 			circlePressed();
-		} else if (shape == "Square"){
+		} else if (shape.equals("Square")){
 			squarePressed();
-		} else if (shape == "Diamond"){
+		} else if (shape.equals("Diamond")){
 			diamondPressed();
 		}
 	}
@@ -314,7 +311,7 @@ public class GamePanel extends JPanel{
 			shape.circleCoords(particleList);
 		}else if(shapeType == 1 ) {
 			while(particleList.size() %4 != 0) {
-				initializeParticles(1);
+				initializeParticles(1, 100, 5);
 			}
 			shape.squareCoords(particleList);
 		}else if(shapeType == 2) {
@@ -329,12 +326,13 @@ public class GamePanel extends JPanel{
 	
 
 	GamePanel(){
+
 		addMouseListener(new MouseAdapter() {			
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				
 				if(!particleAlreadyExists(e.getX(), e.getY()) && !removeFlag && !circleFlag) {
-					Particle p = new Particle(e.getX(), e.getY(), 20,20, newDirX, newDirY,100, 0);
+					Particle p = new Particle(e.getX(), e.getY(), newDirX, newDirY,100, 0);
 					particleList.add(p);
 				}
 				else if(removeFlag) {
