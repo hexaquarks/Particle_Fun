@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.swing.SwingUtilities;
 import javax.swing.text.html.StyleSheet;
 
 import javafx.beans.value.ChangeListener;
@@ -95,17 +96,29 @@ public class SampleController {
         // chargeSlider.setStyle("-fx-control-inner-background: palegreen;");
 
         ToggleGroup toggles = new ToggleGroup();
+        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(Arrays.asList(circle, square, diamond));
         
-        addParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b1Pressed(
-            (int) Math.round(massSlider.valueProperty().getValue()),
-            (int) Math.round(chargeSlider.valueProperty().getValue())
-        ));
+        // addParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b1Pressed(
+        //     (int) Math.round(massSlider.valueProperty().getValue()),
+        //     (int) Math.round(chargeSlider.valueProperty().getValue())
+        // ));
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                addParticle.addEventHandler(ActionEvent.ACTION , event -> mainPanel.b1Pressed(100,5));
+            }
+        });
+        
         removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b2Pressed());
         collisions.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b3Pressed());
         electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b4Pressed());
         gravity.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b5Pressed());
 
-        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(Arrays.asList(circle, square, diamond));
+        
+        resetMass.addEventHandler(ActionEvent.ACTION, event -> massSlider.setValue(100));
+        resetCharge.addEventHandler(ActionEvent.ACTION, event -> chargeSlider.setValue(5));
+
+
         for(RadioButton button : radioButtons){
             button.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
                 if (button.isSelected()) {
@@ -113,13 +126,17 @@ public class SampleController {
                     e.consume();
 
                 }
-                mainPanel.shapeButtonPressed(button.getText());
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run(){
+                        mainPanel.shapeButtonPressed(button.getText());
+
+                    }
+                });
             });
             button.setToggleGroup(toggles);
         }
 
-        resetMass.addEventHandler(ActionEvent.ACTION, event -> massSlider.setValue(100));
-        resetCharge.addEventHandler(ActionEvent.ACTION, event -> chargeSlider.setValue(5));
     }
 
 

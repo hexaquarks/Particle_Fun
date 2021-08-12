@@ -198,6 +198,6 @@
             </AnchorPane>
         </items>
       </SplitPane>
-      <BorderPane fx:id="MainPanel" layoutY="26.0" prefHeight="452.0" prefWidth="691.0" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="26.0" />
+      <BorderPane fx:id="MainPanel" layoutY="26.0" prefHeight="452.0" prefWidth="691.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="26.0" />
    </children>
 </AnchorPane>
