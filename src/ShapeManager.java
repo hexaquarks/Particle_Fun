@@ -41,8 +41,6 @@ public class ShapeManager {
 	public void squareCoords(ArrayList<Particle> particles) {
 		int n = particles.size();
 
-		//			center.x = (GameFrame.frame_width-GameFrame.sidePanel.getSize().width)/2;
-		//			center.y = (GameFrame.frame_height- GameFrame.panelSouth.getSize().height)/2; 
 		int layer = n/4;
 		double width = particles.get(0).width;
 		double rescale = 0;
@@ -159,7 +157,7 @@ public class ShapeManager {
 
 	public void setSpeed(ArrayList<Particle> particles) {
 		System.out.println("Coordinates : " + coordinates.size());
-		System.out.println("particleList : " + GamePanel.particleList.size());
+		System.out.println("particleList : " + MainPanel.particleList.size());
 		for(Point2D point : coordinates) {
 			if(point.particle.x - point.x <= 0) {
 				point.particle.vx = (-point.particle.x + point.x)/(1000/16);
