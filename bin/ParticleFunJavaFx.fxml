@@ -51,14 +51,17 @@
                                        <children>
                                           <Pane fx:id="ForcesPanel" layoutX="21.7" layoutY="-60.0" prefHeight="80.0" prefWidth="628.0" style="-fx-background-color: lightgray;" AnchorPane.bottomAnchor="11.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <CheckBox fx:id="collisions" layoutX="-19.0" layoutY="-8.0" mnemonicParsing="false" selected="true" text="Collisions" />
-                                                <CheckBox fx:id="gravity" layoutX="-19.0" layoutY="18.0" mnemonicParsing="false" selected="true" text="Gravity" />
-                                                <CheckBox fx:id="electrostatics" layoutX="-19.0" layoutY="45.0" mnemonicParsing="false" selected="true" text="Electrostatics" />
+                                                <CheckBox fx:id="collisions" layoutX="-4.0" layoutY="6.0" mnemonicParsing="false" selected="true" text="Collisions" />
+                                                <CheckBox fx:id="gravity" layoutX="-4.0" layoutY="32.0" mnemonicParsing="false" selected="true" text="Gravity" />
+                                                <CheckBox fx:id="electrostatics" layoutX="-4.0" layoutY="59.0" mnemonicParsing="false" selected="true" text="Electrostatics" />
                                              </children>
                                           </Pane>
                                        </children>
                                     </AnchorPane>
                                  </content>
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
                               </TitledPane>
                               <TitledPane animated="false" collapsible="false" layoutX="6.0" layoutY="6.0" prefHeight="268.0" prefWidth="205.0" text="Shapes" AnchorPane.bottomAnchor="181.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
                                 <content>
@@ -66,15 +69,15 @@
                                        <children>
                                           <Pane layoutX="15.4" layoutY="8.4" prefHeight="176.0" prefWidth="112.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-2.0">
                                              <children>
-                                                <RadioButton fx:id="circle" layoutX="-20.0" layoutY="4.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" scaleX="0.8" scaleY="0.8" style="-fx-alignment: left;" text="Circle">
+                                                <RadioButton fx:id="circle" layoutX="-6.0" layoutY="6.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" scaleX="0.8" scaleY="0.8" style="-fx-alignment: left;" text="Circle">
                                                    <font>
                                                       <Font size="17.0" />
                                                    </font></RadioButton>
-                                                <RadioButton fx:id="square" layoutX="-20.0" layoutY="33.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="108.0" scaleX="0.8" scaleY="0.8" text="Square">
+                                                <RadioButton fx:id="square" layoutX="-6.0" layoutY="35.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="108.0" scaleX="0.8" scaleY="0.8" text="Square">
                                                    <font>
                                                       <Font size="17.0" />
                                                    </font></RadioButton>
-                                                <RadioButton fx:id="diamond" layoutX="-22.0" layoutY="61.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="125.0" scaleX="0.8" scaleY="0.8" text="Diamond">
+                                                <RadioButton fx:id="diamond" layoutX="-8.0" layoutY="63.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="125.0" scaleX="0.8" scaleY="0.8" text="Diamond">
                                                    <font>
                                                       <Font size="17.0" />
                                                    </font></RadioButton>
@@ -83,6 +86,9 @@
                                        </children>
                                     </AnchorPane>
                                 </content>
+                                 <font>
+                                    <Font name="System Bold" size="15.0" />
+                                 </font>
                               </TitledPane>
                            </children>
                         </AnchorPane>
@@ -98,12 +104,15 @@
                            <children>
                               <Pane fx:id="AddRemovePanel" layoutX="32.7" layoutY="20.7" prefHeight="82.0" prefWidth="279.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="10.0">
                                  <children>
-                                    <Button fx:id="removeParticle" layoutX="-15.0" layoutY="36.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="155.0" text="Remove particle" />
-                                    <Button fx:id="addParticle" layoutX="-15.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="155.0" text="Add Particle" />
+                                    <Button fx:id="removeParticle" layoutX="-15.0" layoutY="36.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="155.0" style="-fx-background-radius: 15px; -fx-background-color: #F1959B; -fx-text-fill: black;" text="Remove particle" />
+                                    <Button fx:id="addParticle" layoutX="-15.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="155.0" style="-fx-background-radius: 15px; -fx-background-color: #8CDD81; -fx-text-fill: black;" text="Add Particle" />
                                  </children>
                               </Pane>
                            </children></AnchorPane>
                     </content>
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
                   </TitledPane>
                   <TitledPane animated="false" collapsible="false" layoutX="644.0" layoutY="6.0" prefHeight="147.0" prefWidth="260.0" text="Statistics" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="641.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
                      <content>
@@ -111,17 +120,17 @@
                            <children>
                               <Pane fx:id="StatisticsPanel" layoutX="23.7" layoutY="11.7" prefHeight="89.0" prefWidth="178.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="1.0">
                                  <children>
-                                    <Label layoutX="-14.0" layoutY="-2.0" text="Number of particles :">
+                                    <Label layoutX="-8.0" layoutY="2.0" text="Number of particles :">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="-14.0" layoutY="23.0" text="Total electric force :">
+                                    <Label layoutX="-8.0" layoutY="28.0" text="Total electric force :">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="-13.0" layoutY="47.0" text="Total potential force :">
+                                    <Label layoutX="-7.0" layoutY="54.0" text="Total potential force :">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -131,7 +140,7 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="totalElectric" layoutX="187.0" layoutY="23.0" text="0">
+                                    <Label fx:id="totalElectric" layoutX="186.0" layoutY="23.0" text="0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
@@ -141,14 +150,14 @@
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="-13.0" layoutY="70.0" text="Collisions per second">
+                                    <Label layoutX="-7.0" layoutY="79.0" text="Collisions per second">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Label fx:id="collisionsPerSecond" layoutX="211.0" layoutY="84.0" text="0">
+                              <Label fx:id="collisionsPerSecond" layoutX="200.0" layoutY="74.0" text="0">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -156,6 +165,9 @@
                            </children>
                         </AnchorPane>
                      </content>
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
                   </TitledPane>
                   <TitledPane fx:id="MassChargePanel" animated="false" collapsible="false" layoutX="337.0" layoutY="9.0" prefHeight="141.0" prefWidth="307.0" text="Particle Mass/Charge" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="263.0" AnchorPane.topAnchor="6.0">
                     <content>
@@ -163,14 +175,14 @@
                            <children>
                               <Slider fx:id="massSlider" layoutX="53.0" layoutY="14.0" max="250.0" prefHeight="24.0" prefWidth="169.0" value="100.0" />
                               <Slider fx:id="chargeSlider" blockIncrement="2.5" layoutX="54.0" layoutY="43.0" max="20.0" prefHeight="24.0" prefWidth="170.0" value="5.0" />
-                              <Button fx:id="resetCharge" layoutX="225.0" layoutY="44.0" minHeight="14.0" minWidth="44.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="44.0" style="-fx-font-size: 11; -fx-background-color: white; -fx-text-fill: black; -fx-border-color: black; -fx-padding: -10, -5, -10 ,-5;" text="Reset" textOverrun="CLIP">
+                              <Button fx:id="resetCharge" layoutX="225.0" layoutY="45.0" minHeight="14.0" minWidth="44.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="44.0" style="-fx-font-size: 11; -fx-background-color: #59bfff; -fx-text-fill: black; -fx-padding: -10, -5, -10 ,-5; -fx-background-radius: 10px;" text="Reset" textOverrun="CLIP">
                                  <font>
                                     <Font name="System Bold" size="10.0" />
                                  </font>
                               </Button>
                               <Label layoutX="12.0" layoutY="17.0" text="Mass" />
                               <Label layoutX="7.0" layoutY="46.0" text="Charge" />
-                              <Button fx:id="resetMass" layoutX="225.0" layoutY="15.0" minHeight="14.0" minWidth="44.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="44.0" style="-fx-font-size: 11; -fx-background-color: white; -fx-text-fill: black; -fx-border-color: black; -fx-padding: -10, -5, -10 ,-5;" text="Reset" textOverrun="CLIP">
+                              <Button fx:id="resetMass" layoutX="225.0" layoutY="12.0" minHeight="14.0" minWidth="44.0" mnemonicParsing="false" prefHeight="22.0" prefWidth="44.0" style="-fx-font-size: 11; -fx-background-color: #59bfff; -fx-text-fill: black; -fx-padding: -10, -5, -10 ,-5; -fx-background-radius: 10px;" text="Reset" textOverrun="CLIP">
                                  <font>
                                     <Font name="System Bold" size="10.0" />
                                  </font>
@@ -178,6 +190,9 @@
                            </children>
                         </AnchorPane>
                     </content>
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
                   </TitledPane>
                </children>
             </AnchorPane>
