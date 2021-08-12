@@ -20,12 +20,11 @@ public class Particle{
     private final double g = 0.00025;    // universal gravitational constant
 
 
-	public Particle(double x, double y, double width
-			, double height, double velX, double velY,double mass, int charge) {
+	public Particle(double x, double y, double velX, double velY,double mass, int charge) {
 		this.x = x;
 		this.y=y;
-		this.width=width;
-		this.height=height;
+		this.width=mass/10;
+		this.height=mass/10;
 		this.vx=velX;
 		this.vy = velY;
 		this.mass=mass;
