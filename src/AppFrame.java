@@ -86,26 +86,32 @@ public class AppFrame extends Application{
 
 		SwingNode swingNode = new SwingNode();
 		MainPanel mainPanel = new MainPanel();
-		mainPanel.setSize(691, 452);
-		mainPanel.setBackground(Color.black);
-		mainPanel.physicsTimer.start();
-		mainPanel.fpsTimer.start();
-
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				swingNode.setContent(mainPanel);
+				mainPanel.setSize(535, 318);
+				mainPanel.setBackground(Color.black);
+				mainPanel.physicsTimer.start();
+				mainPanel.fpsTimer.start();
+				mainPanel.initializeParticles(15, 100 ,5);
 			}
 		});
+
 		scenePanel.setCenter(swingNode);
+		swingNode.setContent(mainPanel);
+		controller.initializeButtons(mainPanel);
+		
 
-		ShapeManager shapee = new ShapeManager(new Point2D(mainPanel.getSize().getWidth()/2, 
-											mainPanel.getSize().getHeight()/2));
-		mainPanel.shape = shapee;
-		mainPanel.initializeParticles(15, 100 ,5);
-		controller.initializeButtons(mainPanel, scene);
+		ShapeManager shapee = new ShapeManager(new Point2D(mainPanel.getSize().getWidth()/2, mainPanel.getSize().getHeight()/2));
 
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				mainPanel.shape = shapee;
+			}
+		});
+		
 		// System.out.println("width is : " + mainPanel.widthProperty().getValue());
 		// System.out.println("width is : " + mainPanel.widthProperty());
     

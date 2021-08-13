@@ -90,7 +90,7 @@ public class SampleController {
     private BorderPane MainPanel;
 
 
-    public void initializeButtons(MainPanel mainPanel, Scene scene){
+    public void initializeButtons(MainPanel mainPanel){
         // massSlider.setStyle("-fx-control-inner-background: palegreen;");
         // chargeSlider.setStyle("-fx-control-inner-background: palegreen;");
 

@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
-import com.sun.javafx.scene.paint.GradientUtils.Point;
 public class ShapeManager {
 	public String shapeType; // circle , square, pentagon , hexagon 
 	Point2D center;
@@ -96,12 +95,13 @@ public class ShapeManager {
 		while(iterator1.hasNext()) {
 			Particle iterated = iterator1.next();
 
-			for(Point2D point : second) {
+			for(int i = 0 ; i<second.size() ; i++){
+				Point2D point = second.get(i);
+
 				double d = Math.sqrt(Math.pow(iterated.x -point.x, 2)
 						+ Math.pow(iterated.y - point.y, 2));
 				distances.add(d);
 			}
-
 		}
 		return distances;
 	}
@@ -156,9 +156,10 @@ public class ShapeManager {
 	}
 
 	public void setSpeed(ArrayList<Particle> particles) {
-		System.out.println("Coordinates : " + coordinates.size());
-		System.out.println("particleList : " + MainPanel.particleList.size());
-		for(Point2D point : coordinates) {
+
+		for(int i = 0 ; i < coordinates.size() ; i++) {
+			Point2D point = coordinates.get(i);
+
 			if(point.particle.x - point.x <= 0) {
 				point.particle.vx = (-point.particle.x + point.x)/(1000/16);
 			} else if(point.particle.x - point.x > 0 ) {
@@ -174,9 +175,11 @@ public class ShapeManager {
 	}
 
 
-	public void checkArrival(ArrayList<Particle> particles) {
+	public void checkArrival() {
 
-		for(Point2D p : coordinates) {
+		for(int i = 0 ; i < coordinates.size() ; i++){
+			Point2D p = coordinates.get(i);
+
 			if(p.particle.x >= p.x - p.particle.width/25 && p.particle.x <= p.x + p.particle.width/25) {
 				p.particle.vx = 0;
 
