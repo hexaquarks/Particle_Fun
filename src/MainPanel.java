@@ -31,43 +31,36 @@ public class MainPanel extends JPanel {
 	static int fpsTimerCounter = 0;
 	boolean collisionFlag, electricFlag, gravityFlag;
 	boolean removeFlag;
-	boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by deafault false
-	// Boolean circleFlag = false; 
-	// Boolean squareFlag =  false; 
-	// Boolean diamondFlag =  false; 
-	// Boolean spiralFlag =  false; 
+	// boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by deafault false
 
-	// ArrayList<Boolean> shapeFlags = new ArrayList<Boolean>(Arrays.asList(circleFlag, squareFlag, diamondFlag, spiralFlag));
-	// LinkedHashMap<String, Boolean> shapeFlags2 = new LinkedHashMap<String, Boolean>() {{
-	// 	put("Square", squareFlag);
-	// 	put("Diamond", diamondFlag);
-	// 	put("Circle", circleFlag);
-	// 	put("Spiral", spiralFlag);
-	// }};
+	ArrayList<String> shapeNames = new ArrayList<String>(
+		Arrays.asList(
+			"Circle", "Square" , "Diamond" , "Spiral", "LooseSpiral")
+		);
 
-	// public enum Flag {
-	// 	CIRCLE( false ),
-	// 	SQUARE( false ),
-	// 	DIAMOND( false ); // default state is false for all
-	  
-	// 	private boolean state;
-	// 	private Flag(boolean state) {
-	// 	  this.state = state;
-	// 	}
-	  
-	// 	public void flipState() {
-	// 	  this.state = !this.state;
-	// 	}
-	  
-	// 	public void setState(boolean state) {
-	// 	  this.state = state;
-	// 	}
-	//   }
+	public enum Flag {
+		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false), LOOSESPIRAL(false); 
+		private boolean state;
+
+		private Flag(boolean state) { this.state = state; }
+
+		public void flipState() { this.state = !this.state; }
+
+		public void setState(boolean state) { this.state = state; }
+
+	}
+
 	SampleController controller;
-
 
 	static boolean testing;
 	ShapeManager shape;
+
+	public static boolean shapeActivated(){
+		for(Flag flag : Flag.values()) {
+			if(flag.state) return true;
+		}
+		return false;
+	}
 
 	Timer fpsTimer = new Timer(timeTick, new ActionListener() {
 		@Override
@@ -75,7 +68,7 @@ public class MainPanel extends JPanel {
 			fpsTimerCounter++;
 			// TODO make the flags into an array in the future
 
-			if (circleFlag || squareFlag || diamondFlag || spiralFlag) {
+			if (shapeActivated()) {
 				shape.checkArrival();
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
@@ -281,129 +274,21 @@ public class MainPanel extends JPanel {
 
 	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
-			// Boolean currFlag=false;
-			// System.out.println("shape is  "  + shapeFlags2.get(shapeType));
-			// if key == shapeType then set value true and set all that do not match the key to false ? 
 
-			if (shapeType.equals("Circle")) {
-				circlePressed();
-				// currFlag = circleFlag;
-			} else if (shapeType.equals("Square")) {
-				squarePressed();
-				// currFlag = squareFlag;
-			} else if (shapeType.equals("Diamond")) {
-				diamondPressed();
-				// currFlag = diamondFlag;
-			} else if (shapeType.equals("Spiral")) {
-				spiralPressed();
-				// currFlag = spiralFlag;
+			Flag currFlag = Flag.values()[shapeNames.indexOf(shapeType)];
+
+			if (!currFlag.state) {
+				currFlag.setState(true);
+				physicsTimer.stop();
+				setInitialization((short) currFlag.ordinal());
+			} else {
+				currFlag.setState(false);
+				physicsTimer.start();
+				particleList.get(0).reinitializeVel(particleList);
+				shape.reinitializeCoordinates();
 			}
 
-			// if (!currFlag) {
-			// 	//set all false except currFlag
-			// 	for(Boolean flag : shapeFlags) flag = ( flag == currFlag ) ? true : false ;
-			// 	physicsTimer.stop();
-			// 	setInitialization((short) 0);
-			// 	for(Boolean flag : shapeFlags) System.out.println(flag);
-			// } else {
-			// 	for(Boolean flag : shapeFlags) flag = false;
-			// 	physicsTimer.start();
-			// 	particleList.get(0).reinitializeVel(particleList);
-			// 	shape.reinitializeCoordinates();
-			// }
-
 		});
-	}
-
-	public void circlePressed() {
-		if (circleFlag == false) {
-			circleFlag = true;
-
-			physicsTimer.stop();
-
-			setInitialization((short) 0);
-			squareFlag = false;
-			diamondFlag = false;
-		} else {
-			diamondFlag=false;
-			circleFlag = false;
-			diamondFlag = false;
-			squareFlag = false;
-
-			physicsTimer.start();
-			particleList.get(0).reinitializeVel(particleList);
-			shape.reinitializeCoordinates();
-
-		}
-	}
-
-	public void squarePressed() {
-		if (squareFlag == false) {
-			squareFlag = true;
-
-			physicsTimer.stop();
-			setInitialization((short) 1);
-
-			circleFlag = false;
-			diamondFlag = false;
-
-		} else {
-			diamondFlag=false;
-			circleFlag = false;
-			diamondFlag = false;
-			squareFlag = false;
-
-			physicsTimer.start();
-			particleList.get(0).reinitializeVel(particleList);
-			shape.reinitializeCoordinates();
-
-		}
-	}
-
-	public void diamondPressed() {
-		if (diamondFlag == false) {
-			diamondFlag = true;
-
-			physicsTimer.stop();
-			setInitialization((short) 2);
-
-			circleFlag = false;
-			squareFlag = false;
-
-		} else {
-			diamondFlag=false;
-			circleFlag = false;
-			diamondFlag = false;
-			squareFlag = false;
-
-			physicsTimer.start();
-			particleList.get(0).reinitializeVel(particleList);
-			shape.reinitializeCoordinates();
-
-		}
-	}
-	public void spiralPressed(){
-		if (spiralFlag == false) {
-			spiralFlag = true;
-
-			physicsTimer.stop();
-			setInitialization((short) 3);
-
-			circleFlag = false;
-			diamondFlag = false;
-			squareFlag = false;
-
-		} else {
-			diamondFlag=false;
-			circleFlag = false;
-			diamondFlag = false;
-			squareFlag = false;
-
-			physicsTimer.start();
-			particleList.get(0).reinitializeVel(particleList);
-			shape.reinitializeCoordinates();
-
-		}
 	}
 
 	public void setInitialization(short shapeType) {
@@ -437,7 +322,7 @@ public class MainPanel extends JPanel {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 
-				if (!particleAlreadyExists(e.getX(), e.getY()) && !removeFlag && !circleFlag) {
+				if (!particleAlreadyExists(e.getX(), e.getY()) && !removeFlag) {
 					Particle p = new Particle(e.getX(), e.getY(), newDirX, newDirY, 100, 0);
 					particleList.add(p);
 				} else if (removeFlag) {

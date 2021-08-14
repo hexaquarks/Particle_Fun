@@ -94,9 +94,9 @@ public class ShapeManager {
 		//actually no one cares about theta max, just iterate while
 		//   there are still particles lol.
 
-		int awayStep = (int) particles.get(0).width;
+		int awayStep = (int) particles.get(0).width/2;
 		double rotation = -Math.PI / 2;
-		int chord = awayStep*2; //distance between points
+		int chord = awayStep*3; //distance between points
 
 		double theta = chord / awayStep;
 		this.coordinates.add(new Point2D(center.x, center.y));
@@ -108,6 +108,26 @@ public class ShapeManager {
 
 			this.coordinates.add(new Point2D(x, y));
 			theta += chord / away;
+		}
+	}
+
+	public void looseSpiral(ArrayList<Particle> particles) { 
+		int awayStep = (int) particles.get(0).width/2;
+		double rotation = -Math.PI / 2;
+		int chord = awayStep*3; //distance between points
+		double delta; 
+		double theta = chord / awayStep;
+		this.coordinates.add(new Point2D(center.x, center.y));
+		for(int i = 1 ; i < particles.size() ; i++){
+			double away = awayStep*theta;  //how far away from center
+			double around = theta + rotation; //how far around the center
+			double x = center.x + Math.cos(around) * away;
+			double y = center.y + Math.sin(around) * away;
+
+			this.coordinates.add(new Point2D(x, y));
+
+			delta = ( -2 * away + Math.sqrt( 4 * away * away + 8 * awayStep * chord ) ) / ( 2 * awayStep );
+			theta += delta;
 		}
 	}
 
