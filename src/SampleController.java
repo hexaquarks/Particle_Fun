@@ -55,6 +55,9 @@ public class SampleController {
     private RadioButton looseSpiral;
 
     @FXML
+    private RadioButton sunflower;
+
+    @FXML
     private Pane AddRemovePanel;
 
     @FXML
@@ -116,13 +119,15 @@ public class SampleController {
             (int) Math.round(massSlider.valueProperty().getValue()),
             (int) Math.round(chargeSlider.valueProperty().getValue())
         ));
-        
+
         removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b2Pressed());
         collisions.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b3Pressed());
         electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b4Pressed());
         gravity.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b5Pressed());
 
-        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(Arrays.asList(circle, square, diamond, spiral, looseSpiral));
+        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(
+            Arrays.asList(circle, square, diamond, spiral, looseSpiral, sunflower)
+        );
         for(RadioButton button : radioButtons){
             button.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
                 if (button.isSelected()) {

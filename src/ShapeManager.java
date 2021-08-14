@@ -131,6 +131,21 @@ public class ShapeManager {
 		}
 	}
 
+	public void sunflowerCoords(ArrayList<Particle> particles) {
+		double localMultiplier = 15; //guess
+		double baseAngle = Math.PI* ( 1 + Math.sqrt(5));
+
+
+		for(int i = 0 ; i < particles.size() ; i++){
+			double angle2 = baseAngle * i;
+			
+			double x = Math.sqrt(i) * Math.cos(angle2) * localMultiplier;
+			double y = Math.sqrt(i) * Math.sin(angle2) * localMultiplier;
+
+			this.coordinates.add(new Point2D(x + center.x, y + center.y));
+		}
+	}
+
 	public ArrayList<Double> distanceCalculator(ArrayList<Particle> pList, ArrayList<Point2D> second) {
 		ArrayList<Double> distances = new ArrayList<Double>();
 		Iterator<Particle> iterator1 = pList.iterator();

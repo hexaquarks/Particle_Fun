@@ -32,10 +32,10 @@ public class MainPanel extends JPanel {
 	// deafault false
 
 	ArrayList<String> shapeNames = new ArrayList<String>(
-			Arrays.asList("Circle", "Square", "Diamond", "Spiral", "Loose Spiral"));
+			Arrays.asList("Circle", "Square", "Diamond", "Spiral", "Loose Spiral", "Sunflower"));
 
 	public enum Flag {
-		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false), LOOSESPIRAL(false);
+		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false), LOOSESPIRAL(false) , SUNFLOWER(false);
 
 		private boolean state;
 
@@ -275,17 +275,18 @@ public class MainPanel extends JPanel {
 		shape.reinitializeCoordinates();
 		if (shapeType == 0) {
 			shape.circleCoords(particleList);
-		} else if (shapeType == 1) {
+		} else if (shapeType == 1 || shapeType == 2) {
 			while (particleList.size() % 4 != 0) {
 				initializeParticles(1, 100, 5);
 			}
-			shape.squareCoords(particleList);
-		} else if (shapeType == 2) {
-			shape.diamondCoords(particleList);
-		} else if (shapeType == 3) {
+			if(shapeType == 1) shape.squareCoords(particleList);
+			else shape.diamondCoords(particleList);
+		}else if (shapeType == 3) {
 			shape.spiralCoords(particleList);
 		} else if (shapeType == 4) {
 			shape.looseSpiralCoords(particleList);
+		} else if (shapeType == 5) {
+			shape.sunflowerCoords(particleList);
 		}
 
 		shape.proximity(particleList);
