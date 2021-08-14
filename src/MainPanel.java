@@ -10,9 +10,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -31,22 +28,28 @@ public class MainPanel extends JPanel {
 	static int fpsTimerCounter = 0;
 	boolean collisionFlag, electricFlag, gravityFlag;
 	boolean removeFlag;
-	// boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by deafault false
+	// boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by
+	// deafault false
 
 	ArrayList<String> shapeNames = new ArrayList<String>(
-		Arrays.asList(
-			"Circle", "Square" , "Diamond" , "Spiral", "LooseSpiral")
-		);
+			Arrays.asList("Circle", "Square", "Diamond", "Spiral", "Loose Spiral"));
 
 	public enum Flag {
-		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false), LOOSESPIRAL(false); 
+		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false), LOOSESPIRAL(false);
+
 		private boolean state;
 
-		private Flag(boolean state) { this.state = state; }
+		private Flag(boolean state) {
+			this.state = state;
+		}
 
-		public void flipState() { this.state = !this.state; }
+		public void flipState() {
+			this.state = !this.state;
+		}
 
-		public void setState(boolean state) { this.state = state; }
+		public void setState(boolean state) {
+			this.state = state;
+		}
 
 	}
 
@@ -55,9 +58,10 @@ public class MainPanel extends JPanel {
 	static boolean testing;
 	ShapeManager shape;
 
-	public static boolean shapeActivated(){
-		for(Flag flag : Flag.values()) {
-			if(flag.state) return true;
+	public static boolean shapeActivated() {
+		for (Flag flag : Flag.values()) {
+			if (flag.state)
+				return true;
 		}
 		return false;
 	}
@@ -154,8 +158,7 @@ public class MainPanel extends JPanel {
 	public void initializeParticles(int numberOfParticles, int mass, int charge) {
 
 		for (int i = 0; i < numberOfParticles; i++) {
-			int xPos;
-			int yPos;
+			int xPos, yPos;
 			do {
 				xPos = rand.nextInt((int) 530 - 100) + 50;
 				yPos = rand.nextInt((int) 330 - 100) + 50;
@@ -168,48 +171,33 @@ public class MainPanel extends JPanel {
 	}
 
 	public void paintComponent(Graphics g) {
-		if (testing == true) {
-			super.paintComponent(g);
-			Graphics2D g2d = (Graphics2D) g;
-			for (int i = 0; i < shape.coordinates.size(); i++) {
-				Point2D point = shape.coordinates.get(i);
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
 
-				g2d.setColor(Color.WHITE);
-				Shape circle = new Arc2D.Double(point.x - particleList.get(0).width / 2,
-						point.y - particleList.get(0).height / 2, particleList.get(0).width, particleList.get(0).height,
-						0, 360, Arc2D.CHORD);
-				g2d.fill(circle);
-			}
-		} else {
-			super.paintComponent(g);
-			Graphics2D g2d = (Graphics2D) g;
+		for (int i = 0; i < particleList.size(); i++) {
+			Particle particle = particleList.get(i);
 
-			for (int i = 0; i < particleList.size(); i++) {
-				Particle particle = particleList.get(i);
+			g2d.setColor(Color.WHITE);
+			Shape circle = new Arc2D.Double(particle.getX(), particle.getY(), particle.getWidth(), particle.getHeight(),
+					0, 360, Arc2D.CHORD);
+			GradientPaint gp1 = new GradientPaint(5, 5, Color.red, 20, 20, Color.yellow, true);
+			g2d.setPaint(gp1);
+			g2d.fill(circle);
 
-				g2d.setColor(Color.WHITE);
-				Shape circle = new Arc2D.Double(particle.getX(), particle.getY(), particle.getWidth(),
-						particle.getHeight(), 0, 360, Arc2D.CHORD);
-				GradientPaint gp1 = new GradientPaint(5, 5, Color.red, 20, 20, Color.yellow, true);
-				g2d.setPaint(gp1);
-				g2d.fill(circle);
-
-			}
 		}
-
 	}
 
 	public double dragForce(double pos, double prevPos) {
 		double diff = Math.abs(prevPos - pos);
 		/*
-		 *  The speed of the particle with respect to the drag distance of the mouse should 
-		 *  follows approximatively a logarithmic curve.
+		 * The speed of the particle with respect to the drag distance of the mouse
+		 * should follows approximatively a logarithmic curve.
 		 */
 		double a = Math.log(diff / 100 + 1);
 
 		// check if drag is negative or null.
-		a = (pos < prevPos ) ? -a : 0 ;
-		
+		a = (pos < prevPos) ? -a : 0;
+
 		return a;
 	}
 
@@ -268,7 +256,9 @@ public class MainPanel extends JPanel {
 			Flag currFlag = Flag.values()[shapeNames.indexOf(shapeType)];
 
 			if (!currFlag.state) {
-				currFlag.setState(true);
+				for (Flag flag : Flag.values()) {
+					flag.setState((flag == currFlag) ? true : false);
+				}
 				physicsTimer.stop();
 				setInitialization((short) currFlag.ordinal());
 			} else {
@@ -277,7 +267,6 @@ public class MainPanel extends JPanel {
 				particleList.get(0).reinitializeVel(particleList);
 				shape.reinitializeCoordinates();
 			}
-
 		});
 	}
 
@@ -285,11 +274,8 @@ public class MainPanel extends JPanel {
 		// 0 = circle , 1 = square, 2 = diamond
 		shape.reinitializeCoordinates();
 		if (shapeType == 0) {
-			System.out.println("HERE");
 			shape.circleCoords(particleList);
 		} else if (shapeType == 1) {
-			SwingUtilities.invokeLater(() -> {
-			});
 			while (particleList.size() % 4 != 0) {
 				initializeParticles(1, 100, 5);
 			}
@@ -298,6 +284,8 @@ public class MainPanel extends JPanel {
 			shape.diamondCoords(particleList);
 		} else if (shapeType == 3) {
 			shape.spiralCoords(particleList);
+		} else if (shapeType == 4) {
+			shape.looseSpiralCoords(particleList);
 		}
 
 		shape.proximity(particleList);

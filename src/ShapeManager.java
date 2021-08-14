@@ -53,7 +53,6 @@ public class ShapeManager {
 				if(!((i > k && i < (k+layer)) && (j > k && j < (k + layer)))) {
 					this.coordinates.add(new Point2D(center.x - (j+rescale)*width,
 							center.y - (i-rescale)*width));
-							System.out.println("x coord :" + (center.x - this.coordinates.get(this.coordinates.size()-1).x));
 				}
 
 			}
@@ -111,10 +110,10 @@ public class ShapeManager {
 		}
 	}
 
-	public void looseSpiral(ArrayList<Particle> particles) { 
+	public void looseSpiralCoords(ArrayList<Particle> particles) { 
 		int awayStep = (int) particles.get(0).width/2;
 		double rotation = -Math.PI / 2;
-		int chord = awayStep*3; //distance between points
+		int chord = awayStep*5; //distance between points
 		double delta; 
 		double theta = chord / awayStep;
 		this.coordinates.add(new Point2D(center.x, center.y));
