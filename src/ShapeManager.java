@@ -89,6 +89,28 @@ public class ShapeManager {
 		}
 	}
 
+	public void spiralCoords(ArrayList<Particle> particles){
+		//find thetaMax which is NbCoils * 2 * Pi
+		//actually no one cares about theta max, just iterate while
+		//   there are still particles lol.
+
+		int awayStep = (int) particles.get(0).width;
+		double rotation = -Math.PI / 2;
+		int chord = awayStep*2; //distance between points
+
+		double theta = chord / awayStep;
+		this.coordinates.add(new Point2D(center.x, center.y));
+		for(int i = 1 ; i < particles.size() ; i++){
+			double away = awayStep*theta;  //how far away from center
+			double around = theta + rotation; //how far around the center
+			double x = center.x + Math.cos(around) * away;
+			double y = center.y + Math.sin(around) * away;
+
+			this.coordinates.add(new Point2D(x, y));
+			theta += chord / away;
+		}
+	}
+
 	public ArrayList<Double> distanceCalculator(ArrayList<Particle> pList, ArrayList<Point2D> second) {
 		ArrayList<Double> distances = new ArrayList<Double>();
 		Iterator<Particle> iterator1 = pList.iterator();

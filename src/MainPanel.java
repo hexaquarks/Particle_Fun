@@ -31,38 +31,38 @@ public class MainPanel extends JPanel {
 	static int fpsTimerCounter = 0;
 	boolean collisionFlag, electricFlag, gravityFlag;
 	boolean removeFlag;
-	// Boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by deafault false
-	Boolean circleFlag = false; 
-	Boolean squareFlag =  false; 
-	Boolean diamondFlag =  false; 
-	Boolean spiralFlag =  false; 
+	boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by deafault false
+	// Boolean circleFlag = false; 
+	// Boolean squareFlag =  false; 
+	// Boolean diamondFlag =  false; 
+	// Boolean spiralFlag =  false; 
 
-	ArrayList<Boolean> shapeFlags = new ArrayList<Boolean>(Arrays.asList(circleFlag, squareFlag, diamondFlag, spiralFlag));
-	LinkedHashMap<String, Boolean> shapeFlags2 = new LinkedHashMap<String, Boolean>() {{
-		put("Square", squareFlag);
-		put("Diamond", diamondFlag);
-		put("Circle", circleFlag);
-		put("Spiral", spiralFlag);
-	}};
+	// ArrayList<Boolean> shapeFlags = new ArrayList<Boolean>(Arrays.asList(circleFlag, squareFlag, diamondFlag, spiralFlag));
+	// LinkedHashMap<String, Boolean> shapeFlags2 = new LinkedHashMap<String, Boolean>() {{
+	// 	put("Square", squareFlag);
+	// 	put("Diamond", diamondFlag);
+	// 	put("Circle", circleFlag);
+	// 	put("Spiral", spiralFlag);
+	// }};
 
-	public enum Flag {
-		CIRCLE( false ),
-		SQUARE( false ),
-		DIAMOND( false ); // default state is false for all
+	// public enum Flag {
+	// 	CIRCLE( false ),
+	// 	SQUARE( false ),
+	// 	DIAMOND( false ); // default state is false for all
 	  
-		private boolean state;
-		private Flag(boolean state) {
-		  this.state = state;
-		}
+	// 	private boolean state;
+	// 	private Flag(boolean state) {
+	// 	  this.state = state;
+	// 	}
 	  
-		public void flipState() {
-		  this.state = !this.state;
-		}
+	// 	public void flipState() {
+	// 	  this.state = !this.state;
+	// 	}
 	  
-		public void setState(boolean state) {
-		  this.state = state;
-		}
-	  }
+	// 	public void setState(boolean state) {
+	// 	  this.state = state;
+	// 	}
+	//   }
 	SampleController controller;
 
 
@@ -75,7 +75,7 @@ public class MainPanel extends JPanel {
 			fpsTimerCounter++;
 			// TODO make the flags into an array in the future
 
-			if (shapeFlags.contains(true)) {
+			if (circleFlag || squareFlag || diamondFlag || spiralFlag) {
 				shape.checkArrival();
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
@@ -281,36 +281,36 @@ public class MainPanel extends JPanel {
 
 	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
-			Boolean currFlag=false;
-			System.out.println("shape is  "  + shapeFlags2.get(shapeType));
+			// Boolean currFlag=false;
+			// System.out.println("shape is  "  + shapeFlags2.get(shapeType));
 			// if key == shapeType then set value true and set all that do not match the key to false ? 
 
 			if (shapeType.equals("Circle")) {
-				// circlePressed();
-				currFlag = circleFlag;
+				circlePressed();
+				// currFlag = circleFlag;
 			} else if (shapeType.equals("Square")) {
-				// squarePressed();
-				currFlag = squareFlag;
+				squarePressed();
+				// currFlag = squareFlag;
 			} else if (shapeType.equals("Diamond")) {
-				// diamondPressed();
-				currFlag = diamondFlag;
+				diamondPressed();
+				// currFlag = diamondFlag;
 			} else if (shapeType.equals("Spiral")) {
-				// spiralPressed();
-				currFlag = spiralFlag;
+				spiralPressed();
+				// currFlag = spiralFlag;
 			}
 
-			if (!currFlag) {
-				//set all false except currFlag
-				for(Boolean flag : shapeFlags) flag = ( flag == currFlag ) ? true : false ;
-				physicsTimer.stop();
-				setInitialization((short) 0);
-				for(Boolean flag : shapeFlags) System.out.println(flag);
-			} else {
-				for(Boolean flag : shapeFlags) flag = false;
-				physicsTimer.start();
-				particleList.get(0).reinitializeVel(particleList);
-				shape.reinitializeCoordinates();
-			}
+			// if (!currFlag) {
+			// 	//set all false except currFlag
+			// 	for(Boolean flag : shapeFlags) flag = ( flag == currFlag ) ? true : false ;
+			// 	physicsTimer.stop();
+			// 	setInitialization((short) 0);
+			// 	for(Boolean flag : shapeFlags) System.out.println(flag);
+			// } else {
+			// 	for(Boolean flag : shapeFlags) flag = false;
+			// 	physicsTimer.start();
+			// 	particleList.get(0).reinitializeVel(particleList);
+			// 	shape.reinitializeCoordinates();
+			// }
 
 		});
 	}
@@ -325,6 +325,7 @@ public class MainPanel extends JPanel {
 			squareFlag = false;
 			diamondFlag = false;
 		} else {
+			diamondFlag=false;
 			circleFlag = false;
 			diamondFlag = false;
 			squareFlag = false;
@@ -347,6 +348,7 @@ public class MainPanel extends JPanel {
 			diamondFlag = false;
 
 		} else {
+			diamondFlag=false;
 			circleFlag = false;
 			diamondFlag = false;
 			squareFlag = false;
@@ -369,6 +371,7 @@ public class MainPanel extends JPanel {
 			squareFlag = false;
 
 		} else {
+			diamondFlag=false;
 			circleFlag = false;
 			diamondFlag = false;
 			squareFlag = false;
@@ -380,13 +383,34 @@ public class MainPanel extends JPanel {
 		}
 	}
 	public void spiralPressed(){
+		if (spiralFlag == false) {
+			spiralFlag = true;
 
+			physicsTimer.stop();
+			setInitialization((short) 3);
+
+			circleFlag = false;
+			diamondFlag = false;
+			squareFlag = false;
+
+		} else {
+			diamondFlag=false;
+			circleFlag = false;
+			diamondFlag = false;
+			squareFlag = false;
+
+			physicsTimer.start();
+			particleList.get(0).reinitializeVel(particleList);
+			shape.reinitializeCoordinates();
+
+		}
 	}
 
 	public void setInitialization(short shapeType) {
 		// 0 = circle , 1 = square, 2 = diamond
 		shape.reinitializeCoordinates();
 		if (shapeType == 0) {
+			System.out.println("HERE");
 			shape.circleCoords(particleList);
 		} else if (shapeType == 1) {
 			SwingUtilities.invokeLater(() -> {
@@ -397,6 +421,8 @@ public class MainPanel extends JPanel {
 			shape.squareCoords(particleList);
 		} else if (shapeType == 2) {
 			shape.diamondCoords(particleList);
+		} else if (shapeType == 3) {
+			shape.spiralCoords(particleList);
 		}
 
 		shape.proximity(particleList);
