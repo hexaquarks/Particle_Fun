@@ -69,7 +69,7 @@
                                        <children>
                                           <Pane layoutX="15.4" layoutY="8.4" prefHeight="176.0" prefWidth="112.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="-2.0">
                                              <children>
-                                                <RadioButton fx:id="circle" layoutX="-6.0" layoutY="6.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" scaleX="0.8" scaleY="0.8" style="-fx-alignment: left;" text="Circle">
+                                                <RadioButton fx:id="circle" layoutX="-6.0" layoutY="6.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" scaleX="0.8" scaleY="0.8" text="Circle">
                                                    <font>
                                                       <Font size="17.0" />
                                                    </font></RadioButton>
@@ -81,6 +81,11 @@
                                                    <font>
                                                       <Font size="17.0" />
                                                    </font></RadioButton>
+                                                <RadioButton fx:id="spiral" layoutX="5.0" layoutY="93.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" text="Spiral">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </RadioButton>
                                              </children>
                                           </Pane>
                                        </children>
@@ -198,6 +203,6 @@
             </AnchorPane>
         </items>
       </SplitPane>
-      <BorderPane fx:id="MainPanel" layoutY="26.0" prefHeight="452.0" prefWidth="691.0" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="26.0" />
+      <BorderPane fx:id="MainPanel" layoutY="26.0" prefHeight="452.0" prefWidth="691.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="26.0" />
    </children>
 </AnchorPane>

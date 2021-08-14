@@ -48,6 +48,9 @@ public class SampleController {
     private RadioButton diamond;
 
     @FXML
+    private RadioButton spiral;
+
+    @FXML
     private Pane AddRemovePanel;
 
     @FXML
@@ -105,7 +108,7 @@ public class SampleController {
         electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b4Pressed());
         gravity.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b5Pressed());
 
-        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(Arrays.asList(circle, square, diamond));
+        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(Arrays.asList(circle, square, diamond, spiral));
         for(RadioButton button : radioButtons){
             button.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
                 if (button.isSelected()) {

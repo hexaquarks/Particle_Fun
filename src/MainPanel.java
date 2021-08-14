@@ -9,6 +9,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -27,9 +31,40 @@ public class MainPanel extends JPanel {
 	static int fpsTimerCounter = 0;
 	boolean collisionFlag, electricFlag, gravityFlag;
 	boolean removeFlag;
-	ArrayList<Boolean> shapeFlags;
-	boolean circleFlag, squareFlag, diamondFlag; // booleans are by deafault false
+	// Boolean circleFlag, squareFlag, diamondFlag, spiralFlag; // booleans are by deafault false
+	Boolean circleFlag = false; 
+	Boolean squareFlag =  false; 
+	Boolean diamondFlag =  false; 
+	Boolean spiralFlag =  false; 
+
+	ArrayList<Boolean> shapeFlags = new ArrayList<Boolean>(Arrays.asList(circleFlag, squareFlag, diamondFlag, spiralFlag));
+	LinkedHashMap<String, Boolean> shapeFlags2 = new LinkedHashMap<String, Boolean>() {{
+		put("Square", squareFlag);
+		put("Diamond", diamondFlag);
+		put("Circle", circleFlag);
+		put("Spiral", spiralFlag);
+	}};
+
+	public enum Flag {
+		CIRCLE( false ),
+		SQUARE( false ),
+		DIAMOND( false ); // default state is false for all
+	  
+		private boolean state;
+		private Flag(boolean state) {
+		  this.state = state;
+		}
+	  
+		public void flipState() {
+		  this.state = !this.state;
+		}
+	  
+		public void setState(boolean state) {
+		  this.state = state;
+		}
+	  }
 	SampleController controller;
+
 
 	static boolean testing;
 	ShapeManager shape;
@@ -40,7 +75,7 @@ public class MainPanel extends JPanel {
 			fpsTimerCounter++;
 			// TODO make the flags into an array in the future
 
-			if (circleFlag || squareFlag || diamondFlag) {
+			if (shapeFlags.contains(true)) {
 				shape.checkArrival();
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
@@ -244,15 +279,39 @@ public class MainPanel extends JPanel {
 		gravityFlag = !gravityFlag;
 	}
 
-	public void shapeButtonPressed(String shape) {
+	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
-			if (shape.equals("Circle")) {
-				circlePressed();
-			} else if (shape.equals("Square")) {
-				squarePressed();
-			} else if (shape.equals("Diamond")) {
-				diamondPressed();
+			Boolean currFlag=false;
+			System.out.println("shape is  "  + shapeFlags2.get(shapeType));
+			// if key == shapeType then set value true and set all that do not match the key to false ? 
+
+			if (shapeType.equals("Circle")) {
+				// circlePressed();
+				currFlag = circleFlag;
+			} else if (shapeType.equals("Square")) {
+				// squarePressed();
+				currFlag = squareFlag;
+			} else if (shapeType.equals("Diamond")) {
+				// diamondPressed();
+				currFlag = diamondFlag;
+			} else if (shapeType.equals("Spiral")) {
+				// spiralPressed();
+				currFlag = spiralFlag;
 			}
+
+			if (!currFlag) {
+				//set all false except currFlag
+				for(Boolean flag : shapeFlags) flag = ( flag == currFlag ) ? true : false ;
+				physicsTimer.stop();
+				setInitialization((short) 0);
+				for(Boolean flag : shapeFlags) System.out.println(flag);
+			} else {
+				for(Boolean flag : shapeFlags) flag = false;
+				physicsTimer.start();
+				particleList.get(0).reinitializeVel(particleList);
+				shape.reinitializeCoordinates();
+			}
+
 		});
 	}
 
@@ -319,6 +378,9 @@ public class MainPanel extends JPanel {
 			shape.reinitializeCoordinates();
 
 		}
+	}
+	public void spiralPressed(){
+
 	}
 
 	public void setInitialization(short shapeType) {
