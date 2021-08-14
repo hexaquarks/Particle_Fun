@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -70,7 +71,7 @@ public class SampleController {
     private Button removeAll;
 
     @FXML
-    private Spinner<?>  addXParticles;
+    private Spinner<Integer>  addXParticles;
 
     @FXML
     private Label numberOfParticles;
@@ -114,16 +115,22 @@ public class SampleController {
         //forcesButtonsPressed
         //shapeButtonPressed
         ToggleGroup toggles = new ToggleGroup();
+
+        SpinnerValueFactory<Integer> spinnerValues = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 15, 1);
+        addXParticles.setValueFactory(spinnerValues);
         
-        addParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b1Pressed(
+        addParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.addParticleButtonPressed(
             (int) Math.round(massSlider.valueProperty().getValue()),
-            (int) Math.round(chargeSlider.valueProperty().getValue())
+            (int) Math.round(chargeSlider.valueProperty().getValue()),
+            (int) addXParticles.getValue()
         ));
 
-        removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b2Pressed());
-        collisions.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b3Pressed());
-        electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b4Pressed());
-        gravity.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b5Pressed());
+        removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("one"));
+        removeAll.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("all"));
+
+        collisions.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Collision"));
+        electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Electrostatics"));
+        gravity.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Gravity"));
 
         ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(
             Arrays.asList(circle, square, diamond, spiral, looseSpiral, sunflower)

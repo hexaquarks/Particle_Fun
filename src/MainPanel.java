@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import javafx.scene.control.Button;
+
 public class MainPanel extends JPanel {
 
 	static Random rand = new Random();
@@ -230,25 +232,30 @@ public class MainPanel extends JPanel {
 		return particlesToRemove;
 	}
 
-	public void b1Pressed(int mass, int charge) {
-		initializeParticles(1, mass, charge);
+	public void forcesButtonsPressed(String force) {
+		if(force.equals("Collision")) { 
+			collisionFlag = !collisionFlag;
+		} else if (force.equals("Electrostatics")) { 
+			electricFlag = !electricFlag;
+		} else {
+			gravityFlag = !gravityFlag;
+		}
 	}
 
-	public void b2Pressed() {
-		removeFlag = !removeFlag;
+
+	public void addParticleButtonPressed(int mass, int charge, int quantity) {
+		initializeParticles(quantity, mass, charge);
 	}
 
-	public void b3Pressed() {
-		collisionFlag = !collisionFlag;
+	public void removeParticleButtonPressed(String number) {
+		if(number.equals("one")) {
+			removeFlag = !removeFlag;	
+		} else {
+			this.particleList = new ArrayList<Particle>();
+		}
+		
 	}
 
-	public void b4Pressed() {
-		electricFlag = !electricFlag;
-	}
-
-	public void b5Pressed() {
-		gravityFlag = !gravityFlag;
-	}
 
 	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
