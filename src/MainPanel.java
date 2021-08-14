@@ -201,25 +201,15 @@ public class MainPanel extends JPanel {
 
 	public double dragForce(double pos, double prevPos) {
 		double diff = Math.abs(prevPos - pos);
-		// System.out.println("diff :\t"+ diff);
+		/*
+		 *  The speed of the particle with respect to the drag distance of the mouse should 
+		 *  follows approximatively a logarithmic curve.
+		 */
+		double a = Math.log(diff / 100 + 1);
 
-		double a = 0;
-		if (diff >= 150) {
-			a = 3.0;
-		} else if (diff >= 10 && diff < 150) {
-			a = diff / 50;
-		} else if (diff > 0 && diff < 10) {
-			a = 0.2;
-		} else {
-			a = 0;
-		}
-		if (pos < prevPos) { // neg
-			a = -a;
-		} else if (pos > prevPos) {
-			a = a;
-		} else {
-			a = 0;
-		}
+		// check if drag is negative or null.
+		a = (pos < prevPos ) ? -a : 0 ;
+		
 		return a;
 	}
 
