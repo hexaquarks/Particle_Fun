@@ -8,6 +8,7 @@ public class ShapeManager {
 
 	public ShapeManager(Point2D panelSize) {
 		this.center= panelSize;
+		System.out.println(this.center.x+ " , " +  this.center.y);
 	}
 	static ArrayList<Point2D> coordinates = new ArrayList<Point2D>();
 
@@ -24,7 +25,7 @@ public class ShapeManager {
 		double pH = particles.get(0).height;
 		float side = (float) (particles.get(0).getWidth());
 		float radius = (float) (side / (2*Math.sin(Math.PI / n)));
-		if(!(2*radius >= center.x || 2*radius >= center.y)) {
+		if(!(radius >= center.x || radius >= center.y)) {
 
 			for(int i = 0 ; i < n ; i++) {
 				this.coordinates.add(new Point2D((center.x + Math.sin(angle)*radius -pW/2),
@@ -111,9 +112,9 @@ public class ShapeManager {
 	}
 
 	public void looseSpiralCoords(ArrayList<Particle> particles) { 
-		int awayStep = (int) particles.get(0).width/2;
+		int awayStep = (int) particles.get(0).width*2;
 		double rotation = -Math.PI / 2;
-		int chord = awayStep*5; //distance between points
+		int chord = awayStep/2; //distance between points
 		double delta; 
 		double theta = chord / awayStep;
 		this.coordinates.add(new Point2D(center.x, center.y));

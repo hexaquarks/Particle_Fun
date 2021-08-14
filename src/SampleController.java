@@ -16,6 +16,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -63,6 +64,12 @@ public class SampleController {
     private Button addParticle;
 
     @FXML
+    private Button removeAll;
+
+    @FXML
+    private Spinner<?>  addXParticles;
+
+    @FXML
     private Label numberOfParticles;
 
     @FXML
@@ -100,12 +107,16 @@ public class SampleController {
         // massSlider.setStyle("-fx-control-inner-background: palegreen;");
         // chargeSlider.setStyle("-fx-control-inner-background: palegreen;");
 
+        //utilityButtonsPressed
+        //forcesButtonsPressed
+        //shapeButtonPressed
         ToggleGroup toggles = new ToggleGroup();
         
         addParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b1Pressed(
             (int) Math.round(massSlider.valueProperty().getValue()),
             (int) Math.round(chargeSlider.valueProperty().getValue())
         ));
+        
         removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b2Pressed());
         collisions.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b3Pressed());
         electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.b4Pressed());

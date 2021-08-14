@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -86,7 +87,7 @@
                                                       <Font size="14.0" />
                                                    </font>
                                                 </RadioButton>
-                                                <RadioButton fx:id="looseSpiral" layoutX="5.0" layoutY="122.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="110.0" text="Loose Spiral">
+                                                <RadioButton fx:id="looseSpiral" layoutX="5.0" layoutY="122.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="146.0" text="Loose Spiral">
                                                    <font>
                                                       <Font size="14.0" />
                                                    </font>
@@ -110,12 +111,14 @@
                <children>
                   <TitledPane animated="false" collapsible="false" layoutX="6.0" layoutY="6.0" prefHeight="147.0" prefWidth="324.0" style="-fx-border-radius: 20 20 20 20;" text="Add/Remove particle" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="577.0" AnchorPane.topAnchor="3.0">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="210.0" style="-fx-background-color: lightgray;">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="147.0" prefWidth="324.0" style="-fx-background-color: lightgray;">
                            <children>
-                              <Pane fx:id="AddRemovePanel" layoutX="32.7" layoutY="20.7" prefHeight="82.0" prefWidth="279.0" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="89.0" AnchorPane.topAnchor="10.0">
+                              <Pane fx:id="AddRemovePanel" layoutX="32.7" layoutY="20.7" prefHeight="147.0" prefWidth="324.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <Button fx:id="removeParticle" layoutX="-15.0" layoutY="36.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="155.0" style="-fx-background-radius: 15px; -fx-background-color: #F1959B; -fx-text-fill: black;" text="Remove particle" />
-                                    <Button fx:id="addParticle" layoutX="-15.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="155.0" style="-fx-background-radius: 15px; -fx-background-color: #8CDD81; -fx-text-fill: black;" text="Add Particle" />
+                                    <Button fx:id="removeAll" layoutX="150.0" layoutY="46.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="141.0" style="-fx-background-radius: 15px; -fx-background-color: #F1959B; -fx-text-fill: black;" text="Remove All" />
+                                    <Button fx:id="removeParticle" layoutX="-5.0" layoutY="46.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="141.0" style="-fx-background-radius: 15px; -fx-background-color: #F1959B; -fx-text-fill: black;" text="Remove Particle" />
+                                    <Button fx:id="addParticle" layoutX="-5.0" layoutY="2.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="140.0" style="-fx-background-radius: 15px; -fx-background-color: #8CDD81; -fx-text-fill: black;" text="Add Particle" />
+                                    <Spinner fx:id="addXParticles" editable="true" layoutX="154.0" layoutY="7.0" prefHeight="24.0" prefWidth="129.0" />
                                  </children>
                               </Pane>
                            </children></AnchorPane>
@@ -128,50 +131,50 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="90.0" prefWidth="210.0" style="-fx-background-color: lightgray;">
                            <children>
-                              <Pane fx:id="StatisticsPanel" layoutX="23.7" layoutY="11.7" prefHeight="89.0" prefWidth="178.0" AnchorPane.bottomAnchor="18.0" AnchorPane.leftAnchor="13.0" AnchorPane.rightAnchor="57.0" AnchorPane.topAnchor="1.0">
+                              <Pane fx:id="StatisticsPanel" layoutX="23.7" layoutY="11.7" prefHeight="109.0" prefWidth="249.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <Label layoutX="-8.0" layoutY="2.0" text="Number of particles :">
+                                    <Label fx:id="collisionsPerSecond" layoutX="182.0" layoutY="69.0" text="0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="-8.0" layoutY="28.0" text="Total electric force :">
+                                    <Label layoutX="-1.0" layoutY="-4.0" text="Number of particles :">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="-7.0" layoutY="54.0" text="Total potential force :">
+                                    <Label layoutX="-1.0" layoutY="19.0" text="Total electric force :">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="numberOfParticles" layoutX="186.0" layoutY="-1.0" text="0">
+                                    <Label layoutY="44.0" text="Total potential force :">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="totalElectric" layoutX="186.0" layoutY="23.0" text="0">
+                                    <Label layoutY="69.0" text="Collisions per second">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label fx:id="totalPotential" layoutX="187.0" layoutY="47.0" text="0">
+                                    <Label fx:id="numberOfParticles" layoutX="182.0" layoutY="-3.0" text="0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="-7.0" layoutY="79.0" text="Collisions per second">
+                                    <Label fx:id="totalElectric" layoutX="182.0" layoutY="20.0" text="0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="totalPotential" layoutX="183.0" layoutY="44.0" text="0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </Pane>
-                              <Label fx:id="collisionsPerSecond" layoutX="200.0" layoutY="74.0" text="0">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </Label>
                            </children>
                         </AnchorPane>
                      </content>

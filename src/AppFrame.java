@@ -90,7 +90,7 @@ public class AppFrame extends Application{
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				mainPanel.setSize(535, 318);
+				mainPanel.setSize(691, 452);
 				mainPanel.setBackground(Color.black);
 				mainPanel.physicsTimer.start();
 				mainPanel.fpsTimer.start();
@@ -104,7 +104,7 @@ public class AppFrame extends Application{
 		
 
 		ShapeManager shapee = new ShapeManager(new Point2D(mainPanel.getSize().getWidth()/2, mainPanel.getSize().getHeight()/2));
-
+		System.out.println(mainPanel.getSize().getWidth()/2 + " , " +  mainPanel.getSize().getHeight()/2);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
