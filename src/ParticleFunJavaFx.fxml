@@ -37,7 +37,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.7484143763213531" layoutX="138.0" layoutY="27.0" orientation="VERTICAL" prefHeight="609.0" prefWidth="906.0" stylesheets="@../splitPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
+      <SplitPane dividerPositions="0.7484143763213531" layoutX="138.0" layoutY="27.0" orientation="VERTICAL" prefHeight="609.0" prefWidth="906.0" style="-fx-background-color: #100c08;" stylesheets="@styles/splitPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="27.0">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="376.0" prefWidth="685.0">
                <children>
@@ -189,9 +189,9 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </TitledPane>
-                  <TitledPane fx:id="MassChargePanel" animated="false" collapsible="false" layoutX="337.0" layoutY="9.0" prefHeight="141.0" prefWidth="307.0" text="Particle Mass/Charge" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="334.0" AnchorPane.rightAnchor="263.0" AnchorPane.topAnchor="6.0">
+                  <TitledPane fx:id="MassChargePanel" animated="false" collapsible="false" layoutX="330.0" layoutY="7.0" prefHeight="146.0" prefWidth="314.0" text="Particle Mass/Charge" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="327.0" AnchorPane.rightAnchor="263.0" AnchorPane.topAnchor="4.0">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="114.0" prefWidth="360.0" style="-fx-background-color: lightgray;">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="125.0" prefWidth="300.0" style="-fx-background-color: lightgray;">
                            <children>
                               <Slider fx:id="massSlider" layoutX="53.0" layoutY="14.0" max="250.0" prefHeight="24.0" prefWidth="169.0" value="100.0" />
                               <Slider fx:id="chargeSlider" blockIncrement="2.5" layoutX="54.0" layoutY="43.0" max="20.0" prefHeight="24.0" prefWidth="170.0" value="5.0" />
@@ -218,6 +218,6 @@
             </AnchorPane>
         </items>
       </SplitPane>
-      <BorderPane fx:id="MainPanel" layoutY="26.0" prefHeight="452.0" prefWidth="691.0" style="-fx-background-color: white;" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="26.0" />
+      <BorderPane fx:id="MainPanel" layoutY="26.0" prefHeight="452.0" prefWidth="691.0" style="-fx-background-color: #100c08;" AnchorPane.bottomAnchor="158.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="26.0" />
    </children>
 </AnchorPane>

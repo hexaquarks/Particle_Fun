@@ -101,7 +101,7 @@ public class MainPanel extends JPanel {
 		}
 	});
 
-	Timer physicsTimer = new Timer(1, new ActionListener() {
+	Timer physicsTimer = new Timer(5, new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			for (int i = 0; i < particleList.size(); i++) {
