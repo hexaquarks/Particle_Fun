@@ -16,8 +16,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import javafx.scene.control.Button;
-
 public class MainPanel extends JPanel {
 
 	static Random rand = new Random();
