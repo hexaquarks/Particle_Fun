@@ -1,17 +1,11 @@
-import java.beans.EventHandler;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-
-import javax.swing.text.html.StyleSheet;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -19,8 +13,6 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -114,9 +106,6 @@ public class SampleController {
         // massSlider.setStyle("-fx-control-inner-background: palegreen;");
         // chargeSlider.setStyle("-fx-control-inner-background: palegreen;");
 
-        //utilityButtonsPressed
-        //forcesButtonsPressed
-        //shapeButtonPressed
         ToggleGroup toggles = new ToggleGroup();
 
         SpinnerValueFactory<Integer> spinnerAddParticleValues = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 15, 1);
@@ -140,10 +129,6 @@ public class SampleController {
                 mainPanel.setSpiralAngle( spiralSlider.valueProperty().getValue());
             }
         });
-
-        // spiralSlider.addEventFilter(ActionEvent.ACTION, event -> mainPanel.setSpiralAngle(
-        //     spiralSlider.valueProperty().getValue()
-        // ));
 
         removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("one"));
         removeAll.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("all"));

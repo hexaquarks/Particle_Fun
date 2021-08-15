@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -116,14 +115,6 @@ public class Particle{
 
 	}
 	
-	// public void edgeCollision(Particle p2) {
-	// 	if(this.x + this.vx+this.radius > GameFrame.frame_width - this.width-GameFrame.sidePanel.getWidth()-6 || this.x + this.vx < 0) {
-	// 		this.vx = -this.vx * this.coefficientWall;
-	// 	}
-	// 	if(this.y + this.vy+this.radius > GameFrame.frame_height - GameFrame.panelSouth.getHeight()-40-this.radius || this.y + this.vy < 0) {
-	// 		this.vy = -this.vy * this.coefficientWall;
-	// 	}
-	// }
 	public void edgeCollision(Particle p2) {
 		// System.out.println("here L " + GameFrame.gamePanel.getSize().getWidth() );
 		if(this.x + this.vx+this.radius > 691 || this.x + this.vx < 0) {
