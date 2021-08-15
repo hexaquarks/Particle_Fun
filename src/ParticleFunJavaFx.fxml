@@ -97,6 +97,8 @@
                                                       <Font size="14.0" />
                                                    </font>
                                                 </RadioButton>
+                                                <Label layoutX="29.0" layoutY="176.0" text="Angle" />
+                                                <Spinner fx:id="spiralSlider" editable="true" layoutX="72.0" layoutY="172.0" prefHeight="24.0" prefWidth="92.0" />
                                              </children>
                                           </Pane>
                                        </children>

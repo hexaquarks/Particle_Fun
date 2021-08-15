@@ -98,6 +98,9 @@ public class SampleController {
     private Slider chargeSlider;
 
     @FXML
+    private Spinner<Double>  spiralSlider;
+
+    @FXML
     private Button resetCharge;
 
     @FXML
@@ -116,14 +119,31 @@ public class SampleController {
         //shapeButtonPressed
         ToggleGroup toggles = new ToggleGroup();
 
-        SpinnerValueFactory<Integer> spinnerValues = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 15, 1);
-        addXParticles.setValueFactory(spinnerValues);
+        SpinnerValueFactory<Integer> spinnerAddParticleValues = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 15, 1);
+        addXParticles.setValueFactory(spinnerAddParticleValues);
+
+        SpinnerValueFactory<Double>  spinnerSpiralAngleValues = new SpinnerValueFactory.DoubleSpinnerValueFactory(4, 10, (
+            Math.PI * (1 + Math.sqrt(5) / 4) ),
+            0.4
+        );
+        spiralSlider.setValueFactory(spinnerSpiralAngleValues);
         
         addParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.addParticleButtonPressed(
             (int) Math.round(massSlider.valueProperty().getValue()),
             (int) Math.round(chargeSlider.valueProperty().getValue()),
             (int) addXParticles.getValue()
         ));
+
+        spiralSlider.valueProperty().addListener(new ChangeListener<Number>(){
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue,Number oldValue , Number newValue ) {
+                mainPanel.setSpiralAngle( spiralSlider.valueProperty().getValue());
+            }
+        });
+
+        // spiralSlider.addEventFilter(ActionEvent.ACTION, event -> mainPanel.setSpiralAngle(
+        //     spiralSlider.valueProperty().getValue()
+        // ));
 
         removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("one"));
         removeAll.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("all"));

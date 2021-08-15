@@ -59,6 +59,18 @@ public class MainPanel extends JPanel {
 
 	static boolean testing;
 	ShapeManager shape;
+	double spiralAngle= Math.PI * (1 + Math.sqrt(5) / 4) ;
+
+	public void setSpiralAngle(double value) { 
+		System.out.println("IN");
+		this.spiralAngle = value; 
+		System.out.println(value);
+
+		if (Flag.SUNFLOWER.state){
+			System.out.println("yes");
+			changeSunflower();
+		}
+	}
 
 	public static boolean shapeActivated() {
 		for (Flag flag : Flag.values()) {
@@ -259,6 +271,7 @@ public class MainPanel extends JPanel {
 
 	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
+			spiralAngle = Math.PI* ( 1 + Math.sqrt(5)/4 );
 
 			Flag currFlag = Flag.values()[shapeNames.indexOf(shapeType)];
 
@@ -274,6 +287,17 @@ public class MainPanel extends JPanel {
 				particleList.get(0).reinitializeVel(particleList);
 				shape.reinitializeCoordinates();
 			}
+		});
+	}
+
+	public void changeSunflower(){
+		SwingUtilities.invokeLater(() -> {
+			shape.reinitializeCoordinates();
+			shape.sunflowerCoords(particleList, spiralAngle);
+	
+			shape.proximity(particleList);
+	
+			shape.setSpeed(particleList);
 		});
 	}
 
@@ -293,7 +317,7 @@ public class MainPanel extends JPanel {
 		} else if (shapeType == 4) {
 			shape.looseSpiralCoords(particleList);
 		} else if (shapeType == 5) {
-			shape.sunflowerCoords(particleList);
+			shape.sunflowerCoords(particleList, spiralAngle);
 		}
 
 		shape.proximity(particleList);

@@ -131,9 +131,9 @@ public class ShapeManager {
 		}
 	}
 
-	public void sunflowerCoords(ArrayList<Particle> particles) {
-		double localMultiplier = 15; //guess
-		double baseAngle = Math.PI* ( 1 + Math.sqrt(5));
+	public void sunflowerCoords(ArrayList<Particle> particles ,double angle) {
+		double localMultiplier = 1.2*particles.get(0).width; //guess
+		double baseAngle = angle;
 
 
 		for(int i = 0 ; i < particles.size() ; i++){
