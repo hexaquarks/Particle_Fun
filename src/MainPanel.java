@@ -58,6 +58,7 @@ public class MainPanel extends JPanel {
 	static boolean testing;
 	ShapeManager shape;
 	double spiralAngle= Math.PI * (1 + Math.sqrt(5) / 4) ;
+	double[] information;
 
 	public void setSpiralAngle(double value) { 
 		this.spiralAngle = value; 
@@ -76,6 +77,10 @@ public class MainPanel extends JPanel {
 		return false;
 	}
 
+	public void setAllFlagsFalse() {
+		for ( Flag flag : Flag.values()) { flag.setState(false); }
+	}
+
 	Timer fpsTimer = new Timer(timeTick, new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -83,16 +88,22 @@ public class MainPanel extends JPanel {
 			// TODO make the flags into an array in the future
 
 			if (shapeActivated()) {
-				shape.checkArrival();
+				if ( shape.checkArrival() ) { 
+					setAllFlagsFalse(); 
+					shape.setShapeIsDraggable(true);
+				}
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
 					p.x += p.vx;
 					p.y += p.vy;
 				}
 			}
-			double[] information = statistics();
-			controller.setLabels(particleList.size(), information);
-			collisionsPerSecond = (fpsTimerCounter % 60 == 0) ? 0 : collisionsPerSecond;
+			if(fpsTimerCounter % 60 == 0) {
+				information = statistics();
+				controller.setLabels(particleList.size(), information);
+				collisionsPerSecond = 0;
+			}
+			// collisionsPerSecond = (fpsTimerCounter % 60 == 0) ? 0 : collisionsPerSecond;
 			repaint();
 		}
 	});
@@ -146,7 +157,7 @@ public class MainPanel extends JPanel {
 
 	public double[] statistics() {
 		//TODO reduce this thing, it's waayy to bad for performance.
-		double totalElectricEnergy = 0, totalPotential = 0, totalCollisions = 0;
+		double totalElectricEnergy = 0, totalPotential = 0;
 
 		for(int i = 0 ; i < particleList.size() ; i++ ) { 
 			Particle p1 = particleList.get(i);
@@ -269,6 +280,7 @@ public class MainPanel extends JPanel {
 
 	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
+			shape.setShapeIsDraggable(false);
 			spiralAngle = Math.PI* ( 1 + Math.sqrt(5)/4 );
 
 			Flag currFlag = Flag.values()[shapeNames.indexOf(shapeType)];
@@ -348,6 +360,8 @@ public class MainPanel extends JPanel {
 			public void mousePressed(MouseEvent e) {
 				prevY = e.getY();
 				prevX = e.getX();
+
+				shape.setAnchor(e.getX(), e.getY());
 			}
 		});
 		addMouseMotionListener(new MouseAdapter() {
@@ -359,6 +373,10 @@ public class MainPanel extends JPanel {
 
 				newDirY = dragForce(y, prevY);
 				newDirX = dragForce(x, prevX);
+
+				if(shape.shapeIsDraggable) {
+					System.out.println(e.getY() + " , " + e.getX());
+				}
 
 			}
 		});

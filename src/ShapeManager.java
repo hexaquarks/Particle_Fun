@@ -1,9 +1,15 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javafx.geometry.Point3D;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
+
 public class ShapeManager {
 	public String shapeType; // circle , square, pentagon , hexagon 
 	Point2D center;
+	double anchorX, anchorY;
+	boolean shapeIsDraggable;
 
 	public ShapeManager(Point2D panelSize) {
 		this.center= panelSize;
@@ -11,10 +17,16 @@ public class ShapeManager {
 	}
 	static ArrayList<Point2D> coordinates = new ArrayList<Point2D>();
 
-
 	public ArrayList<Point2D> getCopy() {
 		return (ArrayList<Point2D>) coordinates.clone();
 	}
+
+	public void setAnchor(double x, double y){
+		this.anchorX = x;
+		this.anchorY = y;
+	}
+
+	public void setShapeIsDraggable(boolean shapeIsDraggable) { this.shapeIsDraggable = shapeIsDraggable; }
 
 	public void circleCoords(ArrayList<Particle> particles) {
 		int n = particles.size();
@@ -99,7 +111,7 @@ public class ShapeManager {
 
 		double theta = chord / awayStep;
 		this.coordinates.add(new Point2D(center.x, center.y));
-		for(int i = 1 ; i < particles.size() ; i++){
+		for(int i = 1 ; i < particles.size() ; i++) {
 			double away = awayStep*theta;  //how far away from center
 			double around = theta + rotation; //how far around the center
 			double x = center.x + Math.cos(around) * away;
@@ -117,7 +129,7 @@ public class ShapeManager {
 		double delta; 
 		double theta = chord / awayStep;
 		this.coordinates.add(new Point2D(center.x, center.y));
-		for(int i = 1 ; i < particles.size() ; i++){
+		for(int i = 1 ; i < particles.size() ; i++) {
 			double away = awayStep*theta;  //how far away from center
 			double around = theta + rotation; //how far around the center
 			double x = center.x + Math.cos(around) * away;
@@ -133,7 +145,6 @@ public class ShapeManager {
 	public void sunflowerCoords(ArrayList<Particle> particles ,double angle) {
 		double localMultiplier = 1.2*particles.get(0).width; //guess
 		double baseAngle = angle;
-
 
 		for(int i = 0 ; i < particles.size() ; i++){
 			double angle2 = baseAngle * i;
@@ -231,19 +242,26 @@ public class ShapeManager {
 	}
 
 
-	public void checkArrival() {
-
+	public boolean checkArrival() {
+		boolean allParticlesArrived = true;
 		for(int i = 0 ; i < coordinates.size() ; i++){
 			Point2D p = coordinates.get(i);
 
 			if(p.particle.x >= p.x - p.particle.width/25 && p.particle.x <= p.x + p.particle.width/25) {
 				p.particle.vx = 0;
-
-			} 
+			} else {
+				allParticlesArrived = false;
+			}
 			if(p.particle.y >= p.y - p.particle.height/25 && p.particle.y <= p.y + p.particle.height/25) {
 				p.particle.vy = 0;
-			} 
+			} else {
+				allParticlesArrived = false;
+			}
 		}
+		// Transform trans = new Rotate(65, new Point3D(0, 1, 0));
+		// Box box = new Box(100, 20 ,20);
+		// box.getTransforms().add(trans);
+		return allParticlesArrived;
 	}
 
 
