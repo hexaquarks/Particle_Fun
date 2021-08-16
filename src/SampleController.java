@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -158,9 +159,11 @@ public class SampleController {
 
 
     public void setLabels(int pNumber, double[] stats) {
-		numberOfParticles.setText(Integer.toString(pNumber));
-		totalElectric.setText(Double.toString(stats[0]));
-		totalPotential.setText(Double.toString(stats[1]));
-		collisionsPerSecond.setText(Double.toString(stats[2]));
+        Platform.runLater(() -> {
+            numberOfParticles.setText(Integer.toString(pNumber));
+		    totalElectric.setText(Double.toString(stats[0]));
+		    totalPotential.setText(Double.toString(stats[1]));
+		    collisionsPerSecond.setText(Double.toString(stats[2]));
+        });
 	}
 }

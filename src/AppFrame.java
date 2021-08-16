@@ -51,7 +51,7 @@ public class AppFrame extends Application{
 		BorderPane scenePanel = (BorderPane) scene.lookup("#MainPanel");
 
 		SwingNode swingNode = new SwingNode();
-		MainPanel mainPanel = new MainPanel();
+		MainPanel mainPanel = new MainPanel(controller);
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

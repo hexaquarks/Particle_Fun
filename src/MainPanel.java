@@ -60,12 +60,10 @@ public class MainPanel extends JPanel {
 	double spiralAngle= Math.PI * (1 + Math.sqrt(5) / 4) ;
 
 	public void setSpiralAngle(double value) { 
-		System.out.println("IN");
 		this.spiralAngle = value; 
 		System.out.println(value);
 
 		if (Flag.SUNFLOWER.state){
-			System.out.println("yes");
 			changeSunflower();
 		}
 	}
@@ -92,14 +90,14 @@ public class MainPanel extends JPanel {
 					p.y += p.vy;
 				}
 			}
-			// double[] information = statistics();
-			// controller.setLabels(particleList.size(), information);
+			double[] information = statistics();
+			controller.setLabels(particleList.size(), information);
 			collisionsPerSecond = (fpsTimerCounter % 60 == 0) ? 0 : collisionsPerSecond;
 			repaint();
 		}
 	});
 
-	Timer physicsTimer = new Timer(5, new ActionListener() {
+	Timer physicsTimer = new Timer(2, new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent ae) {
 			for (int i = 0; i < particleList.size(); i++) {
@@ -111,7 +109,7 @@ public class MainPanel extends JPanel {
 						continue;
 
 					p1.edgeCollision(p2);
-					applyForces(p1, p2);
+					if(!electricFlag || !gravityFlag) applyForces(p1, p2);
 					applyCollision(p1, p2);
 				}
 				p1.x += p1.vx;
@@ -147,12 +145,14 @@ public class MainPanel extends JPanel {
 	}
 
 	public double[] statistics() {
+		//TODO reduce this thing, it's waayy to bad for performance.
 		double totalElectricEnergy = 0, totalPotential = 0, totalCollisions = 0;
 
-		for (Particle p1 : particleList) {
-			for (Particle p2 : particleList) {
-				if (p1 == p2)
-					continue;
+		for(int i = 0 ; i < particleList.size() ; i++ ) { 
+			Particle p1 = particleList.get(i);
+			for(int j = 0 ; j < particleList.size() ; j++ ) { 
+				Particle p2 = particleList.get(j); 
+				if(p1 == p2) continue;				
 
 				double electricForce = Math.pow(p1.electrostaticForce(p2)[0], 2)
 						+ Math.pow(p1.electrostaticForce(p2)[1], 2);
@@ -161,7 +161,7 @@ public class MainPanel extends JPanel {
 				double potentialForce = Math.pow(p1.gravitationalForce(p2)[0], 2)
 						+ Math.pow(p1.gravitationalForce(p2)[1], 2);
 				totalPotential += potentialForce;
-			}
+			}	
 		}
 		return new double[] { totalElectricEnergy, totalPotential, collisionsPerSecond };
 
@@ -174,7 +174,7 @@ public class MainPanel extends JPanel {
 			do {
 				xPos = rand.nextInt((int) 530 - 100) + 50;
 				yPos = rand.nextInt((int) 330 - 100) + 50;
-				Particle p = new Particle(xPos, yPos, 0, 0, mass, charge); // mass charge at end
+				Particle p = new Particle(xPos, yPos, 2, 2, mass, charge); // mass charge at end
 				particleList.add(p);
 			} while (!particleAlreadyExists(xPos, yPos));
 
@@ -324,8 +324,8 @@ public class MainPanel extends JPanel {
 
 	}
 
-	MainPanel() {
-
+	public MainPanel(SampleController controller) {
+		this.controller= controller;
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
