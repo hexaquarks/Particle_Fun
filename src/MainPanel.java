@@ -62,8 +62,7 @@ public class MainPanel extends JPanel {
 
 	public void setSpiralAngle(double value) { 
 		this.spiralAngle = value; 
-		System.out.println(value);
-
+	
 		if (Flag.SUNFLOWER.state){
 			changeSunflower();
 		}
@@ -89,7 +88,8 @@ public class MainPanel extends JPanel {
 
 			if (shapeActivated()) {
 				if ( shape.checkArrival() ) { 
-					setAllFlagsFalse(); 
+					// setAllFlagsFalse(); 
+					// Flag.values()[5].setState(true);
 					shape.setShapeIsDraggable(true);
 				}
 				for (int i = 0; i < particleList.size(); i++) {
@@ -341,6 +341,7 @@ public class MainPanel extends JPanel {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				if(shape.shapeIsDraggable) return;
 
 				if (!particleAlreadyExists(e.getX(), e.getY()) && !removeFlag) {
 					Particle p = new Particle(e.getX(), e.getY(), newDirX, newDirY, 100, 0);
@@ -361,7 +362,11 @@ public class MainPanel extends JPanel {
 				prevY = e.getY();
 				prevX = e.getX();
 
-				shape.setAnchor(e.getX(), e.getY());
+				if(shape.shapeIsDraggable) {
+					shape.setAnchor(e.getX(), e.getY());
+					shape.rotateShape(e.getX()+300, e.getY()+350, particleList);
+					System.out.println("here");
+				}
 			}
 		});
 		addMouseMotionListener(new MouseAdapter() {
@@ -374,9 +379,9 @@ public class MainPanel extends JPanel {
 				newDirY = dragForce(y, prevY);
 				newDirX = dragForce(x, prevX);
 
-				if(shape.shapeIsDraggable) {
-					System.out.println(e.getY() + " , " + e.getX());
-				}
+				// if(shape.shapeIsDraggable) {
+				// 	shape.rotateShape(e.getX(), e.getY(), particleList);
+				// }
 
 			}
 		});
