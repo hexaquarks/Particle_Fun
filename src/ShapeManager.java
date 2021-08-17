@@ -84,18 +84,20 @@ public class ShapeManager {
 			point.y = center.y - point.y ;
 
 			//rotation
-			double newPosX = point.x*Math.cos(Math.toRadians(Math.PI/3)) - point.y*Math.sin(Math.toRadians(Math.PI/3));
-			double newPosY = point.x*Math.sin(Math.toRadians(Math.PI/3)) + point.y*Math.cos(Math.toRadians(Math.PI/3));
+			double newPosX = point.x*Math.cos(Math.toRadians(90)) - point.y*Math.sin(Math.toRadians(90));
+			double newPosY = point.x*Math.sin(Math.toRadians(90)) + point.y*Math.cos(Math.toRadians(90));
+
+			System.out.println("old : " + point.x + ", new : " + newPosX);
 			point.x = newPosX;
 			point.y = newPosY;
 
-			// // stretch 
+			// stretch 
 			// point.x *= 0.2;
 			// point.y *= 1.2;
 
 			//offset back to 0,0 origin
-			point.x += x +newPosX;
-			point.y += y -newPosY;
+			 point.x += center.x;
+			 point.y += center.y;
 
 		}
 	}
