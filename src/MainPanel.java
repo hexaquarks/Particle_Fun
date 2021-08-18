@@ -59,6 +59,7 @@ public class MainPanel extends JPanel {
 	ShapeManager shape;
 	double spiralAngle= Math.PI * (1 + Math.sqrt(5) / 4) ;
 	double[] information;
+	double currAnchorX, currAnchorY;
 
 	public void setSpiralAngle(double value) { 
 		this.spiralAngle = value; 
@@ -84,13 +85,13 @@ public class MainPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			fpsTimerCounter++;
-			// TODO make the flags into an array in the future
 
 			if (shapeActivated()) {
 				if ( shape.checkArrival() ) { 
 					// setAllFlagsFalse(); 
 					// Flag.values()[5].setState(true);
 					shape.setShapeIsDraggable(true);
+
 				}
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
@@ -185,7 +186,7 @@ public class MainPanel extends JPanel {
 			do {
 				xPos = rand.nextInt((int) 530 - 100) + 50;
 				yPos = rand.nextInt((int) 330 - 100) + 50;
-				Particle p = new Particle(xPos, yPos, 2, 2, mass, charge); // mass charge at end
+				Particle p = new Particle(xPos, yPos, 0, 0, mass, charge); // mass charge at end
 				particleList.add(p);
 			} while (!particleAlreadyExists(xPos, yPos));
 
@@ -201,7 +202,7 @@ public class MainPanel extends JPanel {
 			Particle particle = particleList.get(i);
 
 			g2d.setColor(Color.WHITE);
-			Shape circle = new Arc2D.Double(particle.getX(), particle.getY(), particle.getWidth(), particle.getHeight(),
+			Shape circle = new Arc2D.Double(particle.x, particle.y, particle.width, particle.height,
 					0, 360, Arc2D.CHORD);
 			GradientPaint gp1 = new GradientPaint(5, 5, Color.red, 20, 20, Color.yellow, true);
 			g2d.setPaint(gp1);
@@ -304,9 +305,7 @@ public class MainPanel extends JPanel {
 		SwingUtilities.invokeLater(() -> {
 			shape.reinitializeCoordinates();
 			shape.sunflowerCoords(particleList, spiralAngle);
-	
 			shape.proximity(particleList);
-	
 			shape.setSpeed(particleList);
 		});
 	}
@@ -331,7 +330,6 @@ public class MainPanel extends JPanel {
 		}
 
 		shape.proximity(particleList);
-
 		shape.setSpeed(particleList);
 
 	}
@@ -362,11 +360,7 @@ public class MainPanel extends JPanel {
 				prevY = e.getY();
 				prevX = e.getX();
 
-				if(shape.shapeIsDraggable) {
-					shape.setAnchor(e.getX(), e.getY());
-					shape.rotateShape(e.getX()+300, e.getY()+350, particleList);
-					System.out.println("here");
-				}
+				if(shape.shapeIsDraggable) shape.setAnchor(e.getX(), e.getY());
 			}
 		});
 		addMouseMotionListener(new MouseAdapter() {
@@ -379,9 +373,14 @@ public class MainPanel extends JPanel {
 				newDirY = dragForce(y, prevY);
 				newDirX = dragForce(x, prevX);
 
-				// if(shape.shapeIsDraggable) {
-				// 	shape.rotateShape(e.getX(), e.getY(), particleList);
-				// }
+				if(shape.shapeIsDraggable) {
+					//if distance between current anchor and e(,) is sufficiently high then 
+					// cue shape.rotateShape and set the new anchor ? 
+					if(Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2 ) + Math.pow((e.getY() - shape.anchorY) ,2)) >= 20) {
+						shape.rotateShape(e.getX(), e.getY(), particleList);
+						shape.setAnchor(e.getX(), e.getY());
+					}
+				}
 
 			}
 		});

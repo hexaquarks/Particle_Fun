@@ -84,10 +84,10 @@ public class ShapeManager {
 			point.y = center.y - point.y ;
 
 			//rotation
-			double newPosX = point.x*Math.cos(Math.toRadians(90)) - point.y*Math.sin(Math.toRadians(90));
-			double newPosY = point.x*Math.sin(Math.toRadians(90)) + point.y*Math.cos(Math.toRadians(90));
+			double newPosX = point.x*Math.cos(Math.toRadians(45)) - point.y*Math.sin(Math.toRadians(45));
+			double newPosY = point.x*Math.sin(Math.toRadians(45)) + point.y*Math.cos(Math.toRadians(45));
 
-			System.out.println("old : " + point.x + ", new : " + newPosX);
+			System.out.println("torad(90) : " + Math.cos(Math.toRadians(90)) + " , " + Math.cos(Math.PI/ 2));
 			point.x = newPosX;
 			point.y = newPosY;
 
@@ -96,8 +96,9 @@ public class ShapeManager {
 			// point.y *= 1.2;
 
 			//offset back to 0,0 origin
+			
 			 point.x += center.x;
-			 point.y += center.y;
+			 point.y += center.y ;
 
 		}
 	}
@@ -161,45 +162,40 @@ public class ShapeManager {
 	//called only if shapeIsDraggable = true 
 	public void rotateShape(double x, double y, ArrayList<Particle> particles) {
 		//A = arccos ((b^2 + c^2 -a ^2 ) / 2bc)
-		x = center.x - x;
-		y = center.y - y;
-		anchorX = center.x - anchorX;
-		anchorY = center.y - anchorY;
-		double a = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-		double b = Math.sqrt(Math.pow(anchorX , 2) + Math.pow(anchorY , 2));
-		double c = Math.sqrt(Math.pow((anchorX-x), 2) + Math.pow((anchorY - y), 2));
+		double xs = center.x - x;
+		double ys = center.y - y;
+		double anchorXs = center.x - anchorX;
+		double anchorYs = center.y - anchorY;
+		double a = Math.sqrt(Math.pow(xs, 2) + Math.pow(ys, 2));
+		double b = Math.sqrt(Math.pow(anchorXs , 2) + Math.pow(anchorYs , 2));
+		double c = Math.sqrt(Math.pow((anchorXs-xs), 2) + Math.pow((anchorYs - ys), 2));
 
 		double angle = Math.acos((Math.pow(b, 2) + Math.pow(a, 2) - Math.pow(c, 2)) / (2 * b * a));
-		if(y >= anchorY ) angle = -angle;
+		if( y >= anchorY || x >= anchorX ) angle = 360 - angle;
+
 		for (int i = 0 ; i < particles.size() ; i++) {
 			Particle particle = particles.get(i);
 
 			//initial coords 
-			double xInitial = particle.x;
-			double yInitial = particle.y;
-
-			// System.out.println("xInitial : " +xInitial);
+			double initialX = particle.x;
+			double initialY = particle.y;
 
 			//offset to center
-			particle.x = center.x - particle.x;
-			particle.y = center.y - particle.y;
+			double rescaleX  = center.x - particle.x;
+			double rescaleY  = center.y - particle.y;
+			particle.x = rescaleX;
+			particle.y = rescaleY;
 
 			//rotation
-			double newPosX = particle.x*Math.cos(Math.toRadians(30)) - particle.y*Math.sin(Math.toRadians(30));
-			double newPosY = particle.x*Math.sin(Math.toRadians(30)) + particle.y*Math.cos(Math.toRadians(30));
-			particle.x = newPosX;
-			particle.y = newPosY;
+			double newPosX = particle.x*Math.cos(Math.toRadians(5)) - particle.y*Math.sin(Math.toRadians(5));
+			double newPosY = particle.x*Math.sin(Math.toRadians(5)) + particle.y*Math.cos(Math.toRadians(5));
 
-			//offset back to 0,0 origin
-			particle.x += xInitial ;
-			particle.y += yInitial ;
+			double diffX = newPosX - rescaleX; 
+			double diffY = newPosY - rescaleY; 
 
-			// System.out.println("xInitial += : " +particle.x);
+			particle.x = initialX - diffX;
+			particle.y = initialY - diffY;
 		}
-
-		// for (int i = 0 ; i < particles.size() ; i++) {
-		// 	System.out.println(particles.get(i).x);
-		// }
 	} 
 
 	public ArrayList<Double> distanceCalculator(ArrayList<Particle> pList, ArrayList<Point2D> second) {
