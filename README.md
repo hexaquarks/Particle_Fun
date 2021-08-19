@@ -17,6 +17,6 @@ The main goals of this project were to:
 
 ### Current State Example
 <p align="center">
-  <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/Promotion/spirals.gif" width="695" height="484" alt="a" />
+  <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/Promotion/spirals.gif" />
 </p>
 
