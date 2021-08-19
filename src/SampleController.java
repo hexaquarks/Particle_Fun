@@ -103,6 +103,10 @@ public class SampleController {
     private BorderPane MainPanel;
 
 
+    
+    /** 
+     * @param mainPanel
+     */
     public void initializeButtons(MainPanel mainPanel){
         // massSlider.setStyle("-fx-control-inner-background: palegreen;");
         // chargeSlider.setStyle("-fx-control-inner-background: palegreen;");
@@ -158,6 +162,11 @@ public class SampleController {
     }
 
 
+    
+    /** 
+     * @param pNumber
+     * @param stats
+     */
     public void setLabels(int pNumber, double[] stats) {
         Platform.runLater(() -> {
             numberOfParticles.setText(Integer.toString(pNumber));

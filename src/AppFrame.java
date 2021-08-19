@@ -31,6 +31,10 @@ public class AppFrame extends Application{
 	
 	
 	
+	
+	/** 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		launch(args);
 		
@@ -38,6 +42,11 @@ public class AppFrame extends Application{
 
 	public static SampleController controller;
 
+	
+	/** 
+	 * @param stage
+	 * @throws Exception
+	 */
 	@Override
     public void start(Stage stage) throws Exception {
 		try {
