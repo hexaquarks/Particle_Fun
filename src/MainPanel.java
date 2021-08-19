@@ -360,7 +360,11 @@ public class MainPanel extends JPanel {
 				prevY = e.getY();
 				prevX = e.getX();
 
-				if(shape.shapeIsDraggable) shape.setAnchor(e.getX(), e.getY());
+				if(shape.shapeIsDraggable) { 
+					shape.setAnchor(e.getX(), e.getY());
+					shape.startAngle = shape.getAngle(shape.center.x , shape.center.y , shape.anchorX, shape.anchorY);
+				}
+				
 			}
 		});
 		addMouseMotionListener(new MouseAdapter() {
@@ -374,12 +378,18 @@ public class MainPanel extends JPanel {
 				newDirX = dragForce(x, prevX);
 
 				if(shape.shapeIsDraggable) {
-					//if distance between current anchor and e(,) is sufficiently high then 
+					shape.rotateShape(e.getX(), e.getY(), particleList);
+
+					// if distance between current anchor and e(,) is sufficiently high then 
 					// cue shape.rotateShape and set the new anchor ? 
-					if(Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2 ) + Math.pow((e.getY() - shape.anchorY) ,2)) >= 20) {
-						shape.rotateShape(e.getX(), e.getY(), particleList);
-						shape.setAnchor(e.getX(), e.getY());
-					}
+
+					// if(Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2 ) + Math.pow((e.getY() - shape.anchorY) ,2)) >= 20) {
+					// 	shape.rotateShape(e.getX(), e.getY(), particleList);
+					// 	shape.setAnchor(e.getX(), e.getY());
+					// }
+
+					// shape.rotateShape(e.getX(), e.getY(), particleList);
+					// shape.setAnchor(e.getX(), e.getY());
 				}
 
 			}

@@ -10,6 +10,24 @@ public class ShapeManager {
 	Point2D center;
 	double anchorX, anchorY;
 	boolean shapeIsDraggable;
+	double startAngle; 
+	double currentAngle;
+
+	public double getAngle(double xc, double yc, double x, double y){
+		double angle;
+		double dy = y - yc;
+		double dx = x - xc;
+		if (dx == 0 ) {
+			angle = dy >= 0 ? Math.PI/2 : -Math.PI/2;
+		} else {
+			angle = Math.atan(dy/dx);
+			if(dx < 0 ) angle += Math.PI;
+		}
+
+		if (angle < 0 ) angle += 2* Math.PI;
+
+		return angle;
+	}
 
 	public ShapeManager(Point2D panelSize) {
 		this.center= panelSize;
@@ -162,17 +180,65 @@ public class ShapeManager {
 	//called only if shapeIsDraggable = true 
 	public void rotateShape(double x, double y, ArrayList<Particle> particles) {
 		//A = arccos ((b^2 + c^2 -a ^2 ) / 2bc)
-		double xs = center.x - x;
-		double ys = center.y - y;
-		double anchorXs = center.x - anchorX;
-		double anchorYs = center.y - anchorY;
-		double a = Math.sqrt(Math.pow(xs, 2) + Math.pow(ys, 2));
-		double b = Math.sqrt(Math.pow(anchorXs , 2) + Math.pow(anchorYs , 2));
-		double c = Math.sqrt(Math.pow((anchorXs-xs), 2) + Math.pow((anchorYs - ys), 2));
+		// x = center.x - x;
+		// y = center.y - y;
+		// anchorX = center.x - anchorX;
+		// anchorY = center.y - anchorY;
+		// double a = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+		// double b = Math.sqrt(Math.pow(anchorX , 2) + Math.pow(anchorY , 2));
+		// double c = Math.sqrt(Math.pow((anchorX-x), 2) + Math.pow((anchorY - y), 2));
 
-		double angle = Math.acos((Math.pow(b, 2) + Math.pow(a, 2) - Math.pow(c, 2)) / (2 * b * a));
-		if( y >= anchorY || x >= anchorX ) angle = 360 - angle;
+		// double angle = Math.acos((Math.pow(b, 2) + Math.pow(a, 2) - Math.pow(c, 2)) / (2 * b * a));
+		// // if( y >= anchorY) angle = - angle;
+		// if(y > 0) {
+		// 	System.out.println("UP");
+		// 	if(y > anchorY ){
+		// 		if(x < 0) {
+		// 			angle *= -1;
+		// 		} else if (x > 0) {
+		// 			if(x > anchorX) angle *= -1;
+					
+		// 		} else { 
+		// 			angle = 0;
+		// 		}
+		// 	} else  {
+		// 		if(x < 0) {
+					
+		// 		} else if (x > 0) {
+		// 			angle *= -1;
+		// 		} else { 
+		// 			angle =0 ;
+		// 		}
+		// 	}
+		// } 
 
+		// if(y <= 0) {
+		// 	if(y > anchorY ){
+		// 		if(x < 0) {
+		// 			angle *= -1;
+		// 		} else if (x > 0) {
+					
+		// 		} else {
+		// 			angle = 0;
+		// 		}
+		// 	} else  {
+		// 		if(x < 0) {
+					
+		// 		} else if (x > 0) {
+		// 			System.out.println("IN");
+		// 			angle *= -1;
+		// 		} else {
+		// 			angle = 0;
+		// 		}
+		// 	}
+		// }
+		// angle *= 25;
+
+		// System.out.println("anchor (x,y) : " + anchorX + "," + anchorY + "  and (x,y) : " + x + "," + y);
+
+		currentAngle = getAngle(center.x, center.y, x, y);
+		double angle = currentAngle - startAngle;
+		
 		for (int i = 0 ; i < particles.size() ; i++) {
 			Particle particle = particles.get(i);
 
@@ -187,8 +253,8 @@ public class ShapeManager {
 			particle.y = rescaleY;
 
 			//rotation
-			double newPosX = particle.x*Math.cos(Math.toRadians(5)) - particle.y*Math.sin(Math.toRadians(5));
-			double newPosY = particle.x*Math.sin(Math.toRadians(5)) + particle.y*Math.cos(Math.toRadians(5));
+			double newPosX = particle.x*Math.cos(Math.toRadians(angle)) - particle.y*Math.sin(Math.toRadians(angle));
+			double newPosY = particle.x*Math.sin(Math.toRadians(angle)) + particle.y*Math.cos(Math.toRadians(angle));
 
 			double diffX = newPosX - rescaleX; 
 			double diffY = newPosY - rescaleY; 
