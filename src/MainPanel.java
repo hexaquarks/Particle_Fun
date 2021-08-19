@@ -378,7 +378,9 @@ public class MainPanel extends JPanel {
 				newDirX = dragForce(x, prevX);
 
 				if(shape.shapeIsDraggable) {
-					shape.rotateShape(e.getX(), e.getY(), particleList);
+					double temp = Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2) + Math.pow((e.getY() - shape.anchorY), 2));
+					if(temp >= 20)
+						shape.rotateShape(e.getX(), e.getY(), particleList);
 
 					// if distance between current anchor and e(,) is sufficiently high then 
 					// cue shape.rotateShape and set the new anchor ? 
