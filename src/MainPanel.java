@@ -61,6 +61,10 @@ public class MainPanel extends JPanel {
 	double[] information;
 	double currAnchorX, currAnchorY;
 
+	
+	/** 
+	 * @param value
+	 */
 	public void setSpiralAngle(double value) { 
 		this.spiralAngle = value; 
 	
@@ -69,6 +73,10 @@ public class MainPanel extends JPanel {
 		}
 	}
 
+	
+	/** 
+	 * @return boolean
+	 */
 	public static boolean shapeActivated() {
 		for (Flag flag : Flag.values()) {
 			if (flag.state)
@@ -130,6 +138,11 @@ public class MainPanel extends JPanel {
 		}
 	});
 
+	
+	/** 
+	 * @param p1
+	 * @param p2
+	 */
 	public void applyForces(Particle p1, Particle p2) {
 		if (!electricFlag) {
 			p1.applyForce(p1.electrostaticForce(p2));
@@ -144,6 +157,11 @@ public class MainPanel extends JPanel {
 		}
 	}
 
+	
+	/** 
+	 * @param p1
+	 * @param p2
+	 */
 	public void applyCollision(Particle p1, Particle p2) {
 
 		if (p1.collide(p2) && !collisionFlag) {
@@ -156,6 +174,10 @@ public class MainPanel extends JPanel {
 		}
 	}
 
+	
+	/** 
+	 * @return double[]
+	 */
 	public double[] statistics() {
 		//TODO reduce this thing, it's waayy to bad for performance.
 		double totalElectricEnergy = 0, totalPotential = 0;
@@ -179,6 +201,12 @@ public class MainPanel extends JPanel {
 
 	}
 
+	
+	/** 
+	 * @param numberOfParticles
+	 * @param mass
+	 * @param charge
+	 */
 	public void initializeParticles(int numberOfParticles, int mass, int charge) {
 
 		for (int i = 0; i < numberOfParticles; i++) {
@@ -194,6 +222,10 @@ public class MainPanel extends JPanel {
 
 	}
 
+	
+	/** 
+	 * @param g
+	 */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
@@ -211,6 +243,12 @@ public class MainPanel extends JPanel {
 		}
 	}
 
+	
+	/** 
+	 * @param pos
+	 * @param prevPos
+	 * @return double
+	 */
 	public double dragForce(double pos, double prevPos) {
 		double diff = Math.abs(prevPos - pos);
 		/*
@@ -225,6 +263,12 @@ public class MainPanel extends JPanel {
 		return a;
 	}
 
+	
+	/** 
+	 * @param x
+	 * @param y
+	 * @return boolean
+	 */
 	public boolean particleAlreadyExists(double x, double y) {
 
 		boolean particleExistsAlready = false;
@@ -241,6 +285,12 @@ public class MainPanel extends JPanel {
 
 	}
 
+	
+	/** 
+	 * @param x
+	 * @param y
+	 * @return ArrayList<Particle>
+	 */
 	public ArrayList<Particle> particleToRemove(double x, double y) {
 		ArrayList<Particle> particlesToRemove = new ArrayList<Particle>();
 		for (int i = 0; i < particleList.size(); i++) {
@@ -254,31 +304,42 @@ public class MainPanel extends JPanel {
 		return particlesToRemove;
 	}
 
+	
+	/** 
+	 * @param force
+	 */
 	public void forcesButtonsPressed(String force) {
-		if(force.equals("Collision")) { 
-			collisionFlag = !collisionFlag;
-		} else if (force.equals("Electrostatics")) { 
-			electricFlag = !electricFlag;
-		} else {
-			gravityFlag = !gravityFlag;
-		}
+		if(force.equals("Collision"))  collisionFlag = !collisionFlag;
+		else if (force.equals("Electrostatics"))  electricFlag = !electricFlag;
+		else gravityFlag = !gravityFlag;
 	}
 
 
+	
+	/** 
+	 * @param mass
+	 * @param charge
+	 * @param quantity
+	 */
 	public void addParticleButtonPressed(int mass, int charge, int quantity) {
 		initializeParticles(quantity, mass, charge);
 	}
 
+	
+	/** 
+	 * @param number
+	 */
 	public void removeParticleButtonPressed(String number) {
-		if(number.equals("one")) {
-			removeFlag = !removeFlag;	
-		} else {
-			this.particleList = new ArrayList<Particle>();
-		}
+		if(number.equals("one"))  removeFlag = !removeFlag;	
+		else this.particleList = new ArrayList<Particle>(); 
 		
 	}
 
 
+	
+	/** 
+	 * @param shapeType
+	 */
 	public void shapeButtonPressed(String shapeType) {
 		SwingUtilities.invokeLater(() -> {
 			shape.setShapeIsDraggable(false);
@@ -304,32 +365,36 @@ public class MainPanel extends JPanel {
 	public void changeSunflower(){
 		SwingUtilities.invokeLater(() -> {
 			shape.reinitializeCoordinates();
-			shape.sunflowerCoords(particleList, spiralAngle);
-			shape.proximity(particleList);
+			shape.getSunflowerCoords(particleList, spiralAngle);
+			shape.setProximity(particleList);
 			shape.setSpeed(particleList);
 		});
 	}
 
+	
+	/** 
+	 * @param shapeType
+	 */
 	public void setInitialization(short shapeType) {
 		// 0 = circle , 1 = square, 2 = diamond
 		shape.reinitializeCoordinates();
 		if (shapeType == 0) {
-			shape.circleCoords(particleList);
+			shape.getCircleCoords(particleList);
 		} else if (shapeType == 1 || shapeType == 2) {
 			while (particleList.size() % 4 != 0) {
 				initializeParticles(1, 100, 5);
 			}
-			if(shapeType == 1) shape.squareCoords(particleList);
-			else shape.diamondCoords(particleList);
+			if(shapeType == 1) shape.getSquareCoords(particleList);
+			else shape.getDiamondCoords(particleList);
 		}else if (shapeType == 3) {
-			shape.spiralCoords(particleList);
+			shape.getSpiralCoords(particleList);
 		} else if (shapeType == 4) {
-			shape.looseSpiralCoords(particleList);
+			shape.getLooseSpiralCoords(particleList);
 		} else if (shapeType == 5) {
-			shape.sunflowerCoords(particleList, spiralAngle);
+			shape.getSunflowerCoords(particleList, spiralAngle);
 		}
 
-		shape.proximity(particleList);
+		shape.setProximity(particleList);
 		shape.setSpeed(particleList);
 
 	}
@@ -379,19 +444,7 @@ public class MainPanel extends JPanel {
 
 				if(shape.shapeIsDraggable) {
 					double temp = Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2) + Math.pow((e.getY() - shape.anchorY), 2));
-					if(temp >= 20)
-						shape.rotateShape(e.getX(), e.getY(), particleList);
-
-					// if distance between current anchor and e(,) is sufficiently high then 
-					// cue shape.rotateShape and set the new anchor ? 
-
-					// if(Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2 ) + Math.pow((e.getY() - shape.anchorY) ,2)) >= 20) {
-					// 	shape.rotateShape(e.getX(), e.getY(), particleList);
-					// 	shape.setAnchor(e.getX(), e.getY());
-					// }
-
-					// shape.rotateShape(e.getX(), e.getY(), particleList);
-					// shape.setAnchor(e.getX(), e.getY());
+					if(temp >= 20) shape.rotateShape(e.getX(), e.getY(), particleList);
 				}
 
 			}
