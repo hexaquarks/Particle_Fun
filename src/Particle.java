@@ -3,34 +3,31 @@ import java.util.Random;
 
 
 public class Particle{
-	double x, y;
-	double width, height;
-	double mass;
-	double vx, vy;
-	int charge;
-	public double radius = 0;
-	public double centerX = 0;
-	public double centerY = 0;
-	static Random rand = new Random();
-	final double coefficientWall = 0.6;
-	//test
+	double 	x;
+	double 	y;
+	double 	vx;
+	double 	vy;
+	double 	mass;
+	int 	charge;
+	double 	width;
+	double 	height;
+	double 	radius = 0;
+	Random 	rand = new Random();
 	
+	private final double coefficientWall = 0.6;
 	private final double k = 0.025;     // coulomb's constant
-    private final double g = 0.00025;    // universal gravitational constant
+    private final double g = 0.00025;   // universal gravitational constant
 
-
-	public Particle(double x, double y, double velX, double velY,double mass, int charge) {
+	public Particle(double x, double y, double vx, double vy,double mass, int charge) {
 		this.x = x;
-		this.y=y;
-		this.width=mass/10;
-		this.height=mass/10;
-		this.vx=velX;
-		this.vy = velY;
-		this.mass=mass;
+		this.y = y;
+		this.width = mass/10;
+		this.height = mass/10;
+		this.vx = vx;
+		this.vy = vy;
+		this.mass = mass;
 		this.charge = charge;
 		this.radius = this.width/2;
-		this.centerX = this.x + (this.width/2);
-		this.centerY = this.y + (this.height/2);
 	}
 	
 	
@@ -50,18 +47,16 @@ public class Particle{
 	public double[] electrostaticForce(Particle p2) {
 
 		double d = Math.sqrt(
-				Math.pow(this.x - p2.getX(), 2) +
-				Math.pow(this.y - p2.getY(), 2));
+				Math.pow(this.x - p2.x, 2) +
+				Math.pow(this.y - p2.y, 2));
 
-		double fy = this.k * (this.y - p2.getY()) * (this.charge * p2.charge)
+		double fy = this.k * (this.y - p2.y) * (this.charge * p2.charge)
 				/ Math.pow(d, 2);
-		double fx = this.k * (this.x - p2.getX()) * (this.charge * p2.charge)
+		double fx = this.k * (this.x - p2.x) * (this.charge * p2.charge)
 				/ Math.pow(d, 2);
 
 		return new double[] {fx,fy};
 	}
-	
-
 	
 	/** 
 	 * @param p2
@@ -69,12 +64,12 @@ public class Particle{
 	 */
 	public double[] gravitationalForce(Particle p2) {
 		double d = Math.sqrt(
-				Math.pow(this.x - p2.getX(), 2) +
-				Math.pow(this.y-p2.getY(), 2));
+				Math.pow(this.x - p2.x, 2) +
+				Math.pow(this.y-p2.y, 2));
 
-		double fy = this.g * (this.y-p2.getY()) * (-(this.mass * p2.mass)
+		double fy = this.g * (this.y-p2.y) * (-(this.mass * p2.mass)
 				/ Math.pow(d, 2));
-		double fx = this.g * (this.x-p2.getX()) * (-(this.mass * p2.mass)
+		double fx = this.g * (this.x-p2.x) * (-(this.mass * p2.mass)
 				/ Math.pow(d, 2));
 
 		return new double[] {fx,fy};
@@ -85,68 +80,37 @@ public class Particle{
 	 * @param p2
 	 */
 	public void velCollision(Particle p2) {
-		double v1x=0, v1y =0, v2x=0, v2y=0;
-		double m1 = this.mass , m2 = p2.getMass();
-
-		v1x = this.getVelX();
-		v2x = p2.getVelX();
-		v1y = this.getVelY();
-		v2y = p2.getVelY();
-
+		double m1 = this.mass , m2 = p2.mass;
 
 		this.vx = -(this.mass*this.vx + p2.mass*p2.vx
-                        + p2.getMass() * 0.001 * (p2.vx - this.vx))
+                        + p2.mass * 0.001 * (p2.vx - this.vx))
                         /(m1 + m2);
          this.vy = -(this.mass*this.vy + p2.mass*p2.vy
-                        + p2.getMass() * 0.001 * (p2.vy - this.vy))
+                        + p2.mass * 0.001 * (p2.vy - this.vy))
                         / (m1 + m2);
 
 		double d = Math.sqrt(
-				Math.pow(this.x - p2.getX(), 2) +
-				Math.pow(this.y-p2.getY(), 2));
+				Math.pow(this.x - p2.x, 2) +
+				Math.pow(this.y-p2.y, 2));
 
-		double fy = 0.001 * (this.y-p2.y) * ((this.mass * p2.getMass())
+		double fy = 0.001 * (this.y-p2.y) * ((this.mass * p2.mass)
 				/ Math.pow(d, 0.8));
-		double fx = 0.001 * (this.x-p2.x) * ((this.mass * p2.getMass())
+		double fx = 0.001 * (this.x-p2.x) * ((this.mass * p2.mass)
 				/ Math.pow(d, 0.8));
 	
 
         this.vx += fx/this.mass;
         this.vy += fy/this.mass;
 	}
-
-	
-	/** 
-	 * @param p2
-	 * @return double
-	 */
-	public double timeToHit(Particle p2) {
-
-		double drx = Math.pow(p2.centerX - this.centerX , 2);
-		double dry = Math.pow(p2.centerY - this.centerY , 2);
-		double sig = this.radius + p2.radius;
-
-		//maybe abs
-		double dvx = Math.pow(p2.getVelX() - this.getVelX() , 2);
-		double dvy = Math.pow(p2.getVelY() - this.getVelY() , 2);
-		double drdr = Math.pow(drx, 2) + Math.pow(dry, 2);
-		double dvdv = Math.pow(dvx, 2) + Math.pow(dvy, 2);
-		double dvdr = dvx*drx + dvy*dry;
-		double d = Math.pow(dvdv, 2) - dvdv*(drdr - Math.pow(sig, 2)); 
-
-		return -((dvdr + Math.sqrt(d))/dvdv);
-
-	}
-	
 	
 	/** 
 	 * @param p2
 	 */
 	public void edgeCollision(Particle p2) {
-		// System.out.println("here L " + GameFrame.gamePanel.getSize().getWidth() );
 		if(this.x + this.vx+this.radius > 691 || this.x + this.vx < 0) {
 			this.vx = -this.vx * this.coefficientWall;
 		}
+
 		if(this.y + this.vy+this.radius > 452 || this.y + this.vy < 0){
 			this.vy = -this.vy * this.coefficientWall;
 		}
@@ -156,9 +120,9 @@ public class Particle{
 	/** 
 	 * @return double
 	 */
-	public static double velInit() {
+	public double velInit() {
 		double val;
-		if(rand.nextBoolean()) {
+		if (rand.nextBoolean()) {
 			val = rand.nextDouble()*0.5;
 		} else {
 			val = -rand.nextDouble()*0.5;
@@ -174,9 +138,7 @@ public class Particle{
 		for(Particle p : particles) {
 			p.vx = velInit();
 			p.vy = velInit();
-			
 		}
-		
 	}
 	
 	/** 
@@ -185,116 +147,6 @@ public class Particle{
 	public String toString() {
 		return "x :\t" + this.x + "  y :\t" + this.y + "  velX  : \t" + this.vx + "  velY  : \t" + this.vy;
 	}
-	
-	/** 
-	 * @return double
-	 */
-	public double getMass() {
-		return mass;
-	}
-	
-	/** 
-	 * @param mass
-	 */
-	public void setMass(double mass) {
-		this.mass=mass;
-	}
-
-	
-	/** 
-	 * @return double
-	 */
-	public double getVelX() {
-		return vx;
-	}
-
-	
-	/** 
-	 * @param velX
-	 */
-	public void setVelX(double velX) {
-		this.vx = velX;
-	}
-	
-	/** 
-	 * @return double
-	 */
-	public double getVelY() {
-		return vy;
-	}
-
-	
-	/** 
-	 * @param velY
-	 */
-	public void setVelY(double velY) {
-		this.vy = velY;
-	}
-
-	
-	/** 
-	 * @return double
-	 */
-	public double getX() {
-		return x;
-	}
-
-	
-	/** 
-	 * @param x
-	 */
-	public void setX(double x) {
-		this.x = x;
-	}
-
-	
-	/** 
-	 * @return double
-	 */
-	public double getY() {
-		return y;
-	}
-
-	
-	/** 
-	 * @param y
-	 */
-	public void setY(double y) {
-		this.y = y;
-	}
-
-	
-	/** 
-	 * @return double
-	 */
-	public double getWidth() {
-		return width;
-	}
-
-	
-	/** 
-	 * @param width
-	 */
-	public void setWidth(double width) {
-		this.width = width;
-	}
-
-	
-	/** 
-	 * @return double
-	 */
-	public double getHeight() {
-		return height;
-	}
-
-	
-	/** 
-	 * @param height
-	 */
-	public void setHeight(double height) {
-		this.height = height;
-	}
-
     
 	/** 
 	 * @param other
@@ -302,8 +154,8 @@ public class Particle{
 	 */
 	public boolean collide(Particle other){
     	double d = Math.sqrt(
-				Math.pow(this.x - other.getX(), 2) +
-				Math.pow(this.y-other.getY(), 2));
+				Math.pow(this.x - other.x, 2) +
+				Math.pow(this.y-other.y, 2));
         return (d <= (this.width + other.width)/2);
     } 
 	

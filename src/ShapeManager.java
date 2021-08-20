@@ -87,7 +87,7 @@ public class ShapeManager {
 		float	angle = 0;
 		double	pW = particles.get(0).width;
 		double	pH = particles.get(0).height;
-		float	side = (float) (particles.get(0).getWidth());
+		float	side = (float) (particles.get(0).width);
 		float	radius = (float) (side / (2*Math.sin(Math.PI / n)));
 
 		if (!(radius >= center.x || radius >= center.y)) {

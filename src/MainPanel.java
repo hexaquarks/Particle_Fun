@@ -173,8 +173,7 @@ public class MainPanel extends JPanel {
 
 					p1.edgeCollision(p2);
 
-					if (!electricFlag || !gravityFlag)
-						applyForces(p1, p2);
+					if (!electricFlag || !gravityFlag) applyForces(p1, p2);
 
 					applyCollision(p1, p2);
 				}
@@ -194,8 +193,8 @@ public class MainPanel extends JPanel {
 		if (!electricFlag) {
 			p1.applyForce(p1.electrostaticForce(p2));
 			if (collisionFlag) {
-				if (Math.abs(p1.getX() - p2.getX()) <= p1.getWidth() / 50000
-						|| Math.abs(p1.getY() - p2.getY()) <= p1.getWidth() / 50000) {
+				if (Math.abs(p1.x - p2.x) <= p1.width/ 50000
+						|| Math.abs(p1.y - p2.y) <= p1.width / 50000) {
 				}
 			}
 		}
@@ -323,8 +322,8 @@ public class MainPanel extends JPanel {
 		for (int i = 0; i < particleList.size(); i++) {
 			Particle particle = particleList.get(i);
 
-			if (x >= particle.getX() - particle.getWidth() && x <= particle.getX() + 2 * particle.getWidth()
-					&& y >= particle.getY() - particle.getHeight() && y <= particle.getY() + 2 * particle.getHeight()) {
+			if (x >= particle.x - particle.width && x <= particle.x + 2 * particle.width
+					&& y >= particle.y- particle.height && y <= particle.y + 2 * particle.height) {
 				particleExistsAlready = true;
 				break;
 			}
@@ -346,8 +345,8 @@ public class MainPanel extends JPanel {
 		for (int i = 0; i < particleList.size(); i++) {
 			Particle particle = particleList.get(i);
 
-			if (x >= particle.getX() - particle.getWidth() && x <= particle.getX() + 2 * particle.getWidth()
-					&& y >= particle.getY() - particle.getHeight() && y <= particle.getY() + 2 * particle.getHeight()) {
+			if (x >= particle.x - particle.width&& x <= particle.x + 2 * particle.width
+					&& y >= particle.y - particle.height && y <= particle.y + 2 * particle.height) {
 				particlesToRemove.add(particle);
 			}
 		}
