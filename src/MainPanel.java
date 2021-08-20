@@ -265,7 +265,7 @@ public class MainPanel extends JPanel {
 			do {
 				xPos = rand.nextInt((int) 530 - 100) + 50;
 				yPos = rand.nextInt((int) 330 - 100) + 50;
-				Particle p = new Particle(xPos, yPos, 0, 0, mass, charge); // mass charge at end
+				Particle p = new Particle(xPos, yPos, rand.nextInt(2)-1, rand.nextInt(2)-1, mass, charge); // mass charge at end
 				particleList.add(p);
 			} while (!particleAlreadyExists(xPos, yPos));
 		}
