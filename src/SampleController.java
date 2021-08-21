@@ -64,6 +64,9 @@ public class SampleController {
     private Button removeAll;
 
     @FXML
+    private Button divideShape;
+
+    @FXML
     private Spinner<Integer>  addXParticles;
 
     @FXML
@@ -139,6 +142,8 @@ public class SampleController {
 
         removeParticle.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("one"));
         removeAll.addEventHandler(ActionEvent.ACTION, event -> mainPanel.removeParticleButtonPressed("all"));
+
+        divideShape.addEventHandler(ActionEvent.ACTION, event -> mainPanel.divideShape());
 
         collisions.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Collision"));
         electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Electrostatics"));

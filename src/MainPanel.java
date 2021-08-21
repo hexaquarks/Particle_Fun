@@ -34,6 +34,8 @@ public class MainPanel extends JPanel {
 	double[] information; 	// array holding information for the statistics
 	double 	 currAnchorX;	// x-value for the mouse anchor whence rotating a fixed shape
 	double 	 currAnchorY;   // y-value for the mouse anchor whence rotating a fixed shape
+	String 	 lastShape;
+	boolean  tempFlag = true;
 
 	/**
 	 * Instances
@@ -136,8 +138,7 @@ public class MainPanel extends JPanel {
 			fpsTimerCounter++;
 
 			if (shapeActivated()) {
-				if (shape.checkArrival())
-					shape.setShapeIsDraggable(true);
+				if (shape.checkArrival()) shape.setShapeIsDraggable(true);
 
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
@@ -420,19 +421,8 @@ public class MainPanel extends JPanel {
 				particleList.get(0).reinitializeVel(particleList);
 				shape.reinitializeCoordinates();
 			}
-		});
-	}
 
-	/**
-	 * Method that resets the sunflower shape arragnement of the particles, vien the
-	 * spiralAngle global.
-	 */
-	public void changeSunflower() {
-		SwingUtilities.invokeLater(() -> {
-			shape.reinitializeCoordinates();
-			shape.getSunflowerCoords(particleList, spiralAngle);
-			shape.setProximity(particleList);
-			shape.setSpeed(particleList);
+			lastShape = shapeType;
 		});
 	}
 
@@ -465,8 +455,40 @@ public class MainPanel extends JPanel {
 			shape.getSunflowerCoords(particleList, spiralAngle);
 		}
 
-		shape.setProximity(particleList);
-		shape.setSpeed(particleList);
+		if(tempFlag) {
+			shape.setProximity(particleList);
+			shape.setSpeed(particleList);
+		}
+	}
+
+
+	/**
+	 * Method that resets the sunflower shape arragnement of the particles, vien the
+	 * spiralAngle global.
+	 */
+	public void changeSunflower() {
+		SwingUtilities.invokeLater(() -> {
+			shape.reinitializeCoordinates();
+			shape.getSunflowerCoords(particleList, spiralAngle);
+			shape.setProximity(particleList);
+			shape.setSpeed(particleList);
+		});
+	}
+
+	public void divideShape() {
+		if(shape.shapeIsDraggable) {
+			shape.divide(particleList);
+
+			//recompute the coordiantes given the new particle size
+			setAllFlagsFalse();
+			tempFlag = false;
+			shapeButtonPressed(lastShape);
+			shape.setDividedShapeCoodinates(particleList);
+			shape.setProximity(particleList);
+			shape.setSpeed(particleList);
+
+			// shape.setShapeIsDraggable(false);
+		}
 	}
 
 	/**

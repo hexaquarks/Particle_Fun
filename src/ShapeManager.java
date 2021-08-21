@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -10,6 +11,9 @@ public class ShapeManager {
 	String	shapeType; // circle , square, pentagon , hexagon 
 	Point2D	center;
 	ArrayList<Point2D>	coordinates = new ArrayList<Point2D>();
+	ArrayList<ArrayList<Point2D>> dividedShapeCoords = new ArrayList<ArrayList<Point2D>>(
+		Arrays.asList(coordinates)
+	);
 
 	boolean	shapeIsDraggable;
 	double	currentAngle;
@@ -280,6 +284,129 @@ public class ShapeManager {
 
 	
 	/** 
+	 * @param particles
+	 */
+	public void divide(ArrayList<Particle> particles) {
+		// find width of aprticles on the canvas 
+		// create a copy same widh onto this.copy (Point2D) 
+		// if(this.coordinates == null ) then set particles coords to this.coordinates
+
+		//notes: coordinates are absolute not realtive
+
+		double widthMax = 0, widthMin = 0; 
+		double heightMax = 0, heightMin = 0;
+
+		// set coordinates to the current particle on the canvas if null.
+		if(this.coordinates.size() == 0) {
+			for(int i = 0; i < particles.size(); i++) {
+				Particle particle = particles.get(i);
+				this.coordinates.get(i).x = particle.x;
+				this.coordinates.get(i).y = particle.y;
+			}
+		}
+
+		//find diameter and height
+		for(int i = 0; i < particles.size(); i++) {
+			Particle particle = particles.get(i);
+			widthMax = (particle.x > widthMax) ? particle.x : widthMax;
+			heightMax = (particle.y > heightMax) ? particle.y : heightMax;
+
+			widthMin = (particle.x < widthMin) ? particle.x : widthMin;
+			heightMin = (particle.y < heightMin) ? particle.y : heightMin;
+		}
+
+		//offset 
+		widthMax = center.x - widthMax;
+		heightMax = center.y - heightMax;
+		widthMin = center.x - widthMin; 
+		heightMin = center.y - heightMin;
+
+		double width = widthMax - widthMin;
+		double height = heightMax - heightMin; 
+
+
+		// compute new coordinates? 
+		if (width >= center.x) {
+			rescaleShape(width, height, particles);
+		}
+
+ 	}
+
+	 /** 
+	  * @param currWidth
+	  * @param currHeight
+	  */
+	 public void rescaleShape(double currWidth, double currHeight, 
+	 						ArrayList<Particle> particles){
+		// impose 1/9 to the left, 1/9 to the middle and 1/9 to the right
+		// then left child is 1/3 of canvas width and right child is 1/3 too.
+
+		double prefferedWidth = 2 * center.x / 3;
+		double prefferedHeight = 2 * center.y / 3;
+
+		//perform rescaling of this.coordinates given the width height of a aprticle
+		//it should be linear ? 
+
+		//currParticleWidth => currWidth , then assuming lixnearity 
+		//newParticleWidth => prefferedWidth , with NPW < CPW
+		double newParticleWidth = prefferedWidth * particles.get(0).width
+								/ currWidth;
+
+		double newParticleHeight = prefferedHeight * particles.get(0).height
+								/ currHeight;
+		particles.get(0).width = newParticleWidth;
+		particles.get(0).height = newParticleHeight;
+	 }
+
+	 public void setDividedShapeCoodinates(ArrayList<Particle> particles) {
+		//2 child shapes for now
+		//clone the coordinates
+
+		ArrayList<Point2D> coordinatesClone = getCopy();
+		dividedShapeCoords.add(coordinatesClone);
+		
+		//clone the coordinates, separate them ,merge both lists
+		for (int i = 0; i < this.coordinates.size(); i++){
+			Point2D point = this.coordinates.get(0);
+			point.x = ( center.x + center.x * 2 / 3 ) - point.x;
+		}
+
+		for (int i = 0; i < coordinatesClone.size(); i++){
+			Point2D point = coordinatesClone.get(0);
+			point.x = ( center.x + center.x * 10 / 9 ) - point.x;
+		}
+
+		this.coordinates.addAll(coordinatesClone);
+
+		//clone the particles, merge both lists 
+		ArrayList<Particle> particlesClone = (ArrayList<Particle>) particles.clone();
+		particles.addAll(particlesClone);
+	 }
+
+	
+	/** 
+	 * TODO 
+	 * 
+	 * @param particles 	list of particles on the canvas
+	 */
+	public void jiggle(ArrayList<Particle> particles) {
+		// if odd number of particles , then need to set last 2 in the list 
+		// to get smaller but at a slower rate then the other before 
+
+		int k = 0;
+		for (int i = 0 ; i < particles.size() ; i++) {
+			if (k % 2 ==0 ) {
+				for (Particle p : particles) {
+
+				}
+				//enable particle bigger
+
+				//particles are not in a linked list though 
+			}
+		}
+	}
+
+	/** 
 	 * Method that computes the distances between all particles and all the coordinates.
 	 * 
 	 * @param pList 	list of particles on the canvas
@@ -309,6 +436,9 @@ public class ShapeManager {
 	 * @param particles 	list of particles on the canvas
 	 */
 	public void setProximity(ArrayList<Particle> particles){
+		System.out.println("total number of particles : " + particles.size());
+		System.out.println("total number of coordinates : " + this.coordinates.size());
+		
 		ArrayList<Particle>	particlesCopy = (ArrayList<Particle>) particles.clone();
 		ArrayList<Point2D>	coordinatesCopy = this.getCopy();
 		ArrayList<Double>	distances;
@@ -338,88 +468,6 @@ public class ShapeManager {
 
 		}
 	}
-
-	public void divide(ArrayList<Particle> particles) {
-		// find width of aprticles on the canvas 
-		// create a copy same widh onto this.copy (Point2D) 
-		// if(this.coordinates == null ) then set particles coords to this.coordinates
-		double widthMax = 0, widthMin = 0; 
-		double heightMax = 0, heightMin = 0;
-
-		// set coordinates to the current particle on the canvas if null.
-		if(this.coordinates == null) {
-			for(int i = 0; i < particles.size(); i++) {
-				Particle particle = particles.get(i);
-				this.coordinates.get(i).x = particle.x;
-				this.coordinates.get(i).y = particle.y;
-			}
-		}
-
-		//find diameter and height
-		for(int i = 0; i < particles.size(); i++) {
-			Particle particle = particles.get(i);
-			widthMax = (particle.x > widthMax) ? particle.x : widthMax;
-			heightMax = (particle.y > heightMax) ? particle.y : heightMax;
-
-			widthMin = (particle.x < widthMin) ? particle.x : widthMin;
-			heightMin = (particle.y < heightMin) ? particle.y : heightMin;
-		}
-
-		//offset 
-		widthMax = center.x - widthMax;
-		heightMax = center.y - heightMax;
-		widthMin = center.x - widthMin; 
-		heightMin = center.y - heightMin;
-
-		double width = widthMax - widthMin;
-		double height = heightMax - heightMin; 
-
-		//clone the coordinates
-		ArrayList<Point2D> coordinatesClone = getCopy();
-		// maybe add this clone to the global array of arrays and inside the 
-		// rescaleShape method rescale all the arrays in the global array !?
-
-		// compute new coordinates? 
-		if (width >= center.x) {
-			rescaleShape(width, height);
-		}
-
- 	}
-
-	 public void rescaleShape(double currWidth, double currHeight){
-		// impose 1/9 to the left, 1/9 to the middle and 1/9 to the right
-		// then left child is 1/3 of canvas width and right child is 1/3 too.
-
-		double prefferedWidth = 2 * center.x  / 3;
-		double prefferedHeight = 2 * center.y  / 3;
-
-		//perform rescaling of this.coordinates given the width height of a aprticle
-		//it should be linear ? 
-	 }
-
-	
-	/** 
-	 * TODO 
-	 * 
-	 * @param particles 	list of particles on the canvas
-	 */
-	public void jiggle(ArrayList<Particle> particles) {
-		// if odd number of particles , then need to set last 2 in the list 
-		// to get smaller but at a slower rate then the other before 
-
-		int k = 0;
-		for (int i = 0 ; i < particles.size() ; i++) {
-			if (k % 2 ==0 ) {
-				for (Particle p : particles) {
-
-				}
-				//enable particle bigger
-
-				//particles are not in a linked list though 
-			}
-		}
-	}
-
 	
 	/** 
 	 * Method that sets the speed of particles in direction of it's respective coordinate
