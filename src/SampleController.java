@@ -105,7 +105,9 @@ public class SampleController {
 
     
     /** 
-     * @param mainPanel
+     * Method that sets the default values and handlers to the interactive components of the scene/canvas. 
+     * 
+     * @param mainPanel     instance of the GamePanel to interact with the canvas.
      */
     public void initializeButtons(MainPanel mainPanel){
         // massSlider.setStyle("-fx-control-inner-background: palegreen;");
@@ -164,8 +166,10 @@ public class SampleController {
 
     
     /** 
-     * @param pNumber
-     * @param stats
+     * Method that updates the statistics labels with the appropriate values
+     * 
+     * @param pNumber   number of particles present on the canvas
+     * @param stats     double array - total electric force , total potential force, number of collisions per second
      */
     public void setLabels(int pNumber, double[] stats) {
         Platform.runLater(() -> {
