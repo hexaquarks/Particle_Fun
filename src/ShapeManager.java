@@ -337,9 +337,65 @@ public class ShapeManager {
 			}
 
 		}
-
-
 	}
+
+	public void divide(ArrayList<Particle> particles) {
+		// find width of aprticles on the canvas 
+		// create a copy same widh onto this.copy (Point2D) 
+		// if(this.coordinates == null ) then set particles coords to this.coordinates
+		double widthMax = 0, widthMin = 0; 
+		double heightMax = 0, heightMin = 0;
+
+		// set coordinates to the current particle on the canvas if null.
+		if(this.coordinates == null) {
+			for(int i = 0; i < particles.size(); i++) {
+				Particle particle = particles.get(i);
+				this.coordinates.get(i).x = particle.x;
+				this.coordinates.get(i).y = particle.y;
+			}
+		}
+
+		//find diameter and height
+		for(int i = 0; i < particles.size(); i++) {
+			Particle particle = particles.get(i);
+			widthMax = (particle.x > widthMax) ? particle.x : widthMax;
+			heightMax = (particle.y > heightMax) ? particle.y : heightMax;
+
+			widthMin = (particle.x < widthMin) ? particle.x : widthMin;
+			heightMin = (particle.y < heightMin) ? particle.y : heightMin;
+		}
+
+		//offset 
+		widthMax = center.x - widthMax;
+		heightMax = center.y - heightMax;
+		widthMin = center.x - widthMin; 
+		heightMin = center.y - heightMin;
+
+		double width = widthMax - widthMin;
+		double height = heightMax - heightMin; 
+
+		//clone the coordinates
+		ArrayList<Point2D> coordinatesClone = getCopy();
+		// maybe add this clone to the global array of arrays and inside the 
+		// rescaleShape method rescale all the arrays in the global array !?
+
+		// compute new coordinates? 
+		if (width >= center.x) {
+			rescaleShape(width, height);
+		}
+
+ 	}
+
+	 public void rescaleShape(double currWidth, double currHeight){
+		// impose 1/9 to the left, 1/9 to the middle and 1/9 to the right
+		// then left child is 1/3 of canvas width and right child is 1/3 too.
+
+		double prefferedWidth = 2 * center.x  / 3;
+		double prefferedHeight = 2 * center.y  / 3;
+
+		//perform rescaling of this.coordinates given the width height of a aprticle
+		//it should be linear ? 
+	 }
 
 	
 	/** 
