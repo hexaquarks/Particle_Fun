@@ -496,7 +496,7 @@ public class MainPanel extends JPanel {
 
 			// recompute the coordiantes given the new particle size
 			tempFlag = false;
-			shapeButtonPressed(lastShape);
+			// shapeButtonPressed(lastShape);
 			
 			//check if the new shape is still too large (larger than)
 			//a third of the canvas width
@@ -507,15 +507,16 @@ public class MainPanel extends JPanel {
 			// 	particleList.remove(0);
 			// 	shape.divide(particleList);
 			// 	shapeButtonPressed(lastShape);
+			// 	tempFlag = false;
 			// }		
 
+			setAllFlagsFalse();
+			tempFlag = true;
 			SwingUtilities.invokeLater(() -> {
 				shape.setDividedShapeCoodinates(particleList);
 				shape.setProximity(particleList);
 				shape.setSpeed(particleList);
 			});
-			setAllFlagsFalse();
-			tempFlag = true;
 
 			// shape.setShapeIsDraggable(false);
 		}
