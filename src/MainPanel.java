@@ -270,12 +270,9 @@ public class MainPanel extends JPanel {
 			int xPos, yPos;
 
 			do {
-				xPos = rand.nextInt((int) 530 - 100) + 50;
-				yPos = rand.nextInt((int) 330 - 100) + 50;
-				Particle p = new Particle(xPos, yPos, rand.nextInt(2) - 1, rand.nextInt(2) - 1, mass, charge); // mass
-																												// charge
-																												// at
-																												// end
+				xPos = rand.nextInt((int) this.getSize().getWidth() + 1);
+				yPos = rand.nextInt((int) this.getSize().getHeight() + 1);
+				Particle p = new Particle(xPos, yPos, rand.nextInt(2) - 1, rand.nextInt(2) - 1, mass, charge);
 				particleList.add(p);
 			} while (!particleAlreadyExists(xPos, yPos));
 		}
@@ -425,6 +422,13 @@ public class MainPanel extends JPanel {
 				}
 				physicsTimer.stop();
 				setInitialization((short) currFlag.ordinal());
+				// do{
+				// 	System.out.println("in the loop");
+				// 	particleList.remove(0);
+				// 	particleList.remove(0);
+				// 	setInitialization((short) currFlag.ordinal());
+				// }while(shape.shapeHeight > this.getSize().getHeight() ||
+				// 	shape.shapeWidth > this.getSize().getWidth() );
 			} else {
 				currFlag.setState(false);
 				physicsTimer.start();
@@ -433,6 +437,7 @@ public class MainPanel extends JPanel {
 			}
 
 			lastShape = shapeType;
+			
 		});
 	}
 
@@ -469,6 +474,7 @@ public class MainPanel extends JPanel {
 			shape.setProximity(particleList);
 			shape.setSpeed(particleList);
 		}
+		// shape.calculateShapeSize(particleList);
 	}
 
 	/**
@@ -490,14 +496,18 @@ public class MainPanel extends JPanel {
 
 			// recompute the coordiantes given the new particle size
 			tempFlag = false;
-
-			// Flag currFlag = Flag.values()[shapeNames.indexOf(lastShape)];
-			// for (Flag flag : Flag.values()) {
-			// flag.setState((flag == currFlag) ? true : false);
-			// }
-			// physicsTimer.stop();
-			// setInitialization((short) currFlag.ordinal());
 			shapeButtonPressed(lastShape);
+			
+			//check if the new shape is still too large (larger than)
+			//a third of the canvas width
+			
+			// while (shape.shapeWidth > this.getSize().getWidth() * 0.3333){
+			// 	System.out.println("in the loop");
+			// 	particleList.remove(0);
+			// 	particleList.remove(0);
+			// 	shape.divide(particleList);
+			// 	shapeButtonPressed(lastShape);
+			// }		
 
 			SwingUtilities.invokeLater(() -> {
 				shape.setDividedShapeCoodinates(particleList);
