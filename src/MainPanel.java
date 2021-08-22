@@ -19,23 +19,23 @@ import javax.swing.Timer;
 public class MainPanel extends JPanel {
 
 	ArrayList<Particle> particleList = new ArrayList<Particle>();
-	Random	rand = new Random();
-	double	newDirY = 0;	// y-direction of a new particle
-	double 	newDirX = 0;	// x-direction of a new particle
-	double 	prevY;			// tracker for y-value of the mouse 
-	double 	prevX;			// tracker for x-value of the mouse 
+	Random rand = new Random();
+	double newDirY = 0; // y-direction of a new particle
+	double newDirX = 0; // x-direction of a new particle
+	double prevY; // tracker for y-value of the mouse
+	double prevX; // tracker for x-value of the mouse
 	boolean collisionFlag, electricFlag, gravityFlag; // flags for the forces
-	boolean removeFlag;								  // flag for removing particles
-	int		timeTick = 1000 / 60; // 60 FPS
-	int 	collisionsPerSecond;  // collisions per second for statistics
-	int 	fpsTimerCounter = 0;  // counter to have the statistics at a fixed frequency
+	boolean removeFlag; // flag for removing particles
+	int timeTick = 1000 / 60; // 60 FPS
+	int collisionsPerSecond; // collisions per second for statistics
+	int fpsTimerCounter = 0; // counter to have the statistics at a fixed frequency
 
-	double	 spiralAngle = Math.PI * (1 + Math.sqrt(5) / 4);  // base angle for sunflower shape
-	double[] information; 	// array holding information for the statistics
-	double 	 currAnchorX;	// x-value for the mouse anchor whence rotating a fixed shape
-	double 	 currAnchorY;   // y-value for the mouse anchor whence rotating a fixed shape
-	String 	 lastShape;
-	boolean  tempFlag = true;
+	double spiralAngle = Math.PI * (1 + Math.sqrt(5) / 4); // base angle for sunflower shape
+	double[] information; // array holding information for the statistics
+	double currAnchorX; // x-value for the mouse anchor whence rotating a fixed shape
+	double currAnchorY; // y-value for the mouse anchor whence rotating a fixed shape
+	String lastShape;
+	boolean tempFlag = true;
 
 	/**
 	 * Instances
@@ -54,11 +54,17 @@ public class MainPanel extends JPanel {
 
 		private boolean state;
 
-		private Flag(boolean state) { this.state = state; }
+		private Flag(boolean state) {
+			this.state = state;
+		}
 
-		public void flipState() { this.state = !this.state; }
+		public void flipState() {
+			this.state = !this.state;
+		}
 
-		public void setState(boolean state) { this.state = state; }
+		public void setState(boolean state) {
+			this.state = state;
+		}
 	}
 
 	/**
@@ -138,7 +144,8 @@ public class MainPanel extends JPanel {
 			fpsTimerCounter++;
 
 			if (shapeActivated()) {
-				if (shape.checkArrival()) shape.setShapeIsDraggable(true);
+				if (shape.checkArrival())
+					shape.setShapeIsDraggable(true);
 
 				for (int i = 0; i < particleList.size(); i++) {
 					Particle p = particleList.get(i);
@@ -174,7 +181,8 @@ public class MainPanel extends JPanel {
 
 					p1.edgeCollision(p2);
 
-					if (!electricFlag || !gravityFlag) applyForces(p1, p2);
+					if (!electricFlag || !gravityFlag)
+						applyForces(p1, p2);
 
 					applyCollision(p1, p2);
 				}
@@ -194,8 +202,7 @@ public class MainPanel extends JPanel {
 		if (!electricFlag) {
 			p1.applyForce(p1.electrostaticForce(p2));
 			if (collisionFlag) {
-				if (Math.abs(p1.x - p2.x) <= p1.width/ 50000
-						|| Math.abs(p1.y - p2.y) <= p1.width / 50000) {
+				if (Math.abs(p1.x - p2.x) <= p1.width / 50000 || Math.abs(p1.y - p2.y) <= p1.width / 50000) {
 				}
 			}
 		}
@@ -265,7 +272,10 @@ public class MainPanel extends JPanel {
 			do {
 				xPos = rand.nextInt((int) 530 - 100) + 50;
 				yPos = rand.nextInt((int) 330 - 100) + 50;
-				Particle p = new Particle(xPos, yPos, rand.nextInt(2)-1, rand.nextInt(2)-1, mass, charge); // mass charge at end
+				Particle p = new Particle(xPos, yPos, rand.nextInt(2) - 1, rand.nextInt(2) - 1, mass, charge); // mass
+																												// charge
+																												// at
+																												// end
 				particleList.add(p);
 			} while (!particleAlreadyExists(xPos, yPos));
 		}
@@ -324,7 +334,7 @@ public class MainPanel extends JPanel {
 			Particle particle = particleList.get(i);
 
 			if (x >= particle.x - particle.width && x <= particle.x + 2 * particle.width
-					&& y >= particle.y- particle.height && y <= particle.y + 2 * particle.height) {
+					&& y >= particle.y - particle.height && y <= particle.y + 2 * particle.height) {
 				particleExistsAlready = true;
 				break;
 			}
@@ -346,7 +356,7 @@ public class MainPanel extends JPanel {
 		for (int i = 0; i < particleList.size(); i++) {
 			Particle particle = particleList.get(i);
 
-			if (x >= particle.x - particle.width&& x <= particle.x + 2 * particle.width
+			if (x >= particle.x - particle.width && x <= particle.x + 2 * particle.width
 					&& y >= particle.y - particle.height && y <= particle.y + 2 * particle.height) {
 				particlesToRemove.add(particle);
 			}
@@ -455,12 +465,11 @@ public class MainPanel extends JPanel {
 			shape.getSunflowerCoords(particleList, spiralAngle);
 		}
 
-		if(tempFlag) {
+		if (tempFlag) {
 			shape.setProximity(particleList);
 			shape.setSpeed(particleList);
 		}
 	}
-
 
 	/**
 	 * Method that resets the sunflower shape arragnement of the particles, vien the
@@ -476,30 +485,36 @@ public class MainPanel extends JPanel {
 	}
 
 	public void divideShape() {
-		
-			if(shape.shapeIsDraggable) {
-				shape.divide(particleList);
-	
-				//recompute the coordiantes given the new particle size
-				setAllFlagsFalse();
-				tempFlag = false;
-				System.out.println("size is : " + shape.coordinates.size());
-				shapeButtonPressed(lastShape);
-				
+		if (shape.shapeIsDraggable) {
+			shape.divide(particleList);
+
+			// recompute the coordiantes given the new particle size
+			tempFlag = false;
+
+			// Flag currFlag = Flag.values()[shapeNames.indexOf(lastShape)];
+			// for (Flag flag : Flag.values()) {
+			// flag.setState((flag == currFlag) ? true : false);
+			// }
+			// physicsTimer.stop();
+			// setInitialization((short) currFlag.ordinal());
+			shapeButtonPressed(lastShape);
+
+			SwingUtilities.invokeLater(() -> {
 				shape.setDividedShapeCoodinates(particleList);
-				System.out.println("size is : " + particleList.size());
 				shape.setProximity(particleList);
 				shape.setSpeed(particleList);
-	
-				// shape.setShapeIsDraggable(false);
-			}
-		
+			});
+			setAllFlagsFalse();
+			tempFlag = true;
+
+			// shape.setShapeIsDraggable(false);
+		}
 	}
 
 	/**
 	 * Method that adds a new particle whenever the mouse is released
 	 * 
-	 * @param e		the mouse position on the canvas
+	 * @param e the mouse position on the canvas
 	 */
 	public void doMouseReleased(MouseEvent e) {
 		if (shape.shapeIsDraggable)
@@ -520,9 +535,10 @@ public class MainPanel extends JPanel {
 	}
 
 	/**
-	 * Method that updates the mouse position tracker, and sets the anchor if we can rotate the shape
+	 * Method that updates the mouse position tracker, and sets the anchor if we can
+	 * rotate the shape
 	 * 
-	 * @param e		the mouse position on the canvas
+	 * @param e the mouse position on the canvas
 	 */
 	public void doMousePressed(MouseEvent e) {
 		prevY = e.getY();
@@ -535,10 +551,10 @@ public class MainPanel extends JPanel {
 	}
 
 	/**
-	 * Method calculates the new velocity of a particle before initialization, and performs the shape
-	 * rotation if allowed.
+	 * Method calculates the new velocity of a particle before initialization, and
+	 * performs the shape rotation if allowed.
 	 * 
-	 * @param e		the mouse position on the canvas
+	 * @param e the mouse position on the canvas
 	 */
 	public void doMouseDragged(MouseEvent e) {
 		int y = e.getY(), x = e.getX();
@@ -547,10 +563,10 @@ public class MainPanel extends JPanel {
 		newDirX = dragForce(x, prevX);
 
 		if (shape.shapeIsDraggable) {
-			double temp = Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2) 
-						+ Math.pow((e.getY() - shape.anchorY), 2));
+			double temp = Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2) + Math.pow((e.getY() - shape.anchorY), 2));
 
-			if (temp >= 20) shape.rotateShape(e.getX(), e.getY(), particleList);
+			if (temp >= 20)
+				shape.rotateShape(e.getX(), e.getY(), particleList);
 		}
 	}
 

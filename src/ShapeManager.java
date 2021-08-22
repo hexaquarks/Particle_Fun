@@ -370,6 +370,10 @@ public class ShapeManager {
 		//2 child shapes for now
 		//clone the coordinates
 
+		// ArrayList<Point2D> coordinatesClone = new ArrayList<Point2D>();
+		// for(int i = 0 ; i < coordinates.size() ;i++){
+		// 	Point2D point = new Point2D(, y)
+		// }
 		ArrayList<Point2D> coordinatesClone = getCopy();
 		for(int i = 0; i < coordinatesClone.size(); i++){
 			Point2D coordinate = coordinatesClone.get(i);
@@ -480,15 +484,6 @@ public class ShapeManager {
 		ArrayList<Double>	distances;
 		Iterator<Particle>	iterator1 = particlesCopy.iterator();
 
-		for(int i = 0 ; i < this.coordinates.size(); i++){
-			Point2D p = coordinates.get(i);
-			p.particle = null;
-			try{
-				System.out.println(p.particle.x);
-			} catch (Exception e){
-				System.out.println("nope");
-			}
-		}
 		System.out.println("++++");
 		while (iterator1.hasNext()) {
 			Particle particle = iterator1.next(); 			
