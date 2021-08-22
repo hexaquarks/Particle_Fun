@@ -53,11 +53,19 @@ public class ShapeManager {
 
 	
 	/** 
-	 * Defensive copy
+	 * Deep copy
 	 * 
 	 * @return ArrayList<Point2D>	a copy of Point2D coordinated
 	 */
-	public ArrayList<Point2D> getCopy() { return (ArrayList<Point2D>) coordinates.clone(); }
+	public ArrayList<Point2D> getCopy() {
+		ArrayList<Point2D> copy = new ArrayList<Point2D>();
+		for(int i = 0; i < this.coordinates.size(); i++){
+			Point2D point = new Point2D(this.coordinates.get(i).x, this.coordinates.get(i).y);
+			copy.add(point);
+		}
+		return copy; 
+
+	}
 
 	
 	/** 
@@ -363,23 +371,54 @@ public class ShapeManager {
 		//clone the coordinates
 
 		ArrayList<Point2D> coordinatesClone = getCopy();
+		for(int i = 0; i < coordinatesClone.size(); i++){
+			Point2D coordinate = coordinatesClone.get(i);
+			coordinate.x++;
+		}
 		dividedShapeCoords.add(coordinatesClone);
 		
 		//clone the coordinates, separate them ,merge both lists
+		// System.out.println(center.x);
+		// for(int i = 0 ; i< this.coordinates.size(); i++){
+		// 	Point2D point = this.coordinates.get(i);
+		// 	System.out.println("before coord " + i + " " + point.x + " " + point.y);
+		// }
+		
+		// System.out.println();
 		for (int i = 0; i < this.coordinates.size(); i++){
-			Point2D point = this.coordinates.get(0);
-			point.x = ( center.x + center.x * 2 / 3 ) - point.x;
+			Point2D point = this.coordinates.get(i);
+			point.x = center.x - point.x;
+			point.x += 2 * center.x /3;
 		}
 
 		for (int i = 0; i < coordinatesClone.size(); i++){
-			Point2D point = coordinatesClone.get(0);
-			point.x = ( center.x + center.x * 10 / 9 ) - point.x;
+			Point2D point = coordinatesClone.get(i);
+			point.x = center.x - point.x;
+			point.x += 2 * center.x * 0.555555;
 		}
 
 		this.coordinates.addAll(coordinatesClone);
+		for(int i = 0 ; i< this.coordinates.size(); i++){
+			Point2D point = this.coordinates.get(i);
+			// System.out.println("coord " + i + " : " + point.x + " , " + point.y);
+		}
 
 		//clone the particles, merge both lists 
-		ArrayList<Particle> particlesClone = (ArrayList<Particle>) particles.clone();
+		// ArrayList<Particle> particlesClone = (ArrayList<Particle>) particles.clone();
+		// for(int i = 0 ; i<particlesClone.size(); i++){
+		// 	Particle p = particlesClone.get(i);
+		// 	p.x++;
+		// }
+		// particles.addAll(particlesClone);
+
+		ArrayList<Particle> particlesClone = new ArrayList<Particle>();
+		for(int i = 0 ; i < particles.size() ;i++){
+			Particle p = new Particle(particles.get(i).x+1, particles.get(i).y+1, particles.get(i).vx, particles.get(i).vy, 
+							particles.get(i).mass, particles.get(i).charge);
+			particlesClone.add(p);
+		}
+		// System.out.println("P1 : " + particles.get(0).x + " vx : " + particles.get(0).vx + " amd " + particles.get(0).hashCode());
+		// System.out.println("P2 : " + particlesClone.get(0).x + " vx : " + particlesClone.get(0).vx + " and " + particles.get(0).hashCode());
 		particles.addAll(particlesClone);
 	 }
 
@@ -435,15 +474,22 @@ public class ShapeManager {
 	 *  
 	 * @param particles 	list of particles on the canvas
 	 */
-	public void setProximity(ArrayList<Particle> particles){
-		System.out.println("total number of particles : " + particles.size());
-		System.out.println("total number of coordinates : " + this.coordinates.size());
-		
+	public void setProximity(ArrayList<Particle> particles){		
 		ArrayList<Particle>	particlesCopy = (ArrayList<Particle>) particles.clone();
-		ArrayList<Point2D>	coordinatesCopy = this.getCopy();
+		ArrayList<Point2D>	coordinatesCopy = (ArrayList<Point2D>) this.coordinates.clone();
 		ArrayList<Double>	distances;
 		Iterator<Particle>	iterator1 = particlesCopy.iterator();
 
+		for(int i = 0 ; i < this.coordinates.size(); i++){
+			Point2D p = coordinates.get(i);
+			p.particle = null;
+			try{
+				System.out.println(p.particle.x);
+			} catch (Exception e){
+				System.out.println("nope");
+			}
+		}
+		System.out.println("++++");
 		while (iterator1.hasNext()) {
 			Particle particle = iterator1.next(); 			
 			Iterator<Point2D> iterator2 = coordinatesCopy.iterator();
@@ -467,6 +513,14 @@ public class ShapeManager {
 			}
 
 		}
+		for(int i = 0 ; i < this.coordinates.size(); i++){
+			Point2D p = coordinates.get(i);
+			try{
+				System.out.println(p.particle.x);
+			} catch (Exception e){
+				System.out.println("nope");
+			}
+		}
 	}
 	
 	/** 
@@ -475,8 +529,15 @@ public class ShapeManager {
 	 * @param particles 	list of particles on the canvas
 	 */
 	public void setSpeed(ArrayList<Particle> particles) {
-		for (int i = 0 ; i < coordinates.size() ; i++) {
-			Point2D point = coordinates.get(i);
+		
+		for (int i = 0 ; i < this.coordinates.size() ; i++) {
+
+			Point2D point = this.coordinates.get(i);
+			if(i==29) System.out.println(point);
+
+			// System.out.println("p.particle.x : " + point.particle.x);
+			// System.out.println("p.particle.width : " + point.particle.width);
+			// System.out.println();
 
 			if (point.particle.x - point.x <= 0) {
 				point.particle.vx = (-point.particle.x + point.x)/(1000/16);
@@ -502,9 +563,21 @@ public class ShapeManager {
 	public boolean checkArrival() {
 		boolean allParticlesArrived = true;
 
-		for (int i = 0 ; i < coordinates.size() ; i++){
-			Point2D p = coordinates.get(i);
+		// for (int i = 0 ; i < this.coordinates.size() ; i++){
+		// 	Point2D p = this.coordinates.get(i);
+		// 	try{
+		// 		// System.out.println(p.particle);
+		// 	} catch (Exception e){
+		// 		// System.out.println("nope");
+		// 	}
+		// }
+		for (int i = 0 ; i < this.coordinates.size() ; i++){
+			Point2D p = this.coordinates.get(i);
 
+			System.out.println("p.particle.x : " + p.particle.x);
+			System.out.println("p.particle.width : " + p.particle.width);
+			// System.out.println(p);
+			// System.out.println(p.particle);
 			if (p.particle.x >= p.x - p.particle.width/25 && p.particle.x <= p.x + p.particle.width/25) {
 				p.particle.vx = 0;
 			} else {

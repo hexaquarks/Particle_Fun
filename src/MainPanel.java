@@ -476,19 +476,24 @@ public class MainPanel extends JPanel {
 	}
 
 	public void divideShape() {
-		if(shape.shapeIsDraggable) {
-			shape.divide(particleList);
-
-			//recompute the coordiantes given the new particle size
-			setAllFlagsFalse();
-			tempFlag = false;
-			shapeButtonPressed(lastShape);
-			shape.setDividedShapeCoodinates(particleList);
-			shape.setProximity(particleList);
-			shape.setSpeed(particleList);
-
-			// shape.setShapeIsDraggable(false);
-		}
+		
+			if(shape.shapeIsDraggable) {
+				shape.divide(particleList);
+	
+				//recompute the coordiantes given the new particle size
+				setAllFlagsFalse();
+				tempFlag = false;
+				System.out.println("size is : " + shape.coordinates.size());
+				shapeButtonPressed(lastShape);
+				
+				shape.setDividedShapeCoodinates(particleList);
+				System.out.println("size is : " + particleList.size());
+				shape.setProximity(particleList);
+				shape.setSpeed(particleList);
+	
+				// shape.setShapeIsDraggable(false);
+			}
+		
 	}
 
 	/**
