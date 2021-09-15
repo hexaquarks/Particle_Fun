@@ -1,12 +1,16 @@
-## :large_orange_diamond: Particle Simulation
+## :large_orange_diamond: Particle Geometrical Simulation
 Time-driven particle simulation developped hybridly with *JavaFX* and *Swing*.
 
-## 💻 Installation
+1. [Installation](#installation)
+2. [Features](#features)
+3. [Goals](#goals)
+
+## 💻 <a name="installation"></a> Installation
 
 ### Requirements
 - JavaFX SDK *OpenJFX*
 - Java SE Development Kit *(JDK)*
-- 
+
 ### VSCode
 Clone the project
 ```
@@ -48,7 +52,7 @@ TODO
 
 ___
 
-# 💡 Features
+# 💡 <a name="features"></a> Features
 ### Current State Example
 <p align="center">
   <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/Promotion/spiralsGlimpse2.gif" width="500"/>
