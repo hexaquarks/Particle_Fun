@@ -70,7 +70,7 @@ public class AppFrame extends Application {
 				}
 			});
 
-			stage.setTitle("FXML Welcome");
+			stage.setTitle("Particle Geometrical Simulation");
 			stage.setScene(scene);
 			stage.show();
 		} catch (Exception e) {
