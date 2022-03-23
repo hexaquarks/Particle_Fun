@@ -50,21 +50,14 @@ public class MainPanel extends JPanel {
 			Arrays.asList("Circle", "Square", "Diamond", "Spiral", "Loose Spiral", "Sunflower"));
 
 	public enum Flag {
-		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false), LOOSESPIRAL(false), SUNFLOWER(false);
+		CIRCLE(false), SQUARE(false), DIAMOND(false), SPIRAL(false),
+		LOOSESPIRAL(false), SUNFLOWER(false);
 
 		private boolean state;
 
-		private Flag(boolean state) {
-			this.state = state;
-		}
-
-		public void flipState() {
-			this.state = !this.state;
-		}
-
-		public void setState(boolean state) {
-			this.state = state;
-		}
+		private Flag(boolean state) { this.state = state; }
+		public void flipState() { this.state = !this.state; }
+		public void setState(boolean state) { this.state = state; }
 	}
 
 	/**
@@ -78,21 +71,14 @@ public class MainPanel extends JPanel {
 
 		addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				doMouseReleased(e);
-			}
+			public void mouseReleased(MouseEvent e) { doMouseReleased(e); }
 
 			@Override
-			public void mousePressed(MouseEvent e) {
-				doMousePressed(e);
-			}
+			public void mousePressed(MouseEvent e) { doMousePressed(e); }
 		});
 		addMouseMotionListener(new MouseAdapter() {
-
 			@Override
-			public void mouseDragged(MouseEvent e) {
-				doMouseDragged(e);
-			}
+			public void mouseDragged(MouseEvent e) { doMouseDragged(e); }
 		});
 
 	}
@@ -107,10 +93,7 @@ public class MainPanel extends JPanel {
 	 */
 	public void setSpiralAngle(double value) {
 		this.spiralAngle = value;
-
-		if (Flag.SUNFLOWER.state) {
-			changeSunflower();
-		}
+		if (Flag.SUNFLOWER.state) { changeSunflower(); }
 	}
 
 	/**
@@ -121,17 +104,12 @@ public class MainPanel extends JPanel {
 	 *         or already in a shape, false otherwise
 	 */
 	public static boolean shapeActivated() {
-		for (Flag flag : Flag.values()) {
-			if (flag.state)
-				return true;
-		}
+		for (Flag flag : Flag.values()) { if (flag.state) return true; }
 		return false;
 	}
 
 	public void setAllFlagsFalse() {
-		for (Flag flag : Flag.values()) {
-			flag.setState(false);
-		}
+		for (Flag flag : Flag.values()) { flag.setState(false); }
 	}
 
 	/**
@@ -141,13 +119,11 @@ public class MainPanel extends JPanel {
 	Timer fpsTimer = new Timer(timeTick, new ActionListener() {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			fpsTimerCounter++;
+			++fpsTimerCounter;
 
 			if (shapeActivated()) {
-				if (shape.checkArrival())
-					shape.setShapeIsDraggable(true);
-
-				for (int i = 0; i < particleList.size(); i++) {
+				if (shape.checkArrival()) shape.setShapeIsDraggable(true);
+				for (int i = 0; i < particleList.size(); ++i) {
 					Particle p = particleList.get(i);
 					p.x += p.vx;
 					p.y += p.vy;
@@ -176,14 +152,10 @@ public class MainPanel extends JPanel {
 				for (int j = 0; j < particleList.size(); j++) {
 					Particle p2 = particleList.get(j);
 
-					if (p1 == p2)
-						continue;
-
+					if (p1 == p2) continue;
 					p1.edgeCollision(p2);
 
-					if (!electricFlag || !gravityFlag)
-						applyForces(p1, p2);
-
+					if (!electricFlag || !gravityFlag) applyForces(p1, p2);
 					applyCollision(p1, p2);
 				}
 				p1.x += p1.vx;
@@ -206,9 +178,7 @@ public class MainPanel extends JPanel {
 				}
 			}
 		}
-		if (!gravityFlag) {
-			p1.applyForce(p1.gravitationalForce(p2));
-		}
+		if (!gravityFlag) { p1.applyForce(p1.gravitationalForce(p2)); }
 	}
 
 	/**
@@ -222,7 +192,7 @@ public class MainPanel extends JPanel {
 		if (p1.collide(p2) && !collisionFlag) {
 			p1.velCollision(p2);
 			p2.velCollision(p1);
-			collisionsPerSecond++;
+			++collisionsPerSecond;
 		}
 	}
 
@@ -243,8 +213,7 @@ public class MainPanel extends JPanel {
 			for (int j = 0; j < particleList.size(); j++) {
 				Particle p2 = particleList.get(j);
 
-				if (p1 == p2)
-					continue;
+				if (p1 == p2) continue;
 
 				double electricForce = Math.pow(p1.electrostaticForce(p2)[0], 2)
 						+ Math.pow(p1.electrostaticForce(p2)[1], 2);
@@ -370,12 +339,9 @@ public class MainPanel extends JPanel {
 	 * @param force string representing a force selected from the controller
 	 */
 	public void forcesButtonsPressed(String force) {
-		if (force.equals("Collision"))
-			collisionFlag = !collisionFlag;
-		else if (force.equals("Electrostatics"))
-			electricFlag = !electricFlag;
-		else
-			gravityFlag = !gravityFlag;
+		if (force.equals("Collision")) collisionFlag = !collisionFlag;
+		else if (force.equals("Electrostatics")) electricFlag = !electricFlag;
+		else gravityFlag = !gravityFlag;
 	}
 
 	/**
@@ -398,10 +364,8 @@ public class MainPanel extends JPanel {
 	 *               !1 - remove all particles from this canvas
 	 */
 	public void removeParticleButtonPressed(String number) {
-		if (number.equals("one"))
-			removeFlag = !removeFlag;
-		else
-			this.particleList = new ArrayList<Particle>();
+		if (number.equals("one")) removeFlag = !removeFlag;
+		else this.particleList = new ArrayList<Particle>();
 	}
 
 	/**
