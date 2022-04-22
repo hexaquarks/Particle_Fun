@@ -43,13 +43,6 @@ Edit *./.vscode/launch.json* with appropriate *JavaFX* `path` variable.
     ]
 }
 ```
-
-### IntelliJ
-TODO
-
-### Eclipse
-TODO
-
 ___
 
 # 💡 <a name="features"></a> Features
