@@ -50,8 +50,8 @@ public class AppFrame extends Application {
 				public void run() {
 					mainPanel.setSize(691, 452);
 					mainPanel.setBackground(Color.black);
-					mainPanel.physicsTimer.start();
-					mainPanel.fpsTimer.start();
+					mainPanel.getPhysicsTimer().start();
+					mainPanel.getFpsTimer().start();
 					mainPanel.initializeParticles(15, 100, 5);
 				}
 			});
@@ -66,7 +66,7 @@ public class AppFrame extends Application {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
-					mainPanel.shape = shapee;
+					mainPanel.setShape(shapee);
 				}
 			});
 

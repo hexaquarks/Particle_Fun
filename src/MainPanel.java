@@ -3,8 +3,6 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
@@ -18,8 +16,8 @@ import javax.swing.Timer;
 
 public class MainPanel extends JPanel {
 
+	private static final int TIME_TICK = 1000 / 60;
 	ArrayList<Particle> particleList = new ArrayList<Particle>();
-	Random rand = new Random();
 	double newDirY = 0; // y-direction of a new particle
 	double newDirX = 0; // x-direction of a new particle
 	double prevY; // tracker for y-value of the mouse
@@ -37,11 +35,14 @@ public class MainPanel extends JPanel {
 	String lastShape;
 	boolean tempFlag = true;
 
+	private Timer fpsTimer = null;
+	private Timer physicsTimer = null;
+
 	/**
 	 * Instances
 	 */
 	SampleController controller;
-	ShapeManager shape;
+	private ShapeManager shape = new ShapeManager();
 
 	/**
 	 * Information associated with shapes
@@ -68,20 +69,66 @@ public class MainPanel extends JPanel {
 	 */
 	public MainPanel(SampleController controller) {
 		this.controller = controller;
-
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseReleased(MouseEvent e) { doMouseReleased(e); }
-
-			@Override
-			public void mousePressed(MouseEvent e) { doMousePressed(e); }
-		});
-		addMouseMotionListener(new MouseAdapter() {
-			@Override
-			public void mouseDragged(MouseEvent e) { doMouseDragged(e); }
-		});
-
+		setupMouseListener();
+        startTimers();
 	}
+
+	private void setupMouseListener() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                doMouseReleased(e);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                doMousePressed(e);
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                doMouseDragged(e);
+            }
+        };
+        addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);
+    }
+
+	private void startTimers() {
+        fpsTimer = new Timer(TIME_TICK, e -> {
+            ++fpsTimerCounter;
+
+            if (shapeActivated()) {
+                if (shape.checkArrival()) shape.setShapeIsDraggable(true);
+                for (Particle p : particleList) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                }
+            }
+            if (fpsTimerCounter % 60 == 0) {
+                information = statistics();
+                controller.setLabels(particleList.size(), information);
+                collisionsPerSecond = 0;
+            }
+            repaint();
+        });
+        fpsTimer.start();
+
+        physicsTimer = new Timer(2, e -> {
+            for (Particle p1 : particleList) {
+                for (Particle p2 : particleList) {
+                    if (p1 == p2) continue;
+                    p1.edgeCollision(p2);
+
+                    if (!electricFlag || !gravityFlag) applyForces(p1, p2);
+                    applyCollision(p1, p2);
+                }
+                p1.x += p1.vx;
+				p1.y += p1.vy;
+            }
+        });
+        physicsTimer.start();
+    }
 
 	/**
 	 * Seter that changes the angle to be used in the computation of the coordinates
@@ -111,58 +158,6 @@ public class MainPanel extends JPanel {
 	public void setAllFlagsFalse() {
 		for (Flag flag : Flag.values()) { flag.setState(false); }
 	}
-
-	/**
-	 * FPS timer that performs the necessary graphical updates every 1000/16
-	 * millisecond.
-	 */
-	Timer fpsTimer = new Timer(timeTick, new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			++fpsTimerCounter;
-
-			if (shapeActivated()) {
-				if (shape.checkArrival()) shape.setShapeIsDraggable(true);
-				for (int i = 0; i < particleList.size(); ++i) {
-					Particle p = particleList.get(i);
-					p.x += p.vx;
-					p.y += p.vy;
-				}
-			}
-			if (fpsTimerCounter % 60 == 0) {
-				information = statistics();
-				controller.setLabels(particleList.size(), information);
-				collisionsPerSecond = 0;
-			}
-			// collisionsPerSecond = (fpsTimerCounter % 60 == 0) ? 0 : collisionsPerSecond;
-			repaint();
-		}
-	});
-
-	/**
-	 * Physics timer that performs the necessary calculators through a 2 millisecond
-	 * thread
-	 */
-	Timer physicsTimer = new Timer(2, new ActionListener() {
-		@Override
-		public void actionPerformed(ActionEvent ae) {
-			for (int i = 0; i < particleList.size(); i++) {
-				Particle p1 = particleList.get(i);
-
-				for (int j = 0; j < particleList.size(); j++) {
-					Particle p2 = particleList.get(j);
-
-					if (p1 == p2) continue;
-					p1.edgeCollision(p2);
-
-					if (!electricFlag || !gravityFlag) applyForces(p1, p2);
-					applyCollision(p1, p2);
-				}
-				p1.x += p1.vx;
-				p1.y += p1.vy;
-			}
-		}
-	});
 
 	/**
 	 * Method that applies the forces on the particles if the forces are activated
@@ -237,6 +232,7 @@ public class MainPanel extends JPanel {
 	public void initializeParticles(int numberOfParticles, int mass, int charge) {
 		for (int i = 0; i < numberOfParticles; i++) {
 			int xPos, yPos;
+			Random rand = new Random();
 
 			do {
 				xPos = rand.nextInt((int) 530 - 100) + 50;
@@ -534,4 +530,15 @@ public class MainPanel extends JPanel {
 		}
 	}
 
+	public Timer getPhysicsTimer() {
+		return physicsTimer;
+	}
+
+	public Timer getFpsTimer() {
+		return fpsTimer;
+	}
+
+	public void setShape(ShapeManager newShape) {
+		shape = newShape;
+	}
 }
