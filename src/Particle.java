@@ -79,7 +79,7 @@ public class Particle{
 	/** 
 	 * @param p2
 	 */
-	public void velCollision(Particle p2) {
+	public void doCollisionWithOtherParticle(Particle p2) {
 		double m1 = this.mass , m2 = p2.mass;
 
 		this.vx = -(this.mass*this.vx + p2.mass*p2.vx
@@ -152,7 +152,7 @@ public class Particle{
 	 * @param other
 	 * @return boolean
 	 */
-	public boolean collide(Particle other){
+	public boolean isCollidingOtherParticle(Particle other){
     	double d = Math.sqrt(
 				Math.pow(this.x - other.x, 2) +
 				Math.pow(this.y-other.y, 2));
@@ -164,7 +164,7 @@ public class Particle{
 	 * @param flag
 	 * @return boolean
 	 */
-	public boolean collide(Particle other, boolean flag) {
+	public boolean isCollidingOtherParticle(Particle other, boolean flag) {
 		return Math.abs((this.x+this.vx)-(other.x+other.vx)) < width 
 				&& Math.abs((this.y+this.vy)-(other.y+other.vy)) < height;
 	}

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -18,23 +19,23 @@ import javax.swing.Timer;
 public class MainPanel extends JPanel {
 
 	private static final int TIME_TICK = 1000 / 60;
-	List<Particle> particleList = new ArrayList<>();
-	double newDirY = 0; // y-direction of a new particle
-	double newDirX = 0; // x-direction of a new particle
-	double prevY; // tracker for y-value of the mouse
-	double prevX; // tracker for x-value of the mouse
-	boolean collisionFlag, electricFlag, gravityFlag; // flags for the forces
-	boolean removeFlag; // flag for removing particles
-	int timeTick = 1000 / 60; // 60 FPS
-	int collisionsPerSecond; // collisions per second for statistics
-	int fpsTimerCounter = 0; // counter to have the statistics at a fixed frequency
+	private static final double DEFAULT_SPIRAL_ANGLE = Math.PI * (1 + Math.sqrt(5) / 4);
 
-	double spiralAngle = Math.PI * (1 + Math.sqrt(5) / 4); // base angle for sunflower shape
-	double[] information; // array holding information for the statistics
-	double currAnchorX; // x-value for the mouse anchor whence rotating a fixed shape
-	double currAnchorY; // y-value for the mouse anchor whence rotating a fixed shape
-	String lastShape;
-	boolean tempFlag = true;
+	private List<Particle> particleList = new ArrayList<>();
+	private double newDirY = 0; // y-direction of a new particle
+	private double newDirX = 0; // x-direction of a new particle
+	private double prevY; // tracker for y-value of the mouse
+	private double prevX; // tracker for x-value of the mouse
+	private boolean collisionFlag, electricFlag, gravityFlag; // flags for the forces
+	private boolean isInParticleRemovalMode; // flag for removing particles
+
+	private int collisionsPerSecond; // collisions per second for statistics
+	private int fpsTimerCounter = 0; // counter to have the statistics at a fixed frequency
+
+	private double spiralAngle = DEFAULT_SPIRAL_ANGLE;
+	private double[] information; // array holding information for the statistics
+	private String lastShape;
+	private boolean tempFlag = true;
 
 	private Timer fpsTimer = null;
 	private Timer physicsTimer = null;
@@ -57,9 +58,17 @@ public class MainPanel extends JPanel {
 
 		private boolean state;
 
-		private Flag(boolean state) { this.state = state; }
-		public void flipState() { this.state = !this.state; }
-		public void setState(boolean state) { this.state = state; }
+		private Flag(boolean state) {
+			this.state = state;
+		}
+
+		public void flipState() {
+			this.state = !this.state;
+		}
+
+		public void setState(boolean state) {
+			this.state = state;
+		}
 	}
 
 	/**
@@ -71,65 +80,68 @@ public class MainPanel extends JPanel {
 	public MainPanel(SampleController controller) {
 		this.controller = controller;
 		setupMouseListener();
-        startTimers();
+		startTimers();
 	}
 
 	private void setupMouseListener() {
-        MouseAdapter mouseAdapter = new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                doMouseReleased(e);
-            }
+		MouseAdapter mouseAdapter = new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				doMouseReleased(e);
+			}
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                doMousePressed(e);
-            }
+			@Override
+			public void mousePressed(MouseEvent e) {
+				doMousePressed(e);
+			}
 
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                doMouseDragged(e);
-            }
-        };
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);
-    }
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				doMouseDragged(e);
+			}
+		};
+		addMouseListener(mouseAdapter);
+		addMouseMotionListener(mouseAdapter);
+	}
 
 	private void startTimers() {
-        fpsTimer = new Timer(TIME_TICK, e -> {
-            ++fpsTimerCounter;
+		fpsTimer = new Timer(TIME_TICK, e -> {
+			++fpsTimerCounter;
 
-            if (shapeActivated()) {
-                if (shape.checkArrival()) shape.setShapeIsDraggable(true);
-                for (Particle p : particleList) {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                }
-            }
-            if (fpsTimerCounter % 60 == 0) {
-                information = statistics();
-                controller.setLabels(particleList.size(), information);
-                collisionsPerSecond = 0;
-            }
-            repaint();
-        });
-        fpsTimer.start();
+			if (shapeActivated()) {
+				if (shape.checkArrival())
+					shape.setShapeIsDraggable(true);
+				for (Particle p : particleList) {
+					p.x += p.vx;
+					p.y += p.vy;
+				}
+			}
+			if (fpsTimerCounter % 60 == 0) {
+				information = statistics();
+				controller.setLabels(particleList.size(), information);
+				collisionsPerSecond = 0;
+			}
+			repaint();
+		});
+		fpsTimer.start();
 
-        physicsTimer = new Timer(2, e -> {
-            for (Particle p1 : particleList) {
-                for (Particle p2 : particleList) {
-                    if (p1 == p2) continue;
-                    p1.edgeCollision(p2);
+		physicsTimer = new Timer(2, e -> {
+			for (Particle p1 : particleList) {
+				for (Particle p2 : particleList) {
+					if (p1 == p2)
+						continue;
+					p1.edgeCollision(p2);
 
-                    if (!electricFlag || !gravityFlag) applyForces(p1, p2);
-                    applyCollision(p1, p2);
-                }
-                p1.x += p1.vx;
+					if (!electricFlag || !gravityFlag)
+						applyForces(p1, p2);
+					applyCollision(p1, p2);
+				}
+				p1.x += p1.vx;
 				p1.y += p1.vy;
-            }
-        });
-        physicsTimer.start();
-    }
+			}
+		});
+		physicsTimer.start();
+	}
 
 	/**
 	 * Seter that changes the angle to be used in the computation of the coordinates
@@ -141,7 +153,9 @@ public class MainPanel extends JPanel {
 	 */
 	public void setSpiralAngle(double value) {
 		this.spiralAngle = value;
-		if (Flag.SUNFLOWER.state) { changeSunflower(); }
+		if (Flag.SUNFLOWER.state) {
+			changeSunflower();
+		}
 	}
 
 	/**
@@ -152,12 +166,17 @@ public class MainPanel extends JPanel {
 	 *         or already in a shape, false otherwise
 	 */
 	public static boolean shapeActivated() {
-		for (Flag flag : Flag.values()) { if (flag.state) return true; }
+		for (Flag flag : Flag.values()) {
+			if (flag.state)
+				return true;
+		}
 		return false;
 	}
 
 	public void setAllFlagsFalse() {
-		for (Flag flag : Flag.values()) { flag.setState(false); }
+		for (Flag flag : Flag.values()) {
+			flag.setState(false);
+		}
 	}
 
 	/**
@@ -174,7 +193,9 @@ public class MainPanel extends JPanel {
 				}
 			}
 		}
-		if (!gravityFlag) { p1.applyForce(p1.gravitationalForce(p2)); }
+		if (!gravityFlag) {
+			p1.applyForce(p1.gravitationalForce(p2));
+		}
 	}
 
 	/**
@@ -185,9 +206,9 @@ public class MainPanel extends JPanel {
 	 * @param p2 another particle that is present on the canvas
 	 */
 	public void applyCollision(Particle p1, Particle p2) {
-		if (p1.collide(p2) && !collisionFlag) {
-			p1.velCollision(p2);
-			p2.velCollision(p1);
+		if (p1.isCollidingOtherParticle(p2) && !collisionFlag) {
+			p1.doCollisionWithOtherParticle(p2);
+			p2.doCollisionWithOtherParticle(p1);
 			++collisionsPerSecond;
 		}
 	}
@@ -209,7 +230,8 @@ public class MainPanel extends JPanel {
 			for (int j = 0; j < particleList.size(); j++) {
 				Particle p2 = particleList.get(j);
 
-				if (p1 == p2) continue;
+				if (p1 == p2)
+					continue;
 
 				double electricForce = Math.pow(p1.electrostaticForce(p2)[0], 2)
 						+ Math.pow(p1.electrostaticForce(p2)[1], 2);
@@ -231,41 +253,42 @@ public class MainPanel extends JPanel {
 	 * @param charge            the charge to be given to each new particle
 	 */
 	public void initializeParticles(int numberOfParticles, int mass, int charge) {
-		for (int i = 0; i < numberOfParticles; i++) {
-			int xPos, yPos;
-			Random rand = new Random();
+		Random rand = new Random();
+
+		for (int i = 0; i < numberOfParticles; ++i) {
+			int xPos;
+			int yPos;
+			Particle p;
 
 			do {
-				xPos = rand.nextInt((int) 530 - 100) + 50;
-				yPos = rand.nextInt((int) 330 - 100) + 50;
-				Particle p = new Particle(xPos, yPos, rand.nextInt(2) - 1, rand.nextInt(2) - 1, mass, charge); // mass
-																												// charge
-																												// at
-																												// end
-				particleList.add(p);
-			} while (!particleAlreadyExists(xPos, yPos));
+				xPos = rand.nextInt(530 - 100) + 50;
+				yPos = rand.nextInt(330 - 100) + 50;
+				double vx = rand.nextInt(2) - 1;
+				double vy = rand.nextInt(2) - 1;
+
+				p = new Particle(xPos, yPos, vx, vy, mass, charge);
+			} while (particleAlreadyExists(xPos, yPos));
+
+			particleList.add(p);
 		}
 	}
 
-	/**
-	 * Method that paints the particles on the canvas
-	 * 
-	 * @param g paint componet instance associated with this JPanel
-	 */
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		for (int i = 0; i < particleList.size(); i++) {
-			Particle particle = particleList.get(i);
-
-			g2d.setColor(Color.WHITE);
-			Shape circle = new Arc2D.Double(particle.x, particle.y, particle.width, particle.height, 0, 360,
-					Arc2D.CHORD);
-			GradientPaint gp1 = new GradientPaint(5, 5, Color.red, 20, 20, Color.yellow, true);
-			g2d.setPaint(gp1);
-			g2d.fill(circle);
+		for (Particle particle : particleList) {
+			drawParticle(g2d, particle);
 		}
+	}
+
+	private void drawParticle(Graphics2D g2d, Particle particle) {
+		g2d.setColor(Color.WHITE);
+		Shape circle = new Arc2D.Double(particle.x, particle.y, particle.width, particle.height, 0, 360, Arc2D.CHORD);
+		GradientPaint gradientPaint = new GradientPaint(5, 5, Color.red, 20, 20, Color.yellow, true);
+		g2d.setPaint(gradientPaint);
+		g2d.fill(circle);
 	}
 
 	/**
@@ -294,18 +317,21 @@ public class MainPanel extends JPanel {
 	 * @return boolean true if a particle exists at this (x,y), false otherwise
 	 */
 	public boolean particleAlreadyExists(double x, double y) {
-		boolean particleExistsAlready = false;
+		return particleList.stream().anyMatch(
+			particle -> isCoordinateWithingParticleBounds(x, y, particle)
+		);
+	}
 
-		for (int i = 0; i < particleList.size(); i++) {
-			Particle particle = particleList.get(i);
+	private void addParticle(double x, double y, double dirX, double dirY, double mass, int charge) {
+		Particle p = new Particle(x, y, dirX, dirY, mass, charge);
+		particleList.add(p);
+	}
 
-			if (x >= particle.x - particle.width && x <= particle.x + 2 * particle.width
-					&& y >= particle.y - particle.height && y <= particle.y + 2 * particle.height) {
-				particleExistsAlready = true;
-				break;
-			}
+	private void removeParticlesAt(int x, int y) {
+		List<Particle> particlesToRemove = particlesToRemove(x, y);
+		for (Particle particle : particlesToRemove) {
+			particleList.remove(particle);
 		}
-		return particleExistsAlready;
 	}
 
 	/**
@@ -317,17 +343,16 @@ public class MainPanel extends JPanel {
 	 * @return List<Particle> a list of the particles to remove defined within
 	 *         the area of twice the width and height of a particle
 	 */
-	public List<Particle> particleToRemove(double x, double y) {
-		List<Particle> particlesToRemove = new ArrayList<>();
-		for (int i = 0; i < particleList.size(); i++) {
-			Particle particle = particleList.get(i);
+	public List<Particle> particlesToRemove(double x, double y) {
+		return particleList.stream()
+				.filter(particle -> isCoordinateWithingParticleBounds(x, y, particle))
+				.collect(Collectors.toList());
+	}
 
-			if (x >= particle.x - particle.width && x <= particle.x + 2 * particle.width
-					&& y >= particle.y - particle.height && y <= particle.y + 2 * particle.height) {
-				particlesToRemove.add(particle);
-			}
-		}
-		return particlesToRemove;
+	private boolean isCoordinateWithingParticleBounds(double x, double y, Particle p) {
+		boolean xWithinBounds = x >= p.x - p.width && x <= p.x + 2 * p.width;
+		boolean yWithinBounds = y >= p.y - p.height && y <= p.y + 2 * p.height;
+		return xWithinBounds && yWithinBounds;
 	}
 
 	/**
@@ -336,9 +361,12 @@ public class MainPanel extends JPanel {
 	 * @param force string representing a force selected from the controller
 	 */
 	public void forcesButtonsPressed(String force) {
-		if (force.equals("Collision")) collisionFlag = !collisionFlag;
-		else if (force.equals("Electrostatics")) electricFlag = !electricFlag;
-		else gravityFlag = !gravityFlag;
+		if (force.equals("Collision"))
+			collisionFlag = !collisionFlag;
+		else if (force.equals("Electrostatics"))
+			electricFlag = !electricFlag;
+		else
+			gravityFlag = !gravityFlag;
 	}
 
 	/**
@@ -361,8 +389,10 @@ public class MainPanel extends JPanel {
 	 *               !1 - remove all particles from this canvas
 	 */
 	public void removeParticleButtonPressed(String number) {
-		if (number.equals("one")) removeFlag = !removeFlag;
-		else this.particleList = new ArrayList<Particle>();
+		if (number.equals("one"))
+			isInParticleRemovalMode = !isInParticleRemovalMode;
+		else
+			this.particleList = new ArrayList<Particle>();
 	}
 
 	/**
@@ -477,20 +507,20 @@ public class MainPanel extends JPanel {
 	 * 
 	 * @param e the mouse position on the canvas
 	 */
-	public void doMouseReleased(MouseEvent e) {
-		if (shape.shapeIsDraggable)
+	private void doMouseReleased(MouseEvent e) {
+		if (shape.shapeIsDraggable) {
 			return;
-
-		if (!particleAlreadyExists(e.getX(), e.getY()) && !removeFlag) {
-			Particle p = new Particle(e.getX(), e.getY(), newDirX, newDirY, 100, 0);
-			particleList.add(p);
-		} else if (removeFlag) {
-			List<Particle> particlesToRemove = particleToRemove(e.getX(), e.getY());
-			for (int i = 0; i < particlesToRemove.size(); i++) {
-				Particle particle = particlesToRemove.get(i);
-				particleList.remove(particle);
-			}
 		}
+
+		int x = e.getX();
+		int y = e.getY();
+
+		if (isInParticleRemovalMode) {
+			removeParticlesAt(x, y);
+		} else if (!particleAlreadyExists(x, y)) {
+			addParticle(x, y, newDirX, newDirY, 100, 0);
+		}
+
 		newDirX = 0;
 		newDirY = 0;
 	}
