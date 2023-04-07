@@ -14,9 +14,9 @@ public class Particle{
 	double 	radius = 0;
 	Random 	rand = new Random();
 	
-	private final double coefficientWall = 0.6;
-	private final double k = 0.025;     // coulomb's constant
-    private final double g = 0.00025;   // universal gravitational constant
+	private static final double coefficientWall = 0.6;
+	private static final double k = 0.025;     // coulomb's constant
+    private static final double g = 0.00025;   // universal gravitational constant
 
 	public Particle(double x, double y, double vx, double vy,double mass, int charge) {
 		this.x = x;
@@ -50,9 +50,9 @@ public class Particle{
 				Math.pow(this.x - p2.x, 2) +
 				Math.pow(this.y - p2.y, 2));
 
-		double fy = this.k * (this.y - p2.y) * (this.charge * p2.charge)
+		double fy = k * (this.y - p2.y) * (this.charge * p2.charge)
 				/ Math.pow(d, 2);
-		double fx = this.k * (this.x - p2.x) * (this.charge * p2.charge)
+		double fx = k * (this.x - p2.x) * (this.charge * p2.charge)
 				/ Math.pow(d, 2);
 
 		return new double[] {fx,fy};
@@ -67,9 +67,9 @@ public class Particle{
 				Math.pow(this.x - p2.x, 2) +
 				Math.pow(this.y-p2.y, 2));
 
-		double fy = this.g * (this.y-p2.y) * (-(this.mass * p2.mass)
+		double fy = g * (this.y-p2.y) * (-(this.mass * p2.mass)
 				/ Math.pow(d, 2));
-		double fx = this.g * (this.x-p2.x) * (-(this.mass * p2.mass)
+		double fx = g * (this.x-p2.x) * (-(this.mass * p2.mass)
 				/ Math.pow(d, 2));
 
 		return new double[] {fx,fy};
@@ -108,11 +108,11 @@ public class Particle{
 	 */
 	public void edgeCollision(Particle p2) {
 		if(this.x + this.vx+this.radius > 691 || this.x + this.vx < 0) {
-			this.vx = -this.vx * this.coefficientWall;
+			this.vx = -this.vx * coefficientWall;
 		}
 
 		if(this.y + this.vy+this.radius > 452 || this.y + this.vy < 0){
-			this.vy = -this.vy * this.coefficientWall;
+			this.vy = -this.vy * coefficientWall;
 		}
 	}
 
