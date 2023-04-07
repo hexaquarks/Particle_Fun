@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -149,7 +150,7 @@ public class SampleController {
         electrostatics.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Electrostatics"));
         gravity.addEventHandler(ActionEvent.ACTION, event -> mainPanel.forcesButtonsPressed("Gravity"));
 
-        ArrayList<RadioButton> radioButtons = new ArrayList<RadioButton>(
+        List<RadioButton> radioButtons = new ArrayList<RadioButton>(
             Arrays.asList(circle, square, diamond, spiral, looseSpiral, sunflower)
         );
         for(RadioButton button : radioButtons){

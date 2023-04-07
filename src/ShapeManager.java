@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * ShapeManager.java
@@ -10,8 +11,8 @@ import java.util.Iterator;
 public class ShapeManager {
 	String shapeType; // circle , square, pentagon , hexagon
 	Point2D center;
-	ArrayList<Point2D> coordinates = new ArrayList<Point2D>();
-	ArrayList<ArrayList<Point2D>> dividedShapeCoords = new ArrayList<ArrayList<Point2D>>(Arrays.asList(coordinates));
+	List<Point2D> coordinates = new ArrayList<>();
+	List<List<Point2D>> dividedShapeCoords = new ArrayList<>(Arrays.asList(coordinates));
 
 	boolean shapeIsDraggable;
 	double currentAngle;
@@ -29,6 +30,9 @@ public class ShapeManager {
 	 */
 	public ShapeManager(Point2D panelSize) {
 		this.center = panelSize;
+	}
+
+	public ShapeManager() {
 	}
 
 	/**
@@ -58,10 +62,10 @@ public class ShapeManager {
 	/**
 	 * Deep copy
 	 * 
-	 * @return ArrayList<Point2D> a copy of Point2D coordinated
+	 * @return List<Point2D> a copy of Point2D coordinated
 	 */
-	public ArrayList<Point2D> getCopy() {
-		ArrayList<Point2D> copy = new ArrayList<Point2D>();
+	public List<Point2D> getCopy() {
+		List<Point2D> copy = new ArrayList<>();
 		for (int i = 0; i < this.coordinates.size(); i++) {
 			Point2D point = new Point2D(this.coordinates.get(i).x, this.coordinates.get(i).y);
 			copy.add(point);
@@ -97,7 +101,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles the list of particles elements present on the canvas
 	 */
-	public void getCircleCoords(ArrayList<Particle> particles) {
+	public void getCircleCoords(List<Particle> particles) {
 		int n = particles.size();
 		double alpha = Math.toRadians(360.0 / n); // angle of each triangle in the polygon
 		float angle = 0;
@@ -119,7 +123,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles the list of particles elements present on the canvas
 	 */
-	public void getSquareCoords(ArrayList<Particle> particles) {
+	public void getSquareCoords(List<Particle> particles) {
 		int n = particles.size();
 		int layer = n / 4;
 		double width = particles.get(0).width;
@@ -147,7 +151,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles the list of particles elements present on the canvas
 	 */
-	public void getDiamondCoords(ArrayList<Particle> particles) {
+	public void getDiamondCoords(List<Particle> particles) {
 		getSquareCoords(particles);
 
 		for (Point2D point : this.coordinates) {
@@ -184,7 +188,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles the list of particles elements present on the canvas
 	 */
-	public void getSpiralCoords(ArrayList<Particle> particles) {
+	public void getSpiralCoords(List<Particle> particles) {
 		double rotation = -Math.PI / 2;
 		int awayStep = (int) particles.get(0).width / 2;
 		int chord = awayStep * 3; // distance between points
@@ -209,7 +213,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles the list of particles elements present on the canvas
 	 */
-	public void getLooseSpiralCoords(ArrayList<Particle> particles) {
+	public void getLooseSpiralCoords(List<Particle> particles) {
 		int awayStep = (int) particles.get(0).width * 2;
 		double rotation = -Math.PI / 2;
 		int chord = awayStep / 2; // distance between points
@@ -238,7 +242,7 @@ public class ShapeManager {
 	 * @param particles the list of particles elements present on the canvas
 	 * @param angle     the base angle in the coordinates computation
 	 */
-	public void getSunflowerCoords(ArrayList<Particle> particles, double angle) {
+	public void getSunflowerCoords(List<Particle> particles, double angle) {
 		double localMultiplier = 1.2 * particles.get(0).width; // guess
 		double baseAngle = angle;
 
@@ -258,7 +262,7 @@ public class ShapeManager {
 	 * @param y         y-value on the screen pointed by the mouse
 	 * @param particles the list of particles present on the canvas
 	 */
-	public void rotateShape(double x, double y, ArrayList<Particle> particles) {
+	public void rotateShape(double x, double y, List<Particle> particles) {
 		currentAngle = getAngle(center.x, center.y, x, y);
 		double angle = (currentAngle - startAngle) / 10;
 
@@ -290,7 +294,7 @@ public class ShapeManager {
 		}
 	}
 
-	public void calculateShapeSize(ArrayList<Particle> particles) {
+	public void calculateShapeSize(List<Particle> particles) {
 		double widthMax = 0, widthMin = particles.get(0).x;
 		double heightMax = 0, heightMin = particles.get(0).y;
 
@@ -321,7 +325,7 @@ public class ShapeManager {
 	/**
 	 * @param particles
 	 */
-	public void divide(ArrayList<Particle> particles) {
+	public void divide(List<Particle> particles) {
 		calculateShapeSize(particles);
 
 		// compute new coordinates?
@@ -334,7 +338,7 @@ public class ShapeManager {
 	 * @param currWidth
 	 * @param currHeight
 	 */
-	public void rescaleShape(ArrayList<Particle> particles) {
+	public void rescaleShape(List<Particle> particles) {
 		System.out.println("in rescale");
 		// impose 1/9 to the left, 1/9 to the middle and 1/9 to the right
 		// then left child is 1/3 of canvas width and right child is 1/3 too.
@@ -354,11 +358,11 @@ public class ShapeManager {
 		particles.get(0).height = newParticleHeight;
 	}
 
-	public void setDividedShapeCoodinates(ArrayList<Particle> particles) {
+	public void setDividedShapeCoodinates(List<Particle> particles) {
 		// 2 child shapes for now
 		// clone the coordinates
 
-		ArrayList<Point2D> coordinatesClone = getCopy();
+		List<Point2D> coordinatesClone = getCopy();
 		for (int i = 0; i < coordinatesClone.size(); i++) {
 			Point2D coordinate = coordinatesClone.get(i);
 			// coordinate.x++;
@@ -382,7 +386,7 @@ public class ShapeManager {
 		this.coordinates.addAll(coordinatesClone);
 		// clone the particles, merge both lists
 
-		ArrayList<Particle> particlesClone = new ArrayList<Particle>();
+		List<Particle> particlesClone = new ArrayList<>();
 		for (int i = 0; i < particles.size(); i++) {
 			Particle p = new Particle(particles.get(i).x + 1, particles.get(i).y + 1, particles.get(i).vx,
 					particles.get(i).vy, particles.get(i).mass, particles.get(i).charge);
@@ -397,7 +401,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles list of particles on the canvas
 	 */
-	public void jiggle(ArrayList<Particle> particles) {
+	public void jiggle(List<Particle> particles) {
 		// if odd number of particles , then need to set last 2 in the list
 		// to get smaller but at a slower rate then the other before
 
@@ -421,11 +425,11 @@ public class ShapeManager {
 	 * @param pList  list of particles on the canvas
 	 * @param second list of Point2D coordinates representing the shape's
 	 *               coordinates.
-	 * @return ArrayList<Double> all the distances between all points and all
+	 * @return List<Double> all the distances between all points and all
 	 *         coordinates
 	 */
-	public ArrayList<Double> calculateDistance(ArrayList<Particle> pList, ArrayList<Point2D> second) {
-		ArrayList<Double> distances = new ArrayList<Double>();
+	public List<Double> calculateDistance(List<Particle> pList, List<Point2D> second) {
+		List<Double> distances = new ArrayList<>();
 		Iterator<Particle> iterator1 = pList.iterator();
 		while (iterator1.hasNext()) {
 			Particle iterated = iterator1.next();
@@ -445,10 +449,10 @@ public class ShapeManager {
 	 * 
 	 * @param particles list of particles on the canvas
 	 */
-	public void setProximity(ArrayList<Particle> particles) {
-		ArrayList<Particle> particlesCopy = (ArrayList<Particle>) particles.clone();
-		ArrayList<Point2D> coordinatesCopy = (ArrayList<Point2D>) this.coordinates.clone();
-		ArrayList<Double> distances;
+	public void setProximity(List<Particle> particles) {
+		List<Particle> particlesCopy = new ArrayList<>( particles);
+		List<Point2D> coordinatesCopy = new ArrayList<>(this.coordinates);
+		List<Double> distances;
 		Iterator<Particle> iterator1 = particlesCopy.iterator();
 
 		while (iterator1.hasNext()) {
@@ -481,7 +485,7 @@ public class ShapeManager {
 	 * 
 	 * @param particles list of particles on the canvas
 	 */
-	public void setSpeed(ArrayList<Particle> particles) {
+	public void setSpeed(List<Particle> particles) {
 
 		for (int i = 0; i < this.coordinates.size(); i++) {
 

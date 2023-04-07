@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Arc2D;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -17,7 +18,7 @@ import javax.swing.Timer;
 public class MainPanel extends JPanel {
 
 	private static final int TIME_TICK = 1000 / 60;
-	ArrayList<Particle> particleList = new ArrayList<Particle>();
+	List<Particle> particleList = new ArrayList<>();
 	double newDirY = 0; // y-direction of a new particle
 	double newDirX = 0; // x-direction of a new particle
 	double prevY; // tracker for y-value of the mouse
@@ -47,7 +48,7 @@ public class MainPanel extends JPanel {
 	/**
 	 * Information associated with shapes
 	 */
-	ArrayList<String> shapeNames = new ArrayList<String>(
+	List<String> shapeNames = new ArrayList<String>(
 			Arrays.asList("Circle", "Square", "Diamond", "Spiral", "Loose Spiral", "Sunflower"));
 
 	public enum Flag {
@@ -313,11 +314,11 @@ public class MainPanel extends JPanel {
 	 * 
 	 * @param x x-value on the canvas
 	 * @param y y-value on the canvas
-	 * @return ArrayList<Particle> a list of the particles to remove defined within
+	 * @return List<Particle> a list of the particles to remove defined within
 	 *         the area of twice the width and height of a particle
 	 */
-	public ArrayList<Particle> particleToRemove(double x, double y) {
-		ArrayList<Particle> particlesToRemove = new ArrayList<Particle>();
+	public List<Particle> particleToRemove(double x, double y) {
+		List<Particle> particlesToRemove = new ArrayList<>();
 		for (int i = 0; i < particleList.size(); i++) {
 			Particle particle = particleList.get(i);
 
@@ -484,7 +485,7 @@ public class MainPanel extends JPanel {
 			Particle p = new Particle(e.getX(), e.getY(), newDirX, newDirY, 100, 0);
 			particleList.add(p);
 		} else if (removeFlag) {
-			ArrayList<Particle> particlesToRemove = particleToRemove(e.getX(), e.getY());
+			List<Particle> particlesToRemove = particleToRemove(e.getX(), e.getY());
 			for (int i = 0; i < particlesToRemove.size(); i++) {
 				Particle particle = particlesToRemove.get(i);
 				particleList.remove(particle);

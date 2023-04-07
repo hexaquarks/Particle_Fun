@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -134,7 +134,7 @@ public class Particle{
 	/** 
 	 * @param particles
 	 */
-	public void reinitializeVel(ArrayList<Particle> particles) {
+	public void reinitializeVel(List<Particle> particles) {
 		for(Particle p : particles) {
 			p.vx = velInit();
 			p.vy = velInit();
