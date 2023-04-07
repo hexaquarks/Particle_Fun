@@ -221,27 +221,26 @@ public class MainPanel extends JPanel {
 	 *         collisions per second.
 	 */
 	public double[] statistics() {
-		// TODO reduce this thing, it's waayy to bad for performance.
 		double totalElectricEnergy = 0, totalPotential = 0;
-
+	
 		for (int i = 0; i < particleList.size(); i++) {
 			Particle p1 = particleList.get(i);
-
-			for (int j = 0; j < particleList.size(); j++) {
+	
+			for (int j = i + 1; j < particleList.size(); j++) {
 				Particle p2 = particleList.get(j);
-
-				if (p1 == p2)
-					continue;
-
-				double electricForce = Math.pow(p1.electrostaticForce(p2)[0], 2)
-						+ Math.pow(p1.electrostaticForce(p2)[1], 2);
+	
+				double[] electrostaticForce = p1.electrostaticForce(p2);
+				double electricForce = Math.pow(electrostaticForce[0], 2) + Math.pow(electrostaticForce[1], 2);
 				totalElectricEnergy += electricForce;
-
-				double potentialForce = Math.pow(p1.gravitationalForce(p2)[0], 2)
-						+ Math.pow(p1.gravitationalForce(p2)[1], 2);
+	
+				double[] gravitationalForce = p1.gravitationalForce(p2);
+				double potentialForce = Math.pow(gravitationalForce[0], 2) + Math.pow(gravitationalForce[1], 2);
 				totalPotential += potentialForce;
 			}
 		}
+		totalElectricEnergy *= 2;
+		totalPotential *= 2;
+	
 		return new double[] { totalElectricEnergy, totalPotential, collisionsPerSecond };
 	}
 
