@@ -34,7 +34,7 @@ public class MainPanel extends JPanel {
 
 	private double spiralAngle = DEFAULT_SPIRAL_ANGLE;
 	private double[] information; // array holding information for the statistics
-	private String lastShape;
+	private ShapeType lastShape;
 	private boolean tempFlag = true;
 
 	private Timer fpsTimer = null;
@@ -108,7 +108,7 @@ public class MainPanel extends JPanel {
 		fpsTimer = new Timer(TIME_TICK, e -> {
 			++fpsTimerCounter;
 
-			if (shapeActivated()) {
+			if (ShapeType.AtLeastOneShapeIsActivated()) {
 				if (shape.checkArrival())
 					shape.setShapeIsDraggable(true);
 				for (Particle p : particleList) {
@@ -153,32 +153,11 @@ public class MainPanel extends JPanel {
 	 */
 	public void setSpiralAngle(double value) {
 		this.spiralAngle = value;
-		if (Flag.SUNFLOWER.state) {
+		if (ShapeType.SUNFLOWER.isSelected()) {
 			changeSunflower();
 		}
 	}
-
-	/**
-	 * Method that sets one of the shape activated, that is the particles begin to
-	 * form a shape or are already in the form of a shape
-	 * 
-	 * @return boolean true if the particles are in the process of forming a shape
-	 *         or already in a shape, false otherwise
-	 */
-	public static boolean shapeActivated() {
-		for (Flag flag : Flag.values()) {
-			if (flag.state)
-				return true;
-		}
-		return false;
-	}
-
-	public void setAllFlagsFalse() {
-		for (Flag flag : Flag.values()) {
-			flag.setState(false);
-		}
-	}
-
+	
 	/**
 	 * Method that applies the forces on the particles if the forces are activated
 	 * 
@@ -402,64 +381,59 @@ public class MainPanel extends JPanel {
 	 * @param shapeType string with the name of the shape e.g. "Circle" , "Spiral" ,
 	 *                  ...
 	 */
-	public void shapeButtonPressed(String shapeType) {
+	public void shapeButtonPressed(ShapeType selectedShapeRadioButton) {
 		SwingUtilities.invokeLater(() -> {
 			shape.setShapeIsDraggable(false);
-			spiralAngle = Math.PI * (1 + Math.sqrt(5) / 4);
-
-			Flag currFlag = Flag.values()[shapeNames.indexOf(shapeType)];
-
-			if (!currFlag.state) {
-				for (Flag flag : Flag.values()) {
-					flag.setState((flag == currFlag) ? true : false);
-				}
-				physicsTimer.stop();
-				setInitialization((short) currFlag.ordinal());
-			} else {
-				currFlag.setState(false);
+			spiralAngle = DEFAULT_SPIRAL_ANGLE;
+	
+			if (selectedShapeRadioButton.isSelected()) {
+				selectedShapeRadioButton.setIsSelected(false);
 				physicsTimer.start();
 				particleList.get(0).reinitializeVel(particleList);
 				shape.reinitializeCoordinates();
+			} else {
+				Arrays.stream(ShapeType.values()).forEach(st -> st.setIsSelected(st == selectedShapeRadioButton));
+				physicsTimer.stop();
+				setInitialization(selectedShapeRadioButton);
 			}
-
-			lastShape = shapeType;
 		});
 	}
-
-	/**
-	 * Method that sets the coordinates of the shape (from the `shapeType` input)
-	 * and sets the speed of the particles towards those coordinates.
-	 * 
-	 * @param shapeType number associated with the shape. The number follows the
-	 *                  order of the elements of ArrayList<String> shapeName global.
-	 */
-	public void setInitialization(short shapeType) {
-		// 0 = circle , 1 = square, 2 = diamond, ...
+	
+	public void setInitialization(ShapeType shapeType) {
 		shape.reinitializeCoordinates();
-
-		if (shapeType == 0) {
-			shape.getCircleCoords(particleList);
-		} else if (shapeType == 1 || shapeType == 2) {
-			while (particleList.size() % 4 != 0) {
-				initializeParticles(1, 100, 5);
-			}
-			if (shapeType == 1)
-				shape.getSquareCoords(particleList);
-			else
-				shape.getDiamondCoords(particleList);
-		} else if (shapeType == 3) {
-			shape.getSpiralCoords(particleList);
-		} else if (shapeType == 4) {
-			shape.getLooseSpiralCoords(particleList);
-		} else if (shapeType == 5) {
-			shape.getSunflowerCoords(particleList, spiralAngle);
+	
+		switch (shapeType) {
+			case CIRCLE:
+				shape.getCircleCoords(particleList);
+				break;
+			case SQUARE:
+			case DIAMOND:
+				while (particleList.size() % 4 != 0) {
+					initializeParticles(1, 100, 5);
+				}
+				if (shapeType == ShapeType.SQUARE) {
+					shape.getSquareCoords(particleList);
+				} else {
+					shape.getDiamondCoords(particleList);
+				}
+				break;
+			case SPIRAL:
+				shape.getSpiralCoords(particleList);
+				break;
+			case LOOSE_SPIRAL:
+				shape.getLooseSpiralCoords(particleList);
+				break;
+			case SUNFLOWER:
+				shape.getSunflowerCoords(particleList, spiralAngle);
+				break;
 		}
-
+	
 		if (tempFlag) {
 			shape.setProximity(particleList);
 			shape.setSpeed(particleList);
 		}
 	}
+	
 
 	/**
 	 * Method that resets the sunflower shape arragnement of the particles, vien the
@@ -494,7 +468,7 @@ public class MainPanel extends JPanel {
 				shape.setProximity(particleList);
 				shape.setSpeed(particleList);
 			});
-			setAllFlagsFalse();
+			ShapeType.resetAllStates();
 			tempFlag = true;
 
 			// shape.setShapeIsDraggable(false);
@@ -547,18 +521,24 @@ public class MainPanel extends JPanel {
 	 * @param e the mouse position on the canvas
 	 */
 	public void doMouseDragged(MouseEvent e) {
-		int y = e.getY(), x = e.getX();
-
-		newDirY = dragForce(y, prevY);
+		int x = e.getX();
+		int y = e.getY();
+	
 		newDirX = dragForce(x, prevX);
-
+		newDirY = dragForce(y, prevY);
+	
 		if (shape.shapeIsDraggable) {
-			double temp = Math.sqrt(Math.pow((e.getX() - shape.anchorX), 2) + Math.pow((e.getY() - shape.anchorY), 2));
-
-			if (temp >= 20)
-				shape.rotateShape(e.getX(), e.getY(), particleList);
+			double distance = computeDistance(x, y, shape.anchorX, shape.anchorY);
+	
+			if (distance >= 20) {
+				shape.rotateShape(x, y, particleList);
+			}
 		}
 	}
+	
+	private double computeDistance(double x1, double y1, double x2, double y2) {
+		return Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+	}	
 
 	public Timer getPhysicsTimer() {
 		return physicsTimer;

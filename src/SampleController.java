@@ -153,14 +153,16 @@ public class SampleController {
         List<RadioButton> radioButtons = new ArrayList<RadioButton>(
             Arrays.asList(circle, square, diamond, spiral, looseSpiral, sunflower)
         );
-        for(RadioButton button : radioButtons){
+        for (RadioButton button : radioButtons) {
             button.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
                 if (button.isSelected()) {
                     toggles.selectToggle(null);
                     e.consume();
-
                 }
-                mainPanel.shapeButtonPressed(button.getText());
+                ShapeType shapeType = ShapeType.fromName(button.getText());
+                if (shapeType != null) {
+                    mainPanel.shapeButtonPressed(shapeType);
+                }
             });
             button.setToggleGroup(toggles);
         }
