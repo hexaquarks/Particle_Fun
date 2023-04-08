@@ -22,8 +22,8 @@ public class ShapeManager {
 	double anchorX;
 	double anchorY;
 
-	double shapeWidth=0;
-	double shapeHeight=0;
+	double shapeWidth = 0;
+	double shapeHeight = 0;
 
 	/**
 	 * Constructor
@@ -52,11 +52,11 @@ public class ShapeManager {
 		double dx = x - xc;
 		return dx == 0 ? dy >= 0 ? Math.PI / 2 : -Math.PI / 2 : Math.atan(dy / dx) + (dx < 0 ? Math.PI : 0);
 	}
-	
+
 	public List<Point2D> getCopy() {
 		return this.coordinates.stream()
-							   .map(point -> new Point2D(point.x, point.y))
-							   .collect(Collectors.toList());
+				.map(point -> new Point2D(point.x, point.y))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -93,13 +93,12 @@ public class ShapeManager {
 		double pH = particles.get(0).height;
 		float side = (float) particles.get(0).width;
 		float radius = (float) (side / (2 * Math.sin(Math.PI / n)));
-	
+
 		this.coordinates = IntStream.range(0, n)
-			.mapToObj(i -> new Point2D(
-				center.x + Math.sin(i * alpha) * radius - pW / 2,
-				center.y - Math.cos(i * alpha) * radius - pH / 2
-			))
-			.collect(Collectors.toList());
+				.mapToObj(i -> new Point2D(
+						center.x + Math.sin(i * alpha) * radius - pW / 2,
+						center.y - Math.cos(i * alpha) * radius - pH / 2))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -113,34 +112,33 @@ public class ShapeManager {
 		double particleWidth = particles.get(0).width;
 		double rescale = calculateRescale(layers);
 		double startPosition = calculateStartPosition(layers);
-	
+
 		// Generate top and bottom rows
 		for (double column = startPosition; column <= startPosition + layers; column++) {
 			addCoordinate(column, startPosition, rescale, particleWidth);
 			addCoordinate(column, startPosition + layers, rescale, particleWidth);
 		}
-	
+
 		// Generate left and right columns (excluding corners, which are already added)
 		for (double row = startPosition + 1; row < startPosition + layers; row++) {
 			addCoordinate(startPosition, row, rescale, particleWidth);
 			addCoordinate(startPosition + layers, row, rescale, particleWidth);
 		}
 	}
-	
+
 	private double calculateRescale(int layers) {
 		return (layers % 2 == 0) ? 0.5 : 0;
 	}
-	
+
 	private double calculateStartPosition(int layers) {
 		return -(layers / 2 + 0.5);
 	}
-	
+
 	private void addCoordinate(double column, double row, double rescale, double particleWidth) {
 		double x = center.x - (column + rescale) * particleWidth;
 		double y = center.y - (row - rescale) * particleWidth;
 		this.coordinates.add(new Point2D(x, y));
 	}
-	
 
 	/**
 	 * Method that computes the coordinates on the canvas that form a diamond shape.
@@ -151,32 +149,44 @@ public class ShapeManager {
 		getSquareCoords(particles);
 
 		for (Point2D point : this.coordinates) {
+			// Offset to the center
+			Point2D rescaledPoint = rescaleToCenter(point);
 
-			// initial coords
-			double x = point.x;
-			double y = point.y;
+			// Rotate by 45 degrees
+			Point2D rotatedPoint = rotatePoint(rescaledPoint, 45);
 
-			// offset to center
-			double rescaleX = center.x - point.x;
-			double rescaleY = center.y - point.y;
-			point.x = rescaleX;
-			point.y = rescaleY;
+			// Stretch in x and y directions
+			Point2D stretchedPoint = stretchPoint(rotatedPoint, 0.6, 1.3);
 
-			// rotation
-			double newPosX = point.x * Math.cos(Math.toRadians(45)) - point.y * Math.sin(Math.toRadians(45));
-			double newPosY = point.x * Math.sin(Math.toRadians(45)) + point.y * Math.cos(Math.toRadians(45));
-
-			// stretch
-			newPosX *= 0.6;
-			newPosY *= 1.3;
-
-			double diffX = newPosX - rescaleX;
-			double diffY = newPosY - rescaleY;
-
-			point.x = x - diffX;
-			point.y = y - diffY;
-
+			// Revert the offset to the original position
+			applyRevertedOffset(point, rescaledPoint, stretchedPoint);
 		}
+	}
+
+	private Point2D rescaleToCenter(Point2D point) {
+		double offsetX = center.x - point.x;
+		double offsetY = center.y - point.y;
+		return new Point2D(offsetX, offsetY);
+	}
+
+	private Point2D rotatePoint(Point2D point, double angle) {
+		double radians = Math.toRadians(angle);
+		double rotatedX = point.x * Math.cos(radians) - point.y * Math.sin(radians);
+		double rotatedY = point.x * Math.sin(radians) + point.y * Math.cos(radians);
+		return new Point2D(rotatedX, rotatedY);
+	}
+
+	private Point2D stretchPoint(Point2D point, double scaleX, double scaleY) {
+		double stretchedX = point.x * scaleX;
+		double stretchedY = point.y * scaleY;
+		return new Point2D(stretchedX, stretchedY);
+	}
+
+	private void applyRevertedOffset(Point2D originalPoint, Point2D rescaledPoint, Point2D transformedPoint) {
+		double diffX = transformedPoint.x - rescaledPoint.x;
+		double diffY = transformedPoint.y - rescaledPoint.y;
+		originalPoint.x -= diffX;
+		originalPoint.y -= diffY;
 	}
 
 	/**
@@ -192,15 +202,19 @@ public class ShapeManager {
 
 		this.coordinates.add(new Point2D(center.x, center.y));
 
-		for (int i = 1; i < particles.size(); i++) {
-			double away = awayStep * theta; // how far away from center
-			double around = theta + rotation; // how far around the center
-			double x = center.x + Math.cos(around) * away;
-			double y = center.y + Math.sin(around) * away;
-
-			this.coordinates.add(new Point2D(x, y));
-			theta += chord / away;
+		for (int i = 1; i < particles.size(); ++i) {
+			Point2D coordinate = calculateSpiralCoordinate(awayStep, theta, rotation);
+			this.coordinates.add(coordinate);
+			theta += chord / (awayStep * theta);
 		}
+	}
+
+	private Point2D calculateSpiralCoordinate(int awayStep, double theta, double rotation) {
+		double away = awayStep * theta; // how far away from the center
+		double around = theta + rotation; // how far around the center
+		double x = center.x + Math.cos(around) * away;
+		double y = center.y + Math.sin(around) * away;
+		return new Point2D(x, y);
 	}
 
 	/**
@@ -213,22 +227,22 @@ public class ShapeManager {
 		int awayStep = (int) particles.get(0).width * 2;
 		double rotation = -Math.PI / 2;
 		int chord = awayStep / 2; // distance between points
-		double delta;
 		double theta = chord / awayStep;
 
 		this.coordinates.add(new Point2D(center.x, center.y));
 
-		for (int i = 1; i < particles.size(); i++) {
-			double away = awayStep * theta; // how far away from center
-			double around = theta + rotation; // how far around the center
-			double x = center.x + Math.cos(around) * away;
-			double y = center.y + Math.sin(around) * away;
+		for (int i = 1; i < particles.size(); ++i) {
+			Point2D coordinate = calculateSpiralCoordinate(awayStep, theta, rotation);
+			this.coordinates.add(coordinate);
 
-			this.coordinates.add(new Point2D(x, y));
-
-			delta = (-2 * away + Math.sqrt(4 * away * away + 8 * awayStep * chord)) / (2 * awayStep);
+			double delta = calculateDeltaTheta(awayStep, chord, theta);
 			theta += delta;
 		}
+	}
+
+	private double calculateDeltaTheta(int awayStep, int chord, double theta) {
+		double away = awayStep * theta;
+		return (-2 * away + Math.sqrt(4 * away * away + 8 * awayStep * chord)) / (2 * awayStep);
 	}
 
 	/**
@@ -262,31 +276,26 @@ public class ShapeManager {
 		currentAngle = getAngle(center.x, center.y, x, y);
 		double angle = (currentAngle - startAngle) / 10;
 
-		if (Math.abs(angle) >= 0.4)
+		if (Math.abs(angle) >= 0.4) {
 			angle /= -10;
+		}
 
-		for (int i = 0; i < particles.size(); i++) {
-			Particle particle = particles.get(i);
-
-			// initial coords
+		for (Particle particle : particles) {
+			// Save the initial coordinates
 			double initialX = particle.x;
 			double initialY = particle.y;
 
-			// rescale origin to center
-			double rescaleX = center.x - particle.x;
-			double rescaleY = center.y - particle.y;
-			particle.x = rescaleX;
-			particle.y = rescaleY;
+			// Offset to the center
+			Point2D rescaledPoint = rescaleToCenter(new Point2D(initialX, initialY));
 
-			// rotation
-			double newPosX = particle.x * Math.cos(angle) - particle.y * Math.sin(angle);
-			double newPosY = particle.x * Math.sin(angle) + particle.y * Math.cos(angle);
+			// Rotate by the calculated angle
+			Point2D rotatedPoint = rotatePoint(rescaledPoint, Math.toDegrees(angle));
 
-			double diffX = newPosX - rescaleX;
-			double diffY = newPosY - rescaleY;
-
-			particle.x = initialX - diffX;
-			particle.y = initialY - diffY;
+			// Revert the offset to the original position and update particle coordinates
+			Point2D updatedPoint = new Point2D(initialX, initialY);
+			applyRevertedOffset(updatedPoint, rescaledPoint, rotatedPoint);
+			particle.x = updatedPoint.x;
+			particle.y = updatedPoint.y;
 		}
 	}
 
@@ -318,17 +327,57 @@ public class ShapeManager {
 
 	}
 
-	/**
-	 * @param particles
-	 */
 	public void divide(List<Particle> particles) {
 		calculateShapeSize(particles);
-
+	
 		// compute new coordinates?
 		if (this.shapeWidth >= center.x) {
 			rescaleShape(particles);
 		}
+	
+		divideShapeIntoSubshapes(particles);
 	}
+	
+	public void divideShapeIntoSubshapes(List<Particle> particles) {
+		int particlesSize = particles.size();
+	
+		// If there are not enough particles to divide, return
+		if (particlesSize < 2) {
+			return;
+		}
+	
+		// Calculate the index to divide the particles list
+		int middleIndex = particlesSize / 2;
+	
+		List<Particle> leftParticles = new ArrayList<>(particles.subList(0, middleIndex));
+		List<Particle> rightParticles = new ArrayList<>(particles.subList(middleIndex, particlesSize));
+	
+		// Assign new coordinates for left and right subshapes
+		List<Point2D> leftCoordinates = calculateNewCoordinates(leftParticles, -1);
+		List<Point2D> rightCoordinates = calculateNewCoordinates(rightParticles, 1);
+	
+		// Clear the original coordinates and add the new divided coordinates
+		this.coordinates.clear();
+		this.coordinates.addAll(leftCoordinates);
+		this.coordinates.addAll(rightCoordinates);
+	}
+	
+	
+	private List<Point2D> calculateNewCoordinates(List<Particle> particles, int direction) {
+		double offsetX = (direction * center.x) / 3;
+	
+		List<Point2D> newCoordinates = new ArrayList<>(particles.size());
+	
+		for (Particle particle : particles) {
+			double x = particle.x + offsetX;
+			double y = particle.y;
+			newCoordinates.add(new Point2D(x, y));
+		}
+	
+		return newCoordinates;
+	}
+	
+	
 
 	/**
 	 * @param currWidth
@@ -355,43 +404,30 @@ public class ShapeManager {
 	}
 
 	public void setDividedShapeCoodinates(List<Particle> particles) {
-		// 2 child shapes for now
-		// clone the coordinates
-
-		List<Point2D> coordinatesClone = getCopy();
-		for (int i = 0; i < coordinatesClone.size(); i++) {
-			Point2D coordinate = coordinatesClone.get(i);
-			// coordinate.x++;
+		int particlesSize = particles.size();
+	
+		// If there are not enough particles to divide, return
+		if (particlesSize < 2) {
+			return;
 		}
-		dividedShapeCoords.add(coordinatesClone);
+	
+		// Calculate the index to divide the particles list
+		int middleIndex = particlesSize / 2;
+	
+		List<Particle> leftParticles = new ArrayList<>(particles.subList(0, middleIndex));
+		List<Particle> rightParticles = new ArrayList<>(particles.subList(middleIndex, particlesSize));
+	
+		// Assign new coordinates for left and right subshapes
+		List<Point2D> leftCoordinates = calculateNewCoordinates(leftParticles, -1);
+		List<Point2D> rightCoordinates = calculateNewCoordinates(rightParticles, 1);
+	
+		// Clear the original coordinates and add the new divided coordinates
+		this.coordinates.clear();
+		this.coordinates.addAll(leftCoordinates);
+		this.coordinates.addAll(rightCoordinates);
 
-		// clone the coordinates, separate them ,merge both lists
-
-		for (int i = 0; i < this.coordinates.size(); i++) {
-			Point2D point = this.coordinates.get(i);
-			point.x = center.x - point.x;
-			point.x += 2 * center.x / 3;
-		}
-
-		for (int i = 0; i < coordinatesClone.size(); i++) {
-			Point2D point = coordinatesClone.get(i);
-			point.x = center.x - point.x;
-			point.x += 2 * center.x * 0.6666;
-		}
-
-		this.coordinates.addAll(coordinatesClone);
-		// clone the particles, merge both lists
-
-		List<Particle> particlesClone = new ArrayList<>();
-		for (int i = 0; i < particles.size(); i++) {
-			Particle p = new Particle(particles.get(i).x + 1, particles.get(i).y + 1, particles.get(i).vx,
-					particles.get(i).vy, particles.get(i).mass, particles.get(i).charge);
-			particlesClone.add(p);
-		}
-
-		particles.addAll(particlesClone);
 	}
-
+	
 	/**
 	 * TODO
 	 * 
@@ -446,34 +482,39 @@ public class ShapeManager {
 	 * @param particles list of particles on the canvas
 	 */
 	public void setProximity(List<Particle> particles) {
-		List<Particle> particlesCopy = new ArrayList<>( particles);
+		List<Particle> particlesCopy = new ArrayList<>(particles);
 		List<Point2D> coordinatesCopy = new ArrayList<>(this.coordinates);
-		List<Double> distances;
-		Iterator<Particle> iterator1 = particlesCopy.iterator();
-
-		while (iterator1.hasNext()) {
-			Particle particle = iterator1.next();
-			Iterator<Point2D> iterator2 = coordinatesCopy.iterator();
-			distances = calculateDistance(particlesCopy, coordinatesCopy);
-
-			int i = 0;
-			while (iterator2.hasNext()) {
-
-				Point2D coordinate = iterator2.next();
-				double d = Math.sqrt(Math.pow(particle.x - coordinate.x, 2) + Math.pow(particle.y - coordinate.y, 2));
-
-				if (d == distances.get(i)) {
-					// int index = distances.indexOf((double) Collections.min(distances));
-					coordinate.particle = particle;
-					iterator1.remove();
-					iterator2.remove();
-					i++;
-					break;
-				}
+	
+		for (Particle particle : particlesCopy) {
+			Point2D closestCoordinate = findClosestCoordinate(particle, coordinatesCopy);
+	
+			if (closestCoordinate != null) {
+				closestCoordinate.particle = particle;
+				coordinatesCopy.remove(closestCoordinate);
 			}
-
 		}
 	}
+	
+	private Point2D findClosestCoordinate(Particle particle, List<Point2D> coordinates) {
+		Point2D closestCoordinate = null;
+		double minDistance = Double.MAX_VALUE;
+	
+		for (Point2D coordinate : coordinates) {
+			double distance = calculateDistance(particle, coordinate);
+	
+			if (distance < minDistance) {
+				minDistance = distance;
+				closestCoordinate = coordinate;
+			}
+		}
+	
+		return closestCoordinate;
+	}
+	
+	private double calculateDistance(Particle particle, Point2D coordinate) {
+		return Math.sqrt(Math.pow(particle.x - coordinate.x, 2) + Math.pow(particle.y - coordinate.y, 2));
+	}
+	
 
 	/**
 	 * Method that sets the speed of particles in direction of it's respective
