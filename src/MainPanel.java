@@ -157,7 +157,7 @@ public class MainPanel extends JPanel {
 			changeSunflower();
 		}
 	}
-	
+
 	/**
 	 * Method that applies the forces on the particles if the forces are activated
 	 * 
@@ -396,6 +396,7 @@ public class MainPanel extends JPanel {
 				physicsTimer.stop();
 				setInitialization(selectedShapeRadioButton);
 			}
+			lastShape = selectedShapeRadioButton;
 		});
 	}
 	

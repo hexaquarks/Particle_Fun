@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * ShapeManager.java
@@ -46,32 +48,15 @@ public class ShapeManager {
 	 * @return double the angle
 	 */
 	public double getAngle(double xc, double yc, double x, double y) {
-		double angle;
 		double dy = y - yc;
 		double dx = x - xc;
-		if (dx == 0) {
-			angle = dy >= 0 ? Math.PI / 2 : -Math.PI / 2;
-		} else {
-			angle = Math.atan(dy / dx);
-			if (dx < 0)
-				angle += Math.PI;
-		}
-		return angle;
+		return dx == 0 ? dy >= 0 ? Math.PI / 2 : -Math.PI / 2 : Math.atan(dy / dx) + (dx < 0 ? Math.PI : 0);
 	}
-
-	/**
-	 * Deep copy
-	 * 
-	 * @return List<Point2D> a copy of Point2D coordinated
-	 */
+	
 	public List<Point2D> getCopy() {
-		List<Point2D> copy = new ArrayList<>();
-		for (int i = 0; i < this.coordinates.size(); i++) {
-			Point2D point = new Point2D(this.coordinates.get(i).x, this.coordinates.get(i).y);
-			copy.add(point);
-		}
-		return copy;
-
+		return this.coordinates.stream()
+							   .map(point -> new Point2D(point.x, point.y))
+							   .collect(Collectors.toList());
 	}
 
 	/**
@@ -103,19 +88,18 @@ public class ShapeManager {
 	 */
 	public void getCircleCoords(List<Particle> particles) {
 		int n = particles.size();
-		double alpha = Math.toRadians(360.0 / n); // angle of each triangle in the polygon
-		float angle = 0;
+		double alpha = Math.toRadians(360.0 / n);
 		double pW = particles.get(0).width;
 		double pH = particles.get(0).height;
-		float side = (float) (particles.get(0).width);
+		float side = (float) particles.get(0).width;
 		float radius = (float) (side / (2 * Math.sin(Math.PI / n)));
-
-		for (int i = 0; i < n; i++) {
-			this.coordinates.add(new Point2D((center.x + Math.sin(angle) * radius - pW / 2),
-					(center.y - Math.cos(angle) * radius) - pH / 2));
-			angle += alpha;
-		}
-
+	
+		this.coordinates = IntStream.range(0, n)
+			.mapToObj(i -> new Point2D(
+				center.x + Math.sin(i * alpha) * radius - pW / 2,
+				center.y - Math.cos(i * alpha) * radius - pH / 2
+			))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -124,27 +108,39 @@ public class ShapeManager {
 	 * @param particles the list of particles elements present on the canvas
 	 */
 	public void getSquareCoords(List<Particle> particles) {
-		int n = particles.size();
-		int layer = n / 4;
-		double width = particles.get(0).width;
-		double rescale = 0;
-
-		if (layer % 2 == 0)
-			rescale = 0.5;
-
-		double k = -(layer / 2 + 0.5);
-
-		for (double i = k; i <= k + layer; i++) {
-			for (double j = k; j <= k + layer; j++) {
-				if (!((i > k && i < (k + layer)) && (j > k && j < (k + layer)))) {
-					this.coordinates
-							.add(new Point2D(center.x - (j + rescale) * width, center.y - (i - rescale) * width));
-				}
-
-			}
+		int particleCount = particles.size();
+		int layers = particleCount / 4;
+		double particleWidth = particles.get(0).width;
+		double rescale = calculateRescale(layers);
+		double startPosition = calculateStartPosition(layers);
+	
+		// Generate top and bottom rows
+		for (double column = startPosition; column <= startPosition + layers; column++) {
+			addCoordinate(column, startPosition, rescale, particleWidth);
+			addCoordinate(column, startPosition + layers, rescale, particleWidth);
 		}
-
+	
+		// Generate left and right columns (excluding corners, which are already added)
+		for (double row = startPosition + 1; row < startPosition + layers; row++) {
+			addCoordinate(startPosition, row, rescale, particleWidth);
+			addCoordinate(startPosition + layers, row, rescale, particleWidth);
+		}
 	}
+	
+	private double calculateRescale(int layers) {
+		return (layers % 2 == 0) ? 0.5 : 0;
+	}
+	
+	private double calculateStartPosition(int layers) {
+		return -(layers / 2 + 0.5);
+	}
+	
+	private void addCoordinate(double column, double row, double rescale, double particleWidth) {
+		double x = center.x - (column + rescale) * particleWidth;
+		double y = center.y - (row - rescale) * particleWidth;
+		this.coordinates.add(new Point2D(x, y));
+	}
+	
 
 	/**
 	 * Method that computes the coordinates on the canvas that form a diamond shape.
