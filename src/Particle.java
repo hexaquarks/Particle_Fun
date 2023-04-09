@@ -40,132 +40,101 @@ public class Particle{
 	}
 
 	
-	/** 
-	 * @param p2
-	 * @return double[]
-	 */
 	public double[] electrostaticForce(Particle p2) {
-
-		double d = Math.sqrt(
-				Math.pow(this.x - p2.x, 2) +
-				Math.pow(this.y - p2.y, 2));
-
-		double fy = k * (this.y - p2.y) * (this.charge * p2.charge)
-				/ Math.pow(d, 2);
-		double fx = k * (this.x - p2.x) * (this.charge * p2.charge)
-				/ Math.pow(d, 2);
-
-		return new double[] {fx,fy};
+		double d = calculateDistance(p2);
+		double forceMultiplier = k * this.charge * p2.charge / (d * d);
+		return calculateForceComponents(p2, forceMultiplier, d);
 	}
 	
-	/** 
-	 * @param p2
-	 * @return double[]
-	 */
 	public double[] gravitationalForce(Particle p2) {
-		double d = Math.sqrt(
-				Math.pow(this.x - p2.x, 2) +
-				Math.pow(this.y-p2.y, 2));
-
-		double fy = g * (this.y-p2.y) * (-(this.mass * p2.mass)
-				/ Math.pow(d, 2));
-		double fx = g * (this.x-p2.x) * (-(this.mass * p2.mass)
-				/ Math.pow(d, 2));
-
-		return new double[] {fx,fy};
+		double d = calculateDistance(p2);
+		double forceMultiplier = -g * this.mass * p2.mass / (d * d);
+		return calculateForceComponents(p2, forceMultiplier, d);
+	}
+	
+	private double calculateDistance(Particle p2) {
+		double dx = this.x - p2.x;
+		double dy = this.y - p2.y;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+	
+	private double[] calculateForceComponents(Particle p2, double forceMultiplier, double d) {
+		double fx = forceMultiplier * (this.x - p2.x) / d;
+		double fy = forceMultiplier * (this.y - p2.y) / d;
+		return new double[] {fx, fy};
 	}
 
-	
-	/** 
-	 * @param p2
-	 */
 	public void doCollisionWithOtherParticle(Particle p2) {
-		double m1 = this.mass , m2 = p2.mass;
-
-		this.vx = -(this.mass*this.vx + p2.mass*p2.vx
-                        + p2.mass * 0.001 * (p2.vx - this.vx))
-                        /(m1 + m2);
-         this.vy = -(this.mass*this.vy + p2.mass*p2.vy
-                        + p2.mass * 0.001 * (p2.vy - this.vy))
-                        / (m1 + m2);
-
-		double d = Math.sqrt(
-				Math.pow(this.x - p2.x, 2) +
-				Math.pow(this.y-p2.y, 2));
-
-		double fy = 0.001 * (this.y-p2.y) * ((this.mass * p2.mass)
-				/ Math.pow(d, 0.8));
-		double fx = 0.001 * (this.x-p2.x) * ((this.mass * p2.mass)
-				/ Math.pow(d, 0.8));
+		double m1 = this.mass;
+		double m2 = p2.mass;
 	
-
-        this.vx += fx/this.mass;
-        this.vy += fy/this.mass;
+		updateVelocityAfterCollision(p2, m1, m2);
+		applyElasticForce(p2);
 	}
 	
-	/** 
-	 * @param p2
-	 */
+	private void updateVelocityAfterCollision(Particle p2, double m1, double m2) {
+		this.vx = -(m1 * this.vx + m2 * p2.vx + m2 * 0.001 * (p2.vx - this.vx)) / (m1 + m2);
+		this.vy = -(m1 * this.vy + m2 * p2.vy + m2 * 0.001 * (p2.vy - this.vy)) / (m1 + m2);
+	}
+	
+	private void applyElasticForce(Particle p2) {
+		double d = calculateDistanceBetweenParticles(p2);
+		double fx = 0.001 * (this.x - p2.x) * ((this.mass * p2.mass) / Math.pow(d, 0.8));
+		double fy = 0.001 * (this.y - p2.y) * ((this.mass * p2.mass) / Math.pow(d, 0.8));
+	
+		this.vx += fx / this.mass;
+		this.vy += fy / this.mass;
+	}
+	
+	private double calculateDistanceBetweenParticles(Particle p2) {
+		return Math.sqrt(Math.pow(this.x - p2.x, 2) + Math.pow(this.y - p2.y, 2));
+	}
+	
 	public void edgeCollision(Particle p2) {
-		if(this.x + this.vx+this.radius > 691 || this.x + this.vx < 0) {
+		updateVelocityAfterEdgeCollision(p2);
+	}
+	
+	private void updateVelocityAfterEdgeCollision(Particle p2) {
+		if (isParticleCollidingHorizontally()) {
 			this.vx = -this.vx * coefficientWall;
 		}
-
-		if(this.y + this.vy+this.radius > 452 || this.y + this.vy < 0){
+	
+		if (isParticleCollidingVertically()) {
 			this.vy = -this.vy * coefficientWall;
 		}
 	}
-
 	
-	/** 
-	 * @return double
-	 */
-	public double velInit() {
-		double val;
-		if (rand.nextBoolean()) {
-			val = rand.nextDouble()*0.5;
-		} else {
-			val = -rand.nextDouble()*0.5;
-		}
-		return val;
+	private boolean isParticleCollidingHorizontally() {
+		return this.x + this.vx + this.radius > 691 || this.x + this.vx < 0;
 	}
-
 	
-	/** 
-	 * @param particles
-	 */
+	private boolean isParticleCollidingVertically() {
+		return this.y + this.vy + this.radius > 452 || this.y + this.vy < 0;
+	}	
+	
+	public double velInit() {
+		double val = rand.nextDouble() * 0.5;
+		return rand.nextBoolean() ? val : -val;
+	}
+	
 	public void reinitializeVel(List<Particle> particles) {
-		for(Particle p : particles) {
+		for (Particle p : particles) {
 			p.vx = velInit();
 			p.vy = velInit();
 		}
 	}
 	
-	/** 
-	 * @return String
-	 */
 	public String toString() {
 		return "x :\t" + this.x + "  y :\t" + this.y + "  velX  : \t" + this.vx + "  velY  : \t" + this.vy;
 	}
-    
-	/** 
-	 * @param other
-	 * @return boolean
-	 */
-	public boolean isCollidingOtherParticle(Particle other){
-    	double d = Math.sqrt(
-				Math.pow(this.x - other.x, 2) +
-				Math.pow(this.y-other.y, 2));
-        return (d <= (this.width + other.width)/2);
-    } 
 	
-	/** 
-	 * @param other
-	 * @param flag
-	 * @return boolean
-	 */
-	public boolean isCollidingOtherParticle(Particle other, boolean flag) {
-		return Math.abs((this.x+this.vx)-(other.x+other.vx)) < width 
-				&& Math.abs((this.y+this.vy)-(other.y+other.vy)) < height;
+	public boolean isCollidingOtherParticle(Particle other) {
+		double d = calculateDistanceBetweenParticles(other);
+		return (d <= (this.width + other.width) / 2);
 	}
+	
+	public boolean isCollidingOtherParticle(Particle other, boolean flag) {
+		return Math.abs((this.x + this.vx) - (other.x + other.vx)) < width
+				&& Math.abs((this.y + this.vy) - (other.y + other.vy)) < height;
+	}	
 }
