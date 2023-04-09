@@ -14,9 +14,9 @@ public class Particle{
 	double 	radius = 0;
 	Random 	rand = new Random();
 	
-	private static final double coefficientWall = 0.6;
-	private static final double k = 0.025;     // coulomb's constant
-    private static final double g = 0.00025;   // universal gravitational constant
+	private static final double WALL_DAMPING_COEFFICIENT = 0.6;
+	private static final double COULOMBS_CONSTANT = 0.025;     
+    private static final double GRAVITATIONAL_CONSTANT = 0.00025;
 	private static final int RIGHT_WALL_X_POS = 691;
 	private static final int LEFT_WALL_X_POS = 0;
 	private static final int BOTTOM_WALL_Y_POS = 452;
@@ -46,13 +46,13 @@ public class Particle{
 	
 	public double[] electrostaticForce(Particle p2) {
 		double d = calculateDistance(p2);
-		double forceMultiplier = k * this.charge * p2.charge / (d * d);
+		double forceMultiplier = COULOMBS_CONSTANT * this.charge * p2.charge / (d * d);
 		return calculateForceComponents(p2, forceMultiplier, d);
 	}
 	
 	public double[] gravitationalForce(Particle p2) {
 		double d = calculateDistance(p2);
-		double forceMultiplier = -g * this.mass * p2.mass / (d * d);
+		double forceMultiplier = -GRAVITATIONAL_CONSTANT * this.mass * p2.mass / (d * d);
 		return calculateForceComponents(p2, forceMultiplier, d);
 	}
 	
@@ -100,11 +100,11 @@ public class Particle{
 	
 	private void updateVelocityAfterEdgeCollision(Particle p2) {
 		if (isParticleCollidingHorizontally()) {
-			this.vx = -this.vx * coefficientWall;
+			this.vx = -this.vx * WALL_DAMPING_COEFFICIENT;
 		}
 	
 		if (isParticleCollidingVertically()) {
-			this.vy = -this.vy * coefficientWall;
+			this.vy = -this.vy * WALL_DAMPING_COEFFICIENT;
 		}
 	}
 	
