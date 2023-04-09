@@ -17,6 +17,11 @@ public class Particle{
 	private static final double coefficientWall = 0.6;
 	private static final double k = 0.025;     // coulomb's constant
     private static final double g = 0.00025;   // universal gravitational constant
+	private static final int RIGHT_WALL_X_POS = 691;
+	private static final int LEFT_WALL_X_POS = 0;
+	private static final int BOTTOM_WALL_Y_POS = 452;
+	private static final int TOP_WALL_Y_POS = 0;
+	private static final double COLLISION_DAMPING_FACTOR = 0.001;
 
 	public Particle(double x, double y, double vx, double vy,double mass, int charge) {
 		this.x = x;
@@ -29,7 +34,6 @@ public class Particle{
 		this.charge = charge;
 		this.radius = this.width/2;
 	}
-	
 	
 	/** 
 	 * @param force
@@ -73,14 +77,14 @@ public class Particle{
 	}
 	
 	private void updateVelocityAfterCollision(Particle p2, double m1, double m2) {
-		this.vx = -(m1 * this.vx + m2 * p2.vx + m2 * 0.001 * (p2.vx - this.vx)) / (m1 + m2);
-		this.vy = -(m1 * this.vy + m2 * p2.vy + m2 * 0.001 * (p2.vy - this.vy)) / (m1 + m2);
+		this.vx = -(m1 * this.vx + m2 * p2.vx + m2 * COLLISION_DAMPING_FACTOR * (p2.vx - this.vx)) / (m1 + m2);
+		this.vy = -(m1 * this.vy + m2 * p2.vy + m2 * COLLISION_DAMPING_FACTOR * (p2.vy - this.vy)) / (m1 + m2);
 	}
 	
 	private void applyElasticForce(Particle p2) {
 		double d = calculateDistanceBetweenParticles(p2);
-		double fx = 0.001 * (this.x - p2.x) * ((this.mass * p2.mass) / Math.pow(d, 0.8));
-		double fy = 0.001 * (this.y - p2.y) * ((this.mass * p2.mass) / Math.pow(d, 0.8));
+		double fx = COLLISION_DAMPING_FACTOR * (this.x - p2.x) * ((this.mass * p2.mass) / Math.pow(d, 0.8));
+		double fy = COLLISION_DAMPING_FACTOR * (this.y - p2.y) * ((this.mass * p2.mass) / Math.pow(d, 0.8));
 	
 		this.vx += fx / this.mass;
 		this.vy += fy / this.mass;
@@ -105,11 +109,13 @@ public class Particle{
 	}
 	
 	private boolean isParticleCollidingHorizontally() {
-		return this.x + this.vx + this.radius > 691 || this.x + this.vx < 0;
+		return this.x + this.vx + this.radius > RIGHT_WALL_X_POS || 
+		       this.x + this.vx < LEFT_WALL_X_POS;
 	}
 	
 	private boolean isParticleCollidingVertically() {
-		return this.y + this.vy + this.radius > 452 || this.y + this.vy < 0;
+		return this.y + this.vy + this.radius > BOTTOM_WALL_Y_POS || 
+			   this.y + this.vy < TOP_WALL_Y_POS;
 	}	
 	
 	public double velInit() {
