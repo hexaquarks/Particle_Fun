@@ -112,8 +112,7 @@ public class MainPanel extends JPanel {
 				if (shape.checkArrival())
 					shape.setShapeIsDraggable(true);
 				for (Particle p : particleList) {
-					p.x += p.vx;
-					p.y += p.vy;
+					p.moveParticleOneTimeTick();
 				}
 			}
 			if (fpsTimerCounter % 60 == 0) {
@@ -136,8 +135,7 @@ public class MainPanel extends JPanel {
 						applyForces(p1, p2);
 					applyCollision(p1, p2);
 				}
-				p1.x += p1.vx;
-				p1.y += p1.vy;
+				p1.moveParticleOneTimeTick();
 			}
 		});
 		physicsTimer.start();
@@ -168,7 +166,7 @@ public class MainPanel extends JPanel {
 		if (!electricFlag) {
 			p1.applyForce(p1.electrostaticForce(p2));
 			if (collisionFlag) {
-				if (Math.abs(p1.x - p2.x) <= p1.width / 50000 || Math.abs(p1.y - p2.y) <= p1.width / 50000) {
+				if (Math.abs(p1.getX() - p2.getX()) <= p1.getWidth() / 50000 || Math.abs(p1.getY() - p2.getY()) <= p1.getWidth() / 50000) {
 				}
 			}
 		}
@@ -263,7 +261,7 @@ public class MainPanel extends JPanel {
 
 	private void drawParticle(Graphics2D g2d, Particle particle) {
 		g2d.setColor(Color.WHITE);
-		Shape circle = new Arc2D.Double(particle.x, particle.y, particle.width, particle.height, 0, 360, Arc2D.CHORD);
+		Shape circle = new Arc2D.Double(particle.getX(), particle.getY(), particle.getWidth(), particle.getHeight(), 0, 360, Arc2D.CHORD);
 		GradientPaint gradientPaint = new GradientPaint(5, 5, Color.red, 20, 20, Color.yellow, true);
 		g2d.setPaint(gradientPaint);
 		g2d.fill(circle);
@@ -328,8 +326,8 @@ public class MainPanel extends JPanel {
 	}
 
 	private boolean isCoordinateWithingParticleBounds(double x, double y, Particle p) {
-		boolean xWithinBounds = x >= p.x - p.width && x <= p.x + 2 * p.width;
-		boolean yWithinBounds = y >= p.y - p.height && y <= p.y + 2 * p.height;
+		boolean xWithinBounds = x >= p.getX() - p.getWidth() && x <= p.getX() + 2 * p.getWidth();
+		boolean yWithinBounds = y >= p.getY() - p.getHeight() && y <= p.getY() + 2 * p.getHeight();
 		return xWithinBounds && yWithinBounds;
 	}
 

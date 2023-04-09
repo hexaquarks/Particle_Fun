@@ -3,16 +3,15 @@ import java.util.Random;
 
 
 public class Particle{
-	double 	x;
-	double 	y;
-	double 	vx;
-	double 	vy;
-	double 	mass;
-	int 	charge;
-	double 	width;
-	double 	height;
-	double 	radius = 0;
-	Random 	rand = new Random();
+	private double x;
+    private double y;
+    private double vx;
+    private double vy;
+    private double mass;
+    private int charge;
+    private double width;
+    private double height;
+    private double radius;
 	
 	private static final double WALL_DAMPING_COEFFICIENT = 0.6;
 	private static final double COULOMBS_CONSTANT = 0.025;     
@@ -26,13 +25,13 @@ public class Particle{
 	public Particle(double x, double y, double vx, double vy,double mass, int charge) {
 		this.x = x;
 		this.y = y;
-		this.width = mass/10;
-		this.height = mass/10;
+		this.width = mass / 10;
+		this.height = mass / 10;		
 		this.vx = vx;
 		this.vy = vy;
 		this.mass = mass;
 		this.charge = charge;
-		this.radius = this.width/2;
+		this.radius = this.width / 2;
 	}
 	
 	/** 
@@ -118,7 +117,8 @@ public class Particle{
 			   this.y + this.vy < TOP_WALL_Y_POS;
 	}	
 	
-	public double velInit() {
+	private double velInit() {
+		Random rand = new Random();
 		double val = rand.nextDouble() * 0.5;
 		return rand.nextBoolean() ? val : -val;
 	}
@@ -143,4 +143,23 @@ public class Particle{
 		return Math.abs((this.x + this.vx) - (other.x + other.vx)) < width
 				&& Math.abs((this.y + this.vy) - (other.y + other.vy)) < height;
 	}	
+
+	public void moveParticleOneTimeTick() {
+		this.x += this.vx;
+		this.y += this.vy;
+	}
+
+	public double getX() { return this.x; }
+	public double getY() { return this.y; }
+	public double getWidth() { return this.width; }
+	public double getHeight() { return this.height; }
+	public double getVX() { return this.vx; }
+	public double getVY() { return this.vy; }
+
+	public void setX(double x) { this.x = x; }
+	public void setY(double y) { this.y = y; }
+	public void setVX(double vx) { this.vx = vx; }
+	public void setVY(double vy) { this.vy = vy; }
+	public void setWidth(double width) { this.width = width; }
+	public void setHeight(double height) { this.height = height; }
 }

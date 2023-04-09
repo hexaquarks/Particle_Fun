@@ -89,9 +89,9 @@ public class ShapeManager {
 	public void getCircleCoords(List<Particle> particles) {
 		int n = particles.size();
 		double alpha = Math.toRadians(360.0 / n);
-		double pW = particles.get(0).width;
-		double pH = particles.get(0).height;
-		float side = (float) particles.get(0).width;
+		double pW = particles.get(0).getWidth();
+		double pH = particles.get(0).getHeight();
+		float side = (float) particles.get(0).getWidth();
 		float radius = (float) (side / (2 * Math.sin(Math.PI / n)));
 
 		this.coordinates = IntStream.range(0, n)
@@ -109,7 +109,7 @@ public class ShapeManager {
 	public void getSquareCoords(List<Particle> particles) {
 		int particleCount = particles.size();
 		int layers = particleCount / 4;
-		double particleWidth = particles.get(0).width;
+		double particleWidth = particles.get(0).getWidth();
 		double rescale = calculateRescale(layers);
 		double startPosition = calculateStartPosition(layers);
 
@@ -196,7 +196,7 @@ public class ShapeManager {
 	 */
 	public void getSpiralCoords(List<Particle> particles) {
 		double rotation = -Math.PI / 2;
-		int awayStep = (int) particles.get(0).width / 2;
+		int awayStep = (int) particles.get(0).getWidth() / 2;
 		int chord = awayStep * 3; // distance between points
 		double theta = chord / awayStep;
 
@@ -224,7 +224,7 @@ public class ShapeManager {
 	 * @param particles the list of particles elements present on the canvas
 	 */
 	public void getLooseSpiralCoords(List<Particle> particles) {
-		int awayStep = (int) particles.get(0).width * 2;
+		int awayStep = (int) particles.get(0).getWidth() * 2;
 		double rotation = -Math.PI / 2;
 		int chord = awayStep / 2; // distance between points
 		double theta = chord / awayStep;
@@ -253,7 +253,7 @@ public class ShapeManager {
 	 * @param angle     the base angle in the coordinates computation
 	 */
 	public void getSunflowerCoords(List<Particle> particles, double angle) {
-		double localMultiplier = 1.2 * particles.get(0).width; // guess
+		double localMultiplier = 1.2 * particles.get(0).getWidth(); // guess
 		double baseAngle = angle;
 
 		for (int i = 0; i < particles.size(); i++) {
@@ -282,8 +282,8 @@ public class ShapeManager {
 
 		for (Particle particle : particles) {
 			// Save the initial coordinates
-			double initialX = particle.x;
-			double initialY = particle.y;
+			double initialX = particle.getX();
+			double initialY = particle.getY();
 
 			// Offset to the center
 			Point2D rescaledPoint = rescaleToCenter(new Point2D(initialX, initialY));
@@ -294,32 +294,32 @@ public class ShapeManager {
 			// Revert the offset to the original position and update particle coordinates
 			Point2D updatedPoint = new Point2D(initialX, initialY);
 			applyRevertedOffset(updatedPoint, rescaledPoint, rotatedPoint);
-			particle.x = updatedPoint.x;
-			particle.y = updatedPoint.y;
+			particle.setX(updatedPoint.x);
+			particle.setY(updatedPoint.y);
 		}
 	}
 
 	public void calculateShapeSize(List<Particle> particles) {
-		double widthMax = 0, widthMin = particles.get(0).x;
-		double heightMax = 0, heightMin = particles.get(0).y;
+		double widthMax = 0, widthMin = particles.get(0).getX();
+		double heightMax = 0, heightMin = particles.get(0).getY();
 
 		// set coordinates to the current particle on the canvas if null.
 		if (this.coordinates.size() == 0) {
 			for (int i = 0; i < particles.size(); i++) {
 				Particle particle = particles.get(i);
-				this.coordinates.get(i).x = particle.x;
-				this.coordinates.get(i).y = particle.y;
+				this.coordinates.get(i).x = particle.getX();
+				this.coordinates.get(i).y = particle.getY();
 			}
 		}
 
 		// find diameter and height
 		for (int i = 0; i < particles.size(); i++) {
 			Particle particle = particles.get(i);
-			widthMax = (particle.x > widthMax) ? particle.x : widthMax;
-			heightMax = (particle.y > heightMax) ? particle.y : heightMax;
+			widthMax = (particle.getX() > widthMax) ? particle.getX() : widthMax;
+			heightMax = (particle.getY() > heightMax) ? particle.getY() : heightMax;
 
-			widthMin = (particle.x < widthMin) ? particle.x : widthMin;
-			heightMin = (particle.y < heightMin) ? particle.y : heightMin;
+			widthMin = (particle.getX() < widthMin) ? particle.getX() : widthMin;
+			heightMin = (particle.getY() < heightMin) ? particle.getY() : heightMin;
 		}
 
 		this.shapeWidth = widthMax - widthMin;
@@ -369,8 +369,8 @@ public class ShapeManager {
 		List<Point2D> newCoordinates = new ArrayList<>(particles.size());
 	
 		for (Particle particle : particles) {
-			double x = particle.x + offsetX;
-			double y = particle.y;
+			double x = particle.getX() + offsetX;
+			double y = particle.getY();
 			newCoordinates.add(new Point2D(x, y));
 		}
 	
@@ -396,11 +396,11 @@ public class ShapeManager {
 
 		// currParticleWidth => currWidth , then assuming lixnearity
 		// newParticleWidth => prefferedWidth , with NPW < CPW
-		double newParticleWidth = prefferedWidth * particles.get(0).width / this.shapeWidth;
+		double newParticleWidth = prefferedWidth * particles.get(0).getWidth() / this.shapeWidth;
 
-		double newParticleHeight = prefferedHeight * particles.get(0).height / this.shapeHeight;
-		particles.get(0).width = newParticleWidth;
-		particles.get(0).height = newParticleHeight;
+		double newParticleHeight = prefferedHeight * particles.get(0).getHeight() / this.shapeHeight;
+		particles.get(0).setWidth(newParticleWidth);
+		particles.get(0).setHeight(newParticleHeight);
 	}
 
 	public void setDividedShapeCoodinates(List<Particle> particles) {
@@ -468,7 +468,7 @@ public class ShapeManager {
 
 			for (int i = 0; i < second.size(); i++) {
 				Point2D point = second.get(i);
-				double d = Math.sqrt(Math.pow(iterated.x - point.x, 2) + Math.pow(iterated.y - point.y, 2));
+				double d = Math.sqrt(Math.pow(iterated.getX() - point.x, 2) + Math.pow(iterated.getY() - point.y, 2));
 
 				distances.add(d);
 			}
@@ -512,7 +512,7 @@ public class ShapeManager {
 	}
 	
 	private double calculateDistance(Particle particle, Point2D coordinate) {
-		return Math.sqrt(Math.pow(particle.x - coordinate.x, 2) + Math.pow(particle.y - coordinate.y, 2));
+		return Math.sqrt(Math.pow(particle.getX() - coordinate.x, 2) + Math.pow(particle.getY() - coordinate.y, 2));
 	}
 	
 
@@ -528,16 +528,16 @@ public class ShapeManager {
 
 			Point2D point = this.coordinates.get(i);
 
-			if (point.particle.x - point.x <= 0) {
-				point.particle.vx = (-point.particle.x + point.x) / (1000 / 16);
-			} else if (point.particle.x - point.x > 0) {
-				point.particle.vx = -(point.particle.x - point.x) / (1000 / 16);
+			if (point.particle.getX() - point.x <= 0) {
+				point.particle.setVX((-point.particle.getX() + point.x) / (1000 / 16));
+			} else if (point.particle.getX() - point.x > 0) {
+				point.particle.setVX(-(point.particle.getX() - point.x) / (1000 / 16));
 			}
 
-			if (point.particle.y - point.y <= 0) {
-				point.particle.vy = (-point.particle.y + point.y) / (1000 / 16);
-			} else if (point.particle.y - point.y > 0) {
-				point.particle.vy = -(point.particle.y - point.y) / (1000 / 16);
+			if (point.particle.getY() - point.y <= 0) {
+				point.particle.setVY((-point.particle.getY() + point.y) / (1000 / 16));
+			} else if (point.particle.getY() - point.y > 0) {
+				point.particle.setVY(-(point.particle.getY() - point.y) / (1000 / 16));
 			}
 		}
 	}
@@ -554,14 +554,14 @@ public class ShapeManager {
 		for (int i = 0; i < this.coordinates.size(); i++) {
 			Point2D p = this.coordinates.get(i);
 
-			if (p.particle.x >= p.x - p.particle.width / 25 && p.particle.x <= p.x + p.particle.width / 25) {
-				p.particle.vx = 0;
+			if (p.particle.getX() >= p.x - p.particle.getWidth() / 25 && p.particle.getX() <= p.x + p.particle.getWidth() / 25) {
+				p.particle.setVX(0);
 			} else {
 				allParticlesArrived = false;
 			}
 
-			if (p.particle.y >= p.y - p.particle.height / 25 && p.particle.y <= p.y + p.particle.height / 25) {
-				p.particle.vy = 0;
+			if (p.particle.getY() >= p.y - p.particle.getHeight() / 25 && p.particle.getY() <= p.y + p.particle.getHeight() / 25) {
+				p.particle.setVY(0);
 			} else {
 				allParticlesArrived = false;
 			}
