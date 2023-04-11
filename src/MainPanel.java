@@ -16,10 +16,16 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import collision.EdgeCollision;
+import collision.ParticleCollision;
+import particle.Particle;
+
 public class MainPanel extends JPanel {
 
 	private static final int TIME_TICK = 1000 / 60;
 	private static final double DEFAULT_SPIRAL_ANGLE = Math.PI * (1 + Math.sqrt(5) / 4);
+	private static EdgeCollision edgeCollisionManager = new EdgeCollision();
+	private static ParticleCollision particleCollisionManager = new ParticleCollision();
 
 	private List<Particle> particleList = new ArrayList<>();
 	private double newDirY = 0; // y-direction of a new particle
@@ -125,15 +131,24 @@ public class MainPanel extends JPanel {
 		fpsTimer.start();
 
 		physicsTimer = new Timer(2, e -> {
-			for (Particle p1 : particleList) {
-				for (Particle p2 : particleList) {
-					if (p1 == p2)
-						continue;
-					p1.edgeCollision(p2);
+			for (int i = 0; i < particleList.size(); ++i) {
+				Particle p1 = particleList.get(i);
 
-					if (!electricFlag || !gravityFlag)
+				if (edgeCollisionManager.isColliding(p1) && !collisionFlag) {
+					edgeCollisionManager.updateVelocity(p1);
+				}
+
+				for (int j = i + 1; j < particleList.size(); ++j) {
+					Particle p2 = particleList.get(j);
+
+					if (!electricFlag || !gravityFlag) { 
 						applyForces(p1, p2);
-					applyCollision(p1, p2);
+						applyForces(p2, p1);
+					}
+
+					if (particleCollisionManager.isColliding(p1, p2) && !collisionFlag) {
+						particleCollisionManager.updateVelocity(p1, p2);
+					}
 				}
 				p1.moveParticleOneTimeTick();
 			}
@@ -172,21 +187,6 @@ public class MainPanel extends JPanel {
 		}
 		if (!gravityFlag) {
 			p1.applyForce(p1.gravitationalForce(p2));
-		}
-	}
-
-	/**
-	 * Method that performs the logistics behind a collision between 2 particles
-	 * TODO n-particles collision maybe ?
-	 * 
-	 * @param p1 a particle that is present on the canvas
-	 * @param p2 another particle that is present on the canvas
-	 */
-	public void applyCollision(Particle p1, Particle p2) {
-		if (p1.isCollidingOtherParticle(p2) && !collisionFlag) {
-			p1.doCollisionWithOtherParticle(p2);
-			p2.doCollisionWithOtherParticle(p1);
-			++collisionsPerSecond;
 		}
 	}
 
@@ -243,6 +243,7 @@ public class MainPanel extends JPanel {
 				double vy = rand.nextInt(2) - 1;
 
 				p = new Particle(xPos, yPos, vx, vy, mass, charge);
+				System.out.println("vx is "+ vx);
 			} while (particleAlreadyExists(xPos, yPos));
 
 			particleList.add(p);

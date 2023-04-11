@@ -1,3 +1,5 @@
+import particle.Particle;
+
 public class Point2D {
 	
 	double x;
