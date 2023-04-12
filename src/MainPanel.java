@@ -18,6 +18,8 @@ import javax.swing.Timer;
 
 import collision.EdgeCollision;
 import collision.ParticleCollision;
+import force.ElectrostaticForce;
+import force.GravitationalForce;
 import particle.Particle;
 
 public class MainPanel extends JPanel {
@@ -26,6 +28,8 @@ public class MainPanel extends JPanel {
 	private static final double DEFAULT_SPIRAL_ANGLE = Math.PI * (1 + Math.sqrt(5) / 4);
 	private static EdgeCollision edgeCollisionManager = new EdgeCollision();
 	private static ParticleCollision particleCollisionManager = new ParticleCollision();
+	private static ElectrostaticForce electrostaticForceManager = new ElectrostaticForce();
+	private static GravitationalForce gravitationalForceManager = new GravitationalForce();
 
 	private List<Particle> particleList = new ArrayList<>();
 	private double newDirY = 0; // y-direction of a new particle
@@ -179,14 +183,22 @@ public class MainPanel extends JPanel {
 	 */
 	public void applyForces(Particle p1, Particle p2) {
 		if (!electricFlag) {
-			p1.applyForce(p1.electrostaticForce(p2));
+			electrostaticForceManager.applyForce(
+				p1, 
+				electrostaticForceManager.calculateForce(p1, p2)
+			);
+			
+			// testing the dual limit convergence issue
 			if (collisionFlag) {
 				if (Math.abs(p1.getX() - p2.getX()) <= p1.getWidth() / 50000 || Math.abs(p1.getY() - p2.getY()) <= p1.getWidth() / 50000) {
 				}
 			}
 		}
 		if (!gravityFlag) {
-			p1.applyForce(p1.gravitationalForce(p2));
+			gravitationalForceManager.applyForce(
+				p1, 
+				gravitationalForceManager.calculateForce(p1, p2)
+			);
 		}
 	}
 
@@ -205,12 +217,12 @@ public class MainPanel extends JPanel {
 	
 			for (int j = i + 1; j < particleList.size(); j++) {
 				Particle p2 = particleList.get(j);
-	
-				double[] electrostaticForce = p1.electrostaticForce(p2);
+
+				double[] electrostaticForce = electrostaticForceManager.calculateForce(p1, p2);
 				double electricForce = Math.pow(electrostaticForce[0], 2) + Math.pow(electrostaticForce[1], 2);
 				totalElectricEnergy += electricForce;
 	
-				double[] gravitationalForce = p1.gravitationalForce(p2);
+				double[] gravitationalForce = gravitationalForceManager.calculateForce(p1, p2);
 				double potentialForce = Math.pow(gravitationalForce[0], 2) + Math.pow(gravitationalForce[1], 2);
 				totalPotential += potentialForce;
 			}
