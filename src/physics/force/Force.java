@@ -1,6 +1,6 @@
-package force;
+package physics.force;
 
-import particle.Particle;
+import physics.particle.Particle;
 
 public interface Force {
     double[] calculateForce(Particle p1, Particle p2);

@@ -16,11 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import collision.EdgeCollision;
-import collision.ParticleCollision;
-import force.ElectrostaticForce;
-import force.GravitationalForce;
-import particle.Particle;
+import physics.collision.EdgeCollision;
+import physics.collision.ParticleCollision;
+import physics.force.ElectrostaticForce;
+import physics.force.GravitationalForce;
+import physics.particle.Particle;
 
 public class MainPanel extends JPanel {
 

@@ -1,4 +1,4 @@
-package particle;
+package physics.particle;
 import java.util.List;
 import java.util.Random;
 

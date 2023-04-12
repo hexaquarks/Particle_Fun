@@ -1,6 +1,6 @@
-package collision;
+package physics.collision;
 
-import particle.Particle; 
+import physics.particle.Particle; 
 
 public class ParticleCollision implements Collision {
 

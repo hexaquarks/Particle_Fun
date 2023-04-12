@@ -1,14 +1,14 @@
-package force;
+package physics.force;
 
-import particle.Particle;
+import physics.particle.Particle;
 
-public class ElectrostaticForce implements Force{
+public class GravitationalForce implements Force{
 
-    private static final double COULOMBS_CONSTANT = 0.025;     
+    private static final double GRAVITATIONAL_CONSTANT = 0.00025;
 
     @Override
     public double[] calculateForce(Particle p1, Particle p2) {
-        return electrostaticForce(p1, p2);
+        return gravitationalForce(p1, p2);
     }
 
     @Override 
@@ -17,9 +17,9 @@ public class ElectrostaticForce implements Force{
         p.setVY(p.getVY() + (force[1] / p.getMass()));
 	}
 
-    private double[] electrostaticForce(Particle p1, Particle p2) {
+    public double[] gravitationalForce(Particle p1, Particle p2) {
 		double d = calculateDistance(p1, p2);
-		double forceMultiplier = COULOMBS_CONSTANT * p1.getCharge() * p2.getCharge() / (d * d);
+		double forceMultiplier = -GRAVITATIONAL_CONSTANT * p1.getMass() * p2.getMass() / (d * d);
 		return calculateForceComponents(p1, p2, forceMultiplier, d);
 	}
 

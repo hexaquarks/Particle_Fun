@@ -1,4 +1,4 @@
-import particle.Particle;
+import physics.particle.Particle;
 
 public class Point2D {
 	

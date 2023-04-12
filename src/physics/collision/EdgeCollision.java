@@ -1,6 +1,6 @@
-package collision;
+package physics.collision;
 
-import particle.Particle;
+import physics.particle.Particle;
 
 public class EdgeCollision implements Collision {
     private static final double WALL_DAMPING_COEFFICIENT = 0.6;
