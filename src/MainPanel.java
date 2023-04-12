@@ -26,10 +26,10 @@ public class MainPanel extends JPanel {
 
 	private static final int TIME_TICK = 1000 / 60;
 	private static final double DEFAULT_SPIRAL_ANGLE = Math.PI * (1 + Math.sqrt(5) / 4);
-	private static EdgeCollision edgeCollisionManager = new EdgeCollision();
-	private static ParticleCollision particleCollisionManager = new ParticleCollision();
-	private static ElectrostaticForce electrostaticForceManager = new ElectrostaticForce();
-	private static GravitationalForce gravitationalForceManager = new GravitationalForce();
+	private static final EdgeCollision edgeCollisionManager = new EdgeCollision();
+	private static final ParticleCollision particleCollisionManager = new ParticleCollision();
+	private static final ElectrostaticForce electrostaticForceManager = new ElectrostaticForce();
+	private static final GravitationalForce gravitationalForceManager = new GravitationalForce();
 
 	private List<Particle> particleList = new ArrayList<>();
 	private double newDirY = 0; // y-direction of a new particle
