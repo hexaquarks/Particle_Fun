@@ -21,6 +21,7 @@ import physics.collision.ParticleCollision;
 import physics.force.ElectrostaticForce;
 import physics.force.GravitationalForce;
 import physics.particle.Particle;
+import util.Statistics;
 
 public class MainPanel extends JPanel {
 
@@ -30,6 +31,7 @@ public class MainPanel extends JPanel {
 	private static final ParticleCollision particleCollisionManager = new ParticleCollision();
 	private static final ElectrostaticForce electrostaticForceManager = new ElectrostaticForce();
 	private static final GravitationalForce gravitationalForceManager = new GravitationalForce();
+	private static final Statistics statisticsManager = new Statistics();
 
 	private List<Particle> particleList = new ArrayList<>();
 	private double newDirY = 0; // y-direction of a new particle
@@ -39,7 +41,6 @@ public class MainPanel extends JPanel {
 	private boolean collisionFlag, electricFlag, gravityFlag; // flags for the forces
 	private boolean isInParticleRemovalMode; // flag for removing particles
 
-	private int collisionsPerSecond; // collisions per second for statistics
 	private int fpsTimerCounter = 0; // counter to have the statistics at a fixed frequency
 
 	private double spiralAngle = DEFAULT_SPIRAL_ANGLE;
@@ -126,9 +127,9 @@ public class MainPanel extends JPanel {
 				}
 			}
 			if (fpsTimerCounter % 60 == 0) {
-				information = statistics();
+				information = statisticsManager.getCurrentStatistics(particleList);
 				controller.setLabels(particleList.size(), information);
-				collisionsPerSecond = 0;
+				statisticsManager.resetCollisionsCounter();
 			}
 			repaint();
 		});
@@ -152,6 +153,7 @@ public class MainPanel extends JPanel {
 
 					if (particleCollisionManager.isColliding(p1, p2) && !collisionFlag) {
 						particleCollisionManager.updateVelocity(p1, p2);
+						statisticsManager.incrementCollisionsPerSecond();
 					}
 				}
 				p1.moveParticleOneTimeTick();
@@ -203,37 +205,6 @@ public class MainPanel extends JPanel {
 	}
 
 	/**
-	 * Method that performs the calculations for the statistical information display
-	 * 
-	 * @return double[] 3 elements arry representing the total electric energy
-	 *         computed, the total potential energy computed and the number of
-	 *         collisions per second.
-	 */
-	public double[] statistics() {
-		double totalElectricEnergy = 0, totalPotential = 0;
-	
-		for (int i = 0; i < particleList.size(); i++) {
-			Particle p1 = particleList.get(i);
-	
-			for (int j = i + 1; j < particleList.size(); j++) {
-				Particle p2 = particleList.get(j);
-
-				double[] electrostaticForce = electrostaticForceManager.calculateForce(p1, p2);
-				double electricForce = Math.pow(electrostaticForce[0], 2) + Math.pow(electrostaticForce[1], 2);
-				totalElectricEnergy += electricForce;
-	
-				double[] gravitationalForce = gravitationalForceManager.calculateForce(p1, p2);
-				double potentialForce = Math.pow(gravitationalForce[0], 2) + Math.pow(gravitationalForce[1], 2);
-				totalPotential += potentialForce;
-			}
-		}
-		totalElectricEnergy *= 2;
-		totalPotential *= 2;
-	
-		return new double[] { totalElectricEnergy, totalPotential, collisionsPerSecond };
-	}
-
-	/**
 	 * Method that initializes a number of particles on the canvas
 	 * 
 	 * @param numberOfParticles number of particles to be spawned
@@ -255,7 +226,6 @@ public class MainPanel extends JPanel {
 				double vy = rand.nextInt(2) - 1;
 
 				p = new Particle(xPos, yPos, vx, vy, mass, charge);
-				System.out.println("vx is "+ vx);
 			} while (particleAlreadyExists(xPos, yPos));
 
 			particleList.add(p);
