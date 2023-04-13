@@ -138,7 +138,7 @@ public class MainPanel extends JPanel {
 			for (int i = 0; i < particleList.size(); ++i) {
 				Particle p1 = particleList.get(i);
 
-				if (edgeCollisionManager.isColliding(p1) && !collisionFlag) {
+				if (edgeCollisionManager.isColliding(p1)) {
 					edgeCollisionManager.updateVelocity(p1);
 				}
 
