@@ -476,7 +476,7 @@ public class MainPanel extends JPanel {
 
 		if (shape.shapeIsDraggable) {
 			shape.setAnchor(e.getX(), e.getY());
-			shape.startAngle = shape.getAngle(shape.center.x, shape.center.y, shape.anchorX, shape.anchorY);
+			shape.startAngle = shape.getAngle(shape.center.getX(), shape.center.getY(), shape.anchorX, shape.anchorY);
 		}
 	}
 

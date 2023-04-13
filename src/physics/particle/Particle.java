@@ -2,7 +2,6 @@ package physics.particle;
 import java.util.List;
 import java.util.Random;
 
-
 public class Particle{
 	private double x;
     private double y;
