@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import model.ShapeType;
 import physics.collision.EdgeCollision;
 import physics.collision.ParticleCollision;
 import physics.force.ElectrostaticForce;
