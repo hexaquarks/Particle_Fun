@@ -1,3 +1,4 @@
+package shape;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -14,19 +15,19 @@ import physics.particle.Particle;
  */
 
 public class ShapeManager {
-	String shapeType; // circle , square, pentagon , hexagon
-	Point2D center;
-	List<Point2D> coordinates = new ArrayList<>();
-	List<List<Point2D>> dividedShapeCoords = new ArrayList<>(Arrays.asList(coordinates));
+	private String shapeType; // circle , square, pentagon , hexagon
+	private Point2D center;
+	private List<Point2D> coordinates = new ArrayList<>();
+	private List<List<Point2D>> dividedShapeCoords = new ArrayList<>(Arrays.asList(coordinates));
 
-	boolean shapeIsDraggable;
-	double currentAngle;
-	double startAngle;
-	double anchorX;
-	double anchorY;
+	private boolean shapeIsDraggable;
+	private double currentAngle;
+	private double startAngle;
+	private double anchorX;
+	private double anchorY;
 
-	double shapeWidth = 0;
-	double shapeHeight = 0;
+	private double shapeWidth = 0;
+	private double shapeHeight = 0;
 
 	/**
 	 * Constructor
@@ -62,6 +63,9 @@ public class ShapeManager {
 				.collect(Collectors.toList());
 	}
 
+	public double getAnchorX() { return anchorX; }
+	public double getAnchorY() { return anchorY; }
+
 	/**
 	 * Method that sets the value for the anchor, to be used for shape rotation
 	 * through the mouse.
@@ -74,6 +78,10 @@ public class ShapeManager {
 		this.anchorY = y;
 	}
 
+	public boolean isShapeDraggable() { 
+		return shapeIsDraggable;
+	}
+	
 	/**
 	 * Sets the flag for the shapes to be rotatable throught the mouse.
 	 * 
@@ -579,5 +587,8 @@ public class ShapeManager {
 	public void reinitializeCoordinates() {
 		this.coordinates = new ArrayList<Point2D>();
 	}
+
+	public void setStartAngle(double angle) { startAngle = angle; }
+	public Point2D getCenter() { return center; }
 
 }

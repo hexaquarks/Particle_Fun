@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import model.Point2D;
+import shape.ShapeManager;
 
 public class AppFrame extends Application {
 

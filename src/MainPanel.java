@@ -22,6 +22,7 @@ import physics.collision.ParticleCollision;
 import physics.force.ElectrostaticForce;
 import physics.force.GravitationalForce;
 import physics.particle.Particle;
+import shape.ShapeManager;
 import util.Statistics;
 
 public class MainPanel extends JPanel {
@@ -432,7 +433,7 @@ public class MainPanel extends JPanel {
 	}
 
 	public void divideShape() {
-		if (shape.shapeIsDraggable) {
+		if (shape.isShapeDraggable()) {
 			SwingUtilities.invokeLater(() -> {
 				shape.divide(particleList);
 				shape.setDividedShapeCoodinates(particleList);
@@ -448,7 +449,7 @@ public class MainPanel extends JPanel {
 	 * @param e the mouse position on the canvas
 	 */
 	private void doMouseReleased(MouseEvent e) {
-		if (shape.shapeIsDraggable) {
+		if (shape.isShapeDraggable()) {
 			return;
 		}
 
@@ -475,9 +476,9 @@ public class MainPanel extends JPanel {
 		prevY = e.getY();
 		prevX = e.getX();
 
-		if (shape.shapeIsDraggable) {
+		if (shape.isShapeDraggable()) {
 			shape.setAnchor(e.getX(), e.getY());
-			shape.startAngle = shape.getAngle(shape.center.getX(), shape.center.getY(), shape.anchorX, shape.anchorY);
+			shape.setStartAngle(shape.getAngle(shape.getCenter().getX(), shape.getCenter().getY(), shape.getAnchorX(), shape.getAnchorY()));
 		}
 	}
 
@@ -494,8 +495,8 @@ public class MainPanel extends JPanel {
 		newDirX = dragForce(x, prevX);
 		newDirY = dragForce(y, prevY);
 	
-		if (shape.shapeIsDraggable) {
-			double distance = computeDistance(x, y, shape.anchorX, shape.anchorY);
+		if (shape.isShapeDraggable()) {
+			double distance = computeDistance(x, y, shape.getAnchorX(), shape.getAnchorY());
 	
 			if (distance >= 20) {
 				shape.rotateShape(x, y, particleList);
