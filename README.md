@@ -20,7 +20,7 @@ ___
 # 💡 <a name="features"></a> Features
 ### Current State Example
 <p align="center">
-  <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/Promotion/spiralsGlimpse2.gif" width="500"/>
+  <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/main/java/Promotion/spiralsGlimpse2.gif" width="500"/>
 </p>
 
 ## Arrangement in shapes of a dynamic and variable number of particles
