@@ -11,37 +11,9 @@ Time-driven particle simulation developped hybridly with *JavaFX* and *Swing*.
 - JavaFX SDK *OpenJFX*
 - Java SE Development Kit *(JDK)*
 
-### VSCode
-Clone the project
+### Run 
 ```
-git clone https://github.com/hexaquarks/Particle_Geometry_Simulation.git && cd Particle_Geometry_Simulation 
-```
-Edit `vmArgs` in *./.vscode/launch.json* with appropriate *JavaFX* `path` variable.
-```
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Launch AppFrame",
-            "request": "launch",
-            "vmArgs": "--module-path %PATH_TO_JAVAFX%/lib --add-modules javafx.controls,javafx.fxml,javafx.swing",
-            "mainClass": "AppFrame",
-            "projectName": "Particle_Geometry_Simulation_4f401646"
-        }
-    ]
-}
-```
-Edit *./.vscode/launch.json* with appropriate *JavaFX* `path` variable.
-```
-{
-    "java.project.sourcePaths": ["src"],
-    "java.project.outputPath": "bin",
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "%PATH_TO_JAVAFX%/lib/*.jar"
-    ]
-}
+mvn clean package javafx:run
 ```
 ___
 
