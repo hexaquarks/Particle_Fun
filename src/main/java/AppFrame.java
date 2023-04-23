@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import javax.swing.SwingUtilities;
 
@@ -19,6 +18,7 @@ public class AppFrame extends Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println("Don't do that :(");
 		launch(args);
 	}
 
@@ -35,7 +35,7 @@ public class AppFrame extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("ParticleFunJavaFx.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/ParticleFunJavaFx.fxml"));
 			Parent root = loader.load();
 
 			controller = (SampleController) loader.getController();
