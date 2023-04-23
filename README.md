@@ -28,21 +28,21 @@ ___
 <table>
     <thead>
         <tr>
-            <th align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/Promotion/circleGif.gif" width="125" /></th>
+            <th align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/main/java/Promotion/circleGif.gif" width="125" /></th>
             <th align="center"><code>circle</code></th>
-            <th align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/Promotion/squareGif.gif" width="125" /></th>
+            <th align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/main/java/Promotion/squareGif.gif" width="125" /></th>
             <th align="center"><code>square</code></th>
-            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/Promotion/looseSpiralGif.gif" width="125" /></td>
+            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/main/java/Promotion/looseSpiralGif.gif" width="125" /></td>
             <td align="center"><code>loose spiral</code></td>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/Promotion/diamondGif.gif" width="125" /></td>
+            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/main/java/Promotion/diamondGif.gif" width="125" /></td>
             <td align="center"><code>diamond</code></td>
-            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/Promotion/spiralGif.gif" width="125" /></td>
+            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/main/java/Promotion/spiralGif.gif" width="125" /></td>
             <td align="center"><code>spiral</code></td>
-            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/Promotion/sunflowerSpiralGif.gif" width="125" /></td>
+            <td align="center"><img src="https://github.com/hexaquarks/Particle_Geometry_Simulation/blob/master/src/main/java/Promotion/sunflowerSpiralGif.gif" width="125" /></td>
             <td align="center"><code>sunflower spiral</code></td>
         </tr>
     </tbody>
@@ -56,7 +56,7 @@ ___
 
 ## Shape division and rotation
 <p align="center">
-  <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/Promotion/shapeDivisionGif.gif" width="500"/>
+  <img align="center" src="https://github.com/hexaquarks/Particle_Fun/blob/master/src/main/java/Promotion/shapeDivisionGif.gif" width="500"/>
 </p>
 
 ___ 
